@@ -1,0 +1,82 @@
+name: Feature Task
+description: Structured task tracking for development workflow
+title: "[Category] - [Feature/Task Name]"
+projects: ["lkviray-strat/1"]
+assignees:
+  - "lkviray-strat"
+labels: ["needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **Category** (select from): setup | auth | database | frontend | backend | testing | deployment | documentation
+
+  - type: dropdown
+    attributes:
+      label: Priority
+      options:
+        - "High (Blocking)"
+        - "Medium (Normal)"
+        - "Low (Backlog)"
+    validations:
+      required: true
+
+  - type: input
+    attributes:
+      label: Estimated Time
+      description: In hours (use 0.5 for 30 mins)
+      placeholder: "2.5"
+    validations:
+      required: false
+
+  - type: textarea
+    attributes:
+      label: Description
+      description: Clear explanation of what needs implementation
+      placeholder: |
+        As a [user role] 
+        I want [feature] 
+        So that [benefit]
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: Acceptance Criteria
+      description: "Measurable completion criteria (TESTABLE requirements)"
+      value: |
+        - [ ] Criteria 1
+        - [ ] Testing requirements
+        - [ ] Performance expectations
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: Technical Approach
+      description: Architecture decisions, dependencies, and resources
+      placeholder: |
+        Proposed Solution:
+        Dependencies:
+        Resources:
+    validations:
+      required: false
+
+  - type: checkboxes
+    attributes:
+      label: Definition of Done
+      options:
+        - label: Code implemented and locally tested
+          required: true
+        - label: Followed coding standards
+          required: true
+        - label: Tests written/updated
+        - label: Documentation updated
+        - label: Peer reviewed (if applicable)
+        - label: Deployment verified
+
+  - type: textarea
+    attributes:
+      label: Additional Context
+      description: Screenshots, references, or related issues
+      required: false
