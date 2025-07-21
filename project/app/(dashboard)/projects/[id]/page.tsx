@@ -56,7 +56,7 @@ export default function ProjectPage({ params }: { params: { id: string } }) {
         <div className="bg-white dark:bg-outer_space-500 rounded-lg border border-french_gray-300 dark:border-payne's_gray-400 p-6">
           <div className="flex space-x-6 overflow-x-auto pb-4">
             {["To Do", "In Progress", "Review", "Done"].map((columnTitle, columnIndex) => (
-              <div key={columnTitle} className="flex-shrink-0 w-80">
+              <div key={columnTitle} className="shrink-0 w-80">
                 <div className="bg-platinum-800 dark:bg-outer_space-400 rounded-lg border border-french_gray-300 dark:border-payne's_gray-400">
                   <div className="p-4 border-b border-french_gray-300 dark:border-payne's_gray-400">
                     <div className="flex items-center justify-between">
