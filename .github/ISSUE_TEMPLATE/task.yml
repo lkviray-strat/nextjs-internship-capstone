@@ -1,5 +1,5 @@
-name: Feature Task
-description: Structured task tracking for development workflow
+name: Capstone Task Template
+description: Structured task tracking for development workflow based on task/INDIVIDUAL_DEVELOPMENT_APPROACH.md
 title: "[Phase] - [Feature Name]"
 projects: ["lkviray-strat/1"]
 assignees:
@@ -69,7 +69,6 @@ body:
         - [ ] Criteria 1
         - [ ] Testing requirements
         - [ ] Performance expectations
-    validations:
       required: true
 
   - type: textarea
