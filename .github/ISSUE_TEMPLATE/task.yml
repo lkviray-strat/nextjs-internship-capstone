@@ -1,6 +1,6 @@
-name: Feature Task
-description: Structured task tracking for development workflow
-title: "[Category] - [Feature/Task Name]"
+name: Capstone Task Template
+description: Structured task tracking for development workflow based on task/INDIVIDUAL_DEVELOPMENT_APPROACH.md
+title: "[Phase] - [Feature Name]"
 projects: ["lkviray-strat/1"]
 assignees:
   - "lkviray-strat"
@@ -9,16 +9,15 @@ body:
   - type: markdown
     attributes:
       value: |
-        **Category** (select from): setup | auth | database | frontend | backend | testing | deployment | documentation
+        ## Task: [Phase] - [Feature Name]
 
   - type: dropdown
     attributes:
       label: Priority
       options:
-        - "High (Blocking)"
-        - "Medium (Normal)"
-        - "Low (Backlog)"
-    validations:
+        - "High"
+        - "Medium"
+        - "Low"
       required: true
 
   - type: input
@@ -26,50 +25,73 @@ body:
       label: Estimated Time
       description: In hours (use 0.5 for 30 mins)
       placeholder: "2.5"
+      required: true
 
-  - type: textarea
+  - type: input
     attributes:
-      label: Description
-      description: Clear explanation of what needs implementation
-      placeholder: |
-        As a [user role] 
-        I want [feature] 
-        So that [benefit]
-    validations:
-      required: true # This is allowed for textarea
+      label: Target Week
+      description: Week number for implementation
+      placeholder: "Week 5"
+      required: true
 
-  - type: textarea
+  - type: dropdown
     attributes:
-      label: Acceptance Criteria
-      description: "Measurable completion criteria (TESTABLE requirements)"
-      value: |
-        - [ ] Criteria 1
-        - [ ] Testing requirements
-        - [ ] Performance expectations
-    validations:
+      label: Category
+      options:
+        - "Frontend"
+        - "Backend"
+        - "Database"
+        - "Testing"
+        - "Deployment"
+        - "Documentation"
       required: true
 
   - type: textarea
     attributes:
-      label: Technical Approach
-      description: Architecture decisions, dependencies, and resources
+      label: Description
+      description: Clear description of what needs to be implemented
       placeholder: |
-        Proposed Solution:
+        As a [user role] 
+        I want [feature] 
+        So that [benefit]
+      required: true
+
+  - type: textarea
+    attributes:
+      label: Acceptance Criteria
+      description: "Specific, measurable criteria for task completion"
+      placeholder: |
+        - [ ] Criteria 1
+        - [ ] Testing requirements
+        - [ ] Performance expectations
+      required: true
+
+  - type: textarea
+    attributes:
+      label: Implementation Notes
+      description: "Technical approach, dependencies, and resources"
+      placeholder: |
+        Technical Approach:
+        - Architecture decisions
+
         Dependencies:
+        - [Other Task #]
+
         Resources:
+        - [Documentation Link](url)
 
   - type: checkboxes
     attributes:
       label: Definition of Done
       options:
-        - label: Code implemented and locally tested
+        - label: Code written and working locally
           required: true
-        - label: Followed coding standards
+        - label: Self-reviewed for quality and best practices
           required: true
-        - label: Tests written/updated
+        - label: Tests written (if applicable)
         - label: Documentation updated
-        - label: Peer reviewed (if applicable)
-        - label: Deployment verified
+        - label: Feature deployed and tested
+        - label: Ready for optional peer review
 
   - type: textarea
     attributes:
