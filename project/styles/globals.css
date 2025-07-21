@@ -1,14 +1,117 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss';
 
-body {
-  font-family: Arial, Helvetica, sans-serif;
+@plugin 'tailwindcss-animate';
+
+@custom-variant dark (&:is(.dark *));
+
+@theme {
+  --color-border: hsl(var(--border));
+  --color-input: hsl(var(--input));
+  --color-ring: hsl(var(--ring));
+  --color-background: hsl(var(--background));
+  --color-foreground: hsl(var(--foreground));
+
+  --color-primary: hsl(var(--primary));
+  --color-primary-foreground: hsl(var(--primary-foreground));
+
+  --color-secondary: hsl(var(--secondary));
+  --color-secondary-foreground: hsl(var(--secondary-foreground));
+
+  --color-destructive: hsl(var(--destructive));
+  --color-destructive-foreground: hsl(var(--destructive-foreground));
+
+  --color-muted: hsl(var(--muted));
+  --color-muted-foreground: hsl(var(--muted-foreground));
+
+  --color-accent: hsl(var(--accent));
+  --color-accent-foreground: hsl(var(--accent-foreground));
+
+  --color-popover: hsl(var(--popover));
+  --color-popover-foreground: hsl(var(--popover-foreground));
+
+  --color-card: hsl(var(--card));
+  --color-card-foreground: hsl(var(--card-foreground));
+
+  --color-platinum-50: #f8f8f8;
+  --color-platinum-100: #f1f1f1;
+  --color-platinum-200: #e9e9ea;
+  --color-platinum-300: #e2e2e3;
+  --color-platinum-400: #afafb0;
+  --color-platinum-500: #dcdcdd;
+  --color-platinum-600: #828285;
+  --color-platinum-700: #575759;
+  --color-platinum-800: #2b2b2c;
+  --color-platinum-900: #f8f8f8;
+  --color-platinum: #dcdcdd;
+
+  --color-french_gray-50: #f3f3f4;
+  --color-french_gray-100: #e8e7e8;
+  --color-french_gray-200: #dcdbdd;
+  --color-french_gray-300: #d1cfd1;
+  --color-french_gray-400: #9e9aa0;
+  --color-french_gray-500: #c5c3c6;
+  --color-french_gray-600: #777279;
+  --color-french_gray-700: #4f4c51;
+  --color-french_gray-800: #282628;
+  --color-french_gray-900: #f3f3f4;
+  --color-french_gray: #c5c3c6;
+
+  --color-outer_space-50: #d9dbdc;
+  --color-outer_space-100: #b4b7b9;
+  --color-outer_space-200: #8e9297;
+  --color-outer_space-300: #6a6e73;
+  --color-outer_space-400: #393b3e;
+  --color-outer_space-500: #46494c;
+  --color-outer_space-600: #2b2c2e;
+  --color-outer_space-700: #1c1e1f;
+  --color-outer_space-800: #0e0f0f;
+  --color-outer_space-900: #d9dbdc;
+  --color-outer_space: #46494c;
+
+  --color-blue_munsell-50: #c7edf6;
+  --color-blue_munsell-100: #8edaed;
+  --color-blue_munsell-200: #56c8e5;
+  --color-blue_munsell-300: #22b3d7;
+  --color-blue_munsell-400: #146a7f;
+  --color-blue_munsell-500: #1985a1;
+  --color-blue_munsell-600: #0f4f5f;
+  --color-blue_munsell-700: #0a3540;
+  --color-blue_munsell-800: #051a20;
+  --color-blue_munsell-900: #c7edf6;
+  --color-blue_munsell: #1985a1;
+
+  --font-sans: Inter, sans-serif;
+
+  --radius-lg: var(--radius);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-sm: calc(var(--radius) - 4px);
+}
+
+/*
+  The default border color has changed to `currentcolor` in Tailwind CSS v4,
+  so we've added these compatibility styles to make sure everything still
+  looks the same as it did with Tailwind CSS v3.
+
+  If we ever want to remove these styles, we need to add an explicit border
+  color utility to any element that depends on these defaults.
+*/
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-gray-200, currentcolor);
+  }
+}
+
+@utility text-balance {
+  text-wrap: balance;
 }
 
 @layer utilities {
-  .text-balance {
-    text-wrap: balance;
+  body {
+    font-family: Arial, Helvetica, sans-serif;
   }
 }
 

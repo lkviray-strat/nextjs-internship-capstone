@@ -15,7 +15,7 @@ export default function DashboardPage() {
         {/* Implementation Status Banner */}
         <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
           <div className="flex items-start">
-            <div className="flex-shrink-0">
+            <div className="shrink-0">
               <div className="w-8 h-8 bg-blue_munsell-500 rounded-full flex items-center justify-center">
                 <TrendingUp className="text-white" size={16} />
               </div>
@@ -46,7 +46,7 @@ export default function DashboardPage() {
               className="bg-white dark:bg-outer_space-500 overflow-hidden rounded-lg border border-french_gray-300 dark:border-payne's_gray-400 p-6"
             >
               <div className="flex items-center">
-                <div className="flex-shrink-0">
+                <div className="shrink-0">
                   <div className="w-8 h-8 bg-blue_munsell-100 dark:bg-blue_munsell-900 rounded-lg flex items-center justify-center">
                     <stat.icon className="text-blue_munsell-500" size={20} />
                   </div>
