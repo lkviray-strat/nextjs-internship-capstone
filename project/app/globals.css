@@ -1,5 +1,5 @@
-@import 'tailwindcss';
-@import 'tailwindcss' layer(base);
+@import "tailwindcss";
+@import "tailwindcss" layer(base);
 
 @plugin 'tailwindcss-animate';
 
