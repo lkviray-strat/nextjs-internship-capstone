@@ -69,6 +69,7 @@ body:
         - [ ] Criteria 1
         - [ ] Testing requirements
         - [ ] Performance expectations
+    validations:
       required: true
 
   - type: textarea
