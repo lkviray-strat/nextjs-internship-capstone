@@ -1,7 +1,11 @@
 import { SignedIn, SignedOut } from "@clerk/nextjs";
 import SignInPage from "../(auth)/sign-in/[[...sign-in]]/page";
 
-export function DashboardLayout({ children }: { children: React.ReactNode }) {
+export default function DashboardLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <main>
       <SignedIn>{children}</SignedIn>
