@@ -184,6 +184,10 @@ body {
   filter: none !important;
 }
 
+.cl-formFieldInput {
+  @apply bg-card border-input focus-visible:ring-ring focus-visible:ring-1 focus-visible:ring-offset-0 focus-visible:ring-offset-background;
+}
+
 /* 
 Past theme variables for reference
 These are commented out to avoid conflicts with the new theme variables.
