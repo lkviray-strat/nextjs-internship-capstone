@@ -11,8 +11,8 @@ export default function SignInPage() {
               card: "!p-6 gap-6",
               main: "gap-5",
               form: "gap-5",
-              headerTitle: "text-2xl text-left",
-              headerSubtitle: "text-left",
+              headerTitle: "text-2xl tablet:text-left",
+              headerSubtitle: "tablet:text-left",
               formFieldInput: "py-1.5",
               socialButtonsBlockButtonText: "text-white text-[15px]",
               socialButtonsBlockButton:
