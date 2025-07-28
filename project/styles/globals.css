@@ -1,5 +1,4 @@
 @import "tailwindcss";
-@import "tailwindcss" layer(base);
 @import "tw-animate-css";
 
 @custom-variant dark (&:is(.dark *));
@@ -37,9 +36,9 @@
   --sidebar-accent-foreground: oklch(1 0 0);
   --sidebar-border: oklch(0.9288 0.0126 255.5078);
   --sidebar-ring: oklch(0.5461 0.2152 262.8809);
-  --font-sans: Geist;
-  --font-serif: Lora;
-  --font-mono: Geist Mono;
+  --font-sans: "Geist";
+  --font-serif: "Lora";
+  --font-mono: "Geist Mono";
   --radius: 0.5rem;
   --shadow-2xs: 0px 2px 4px 0px hsl(0 0% 0% / 0.03);
   --shadow-xs: 0px 2px 4px 0px hsl(0 0% 0% / 0.03);
@@ -91,9 +90,9 @@
   --sidebar-accent-foreground: oklch(1 0 0);
   --sidebar-border: oklch(0.2795 0.0368 260.031);
   --sidebar-ring: oklch(0.6231 0.188 259.8145);
-  --font-sans: Geist;
-  --font-serif: Lora;
-  --font-mono: Geist Mono;
+  --font-sans: "Geist";
+  --font-serif: "Lora";
+  --font-mono: "Geist Mono";
   --radius: 0.5rem;
   --shadow-2xs: 0px 2px 4px 0px hsl(0 0% 0% / 0.05);
   --shadow-xs: 0px 2px 4px 0px hsl(0 0% 0% / 0.05);
