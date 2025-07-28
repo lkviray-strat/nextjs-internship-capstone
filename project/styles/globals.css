@@ -110,6 +110,13 @@
 }
 
 @theme inline {
+  --breakpoint-sphone: 320px;
+  --breakpoint-mphone: 375px;
+  --breakpoint-lphone: 425px;
+  --breakpoint-tablet: 640px;
+  --breakpoint-ltablet: 768px;
+  --breakpoint-laptop: 1024px;
+
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
