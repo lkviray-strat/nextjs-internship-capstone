@@ -3,10 +3,10 @@ import "@/styles/globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
 import { shadcn } from "@clerk/themes";
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Geist } from "next/font/google";
 import type React from "react";
 
-const inter = Inter({ subsets: ["latin"] });
+const gi = Geist({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Project Management Tool",
@@ -24,16 +24,13 @@ export default function RootLayout({
       signInUrl="/sign-in"
       appearance={{
         baseTheme: shadcn,
-        variables: {
-          colorMuted: "var(--card)",
-        },
       }}
     >
       <html
         lang="en"
         suppressHydrationWarning
       >
-        <body className={inter.className}>
+        <body className={gi.className}>
           <ThemeProvider>{children}</ThemeProvider>
         </body>
       </html>
