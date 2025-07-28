@@ -6,13 +6,13 @@ import type { Metadata } from "next";
 import { Geist } from "next/font/google";
 import type React from "react";
 
-const gi = Geist({ subsets: ["latin"] });
-
 export const metadata: Metadata = {
   title: "Project Management Tool",
   description: "Team collaboration and project management platform",
   generator: "v0.dev",
 };
+
+const gi = Geist({ subsets: ["latin"] });
 
 export default function RootLayout({
   children,
@@ -22,6 +22,12 @@ export default function RootLayout({
   return (
     <ClerkProvider
       signInUrl="/sign-in"
+      localization={{
+        dividerText: "OR CONTINUE WITH",
+        socialButtonsBlockButton: "Continue With {{provider|titleize}}",
+        formFieldLabel__emailAddress: "Email Address",
+        formFieldInputPlaceholder__emailAddress: "me@example.com",
+      }}
       appearance={{
         baseTheme: shadcn,
       }}
