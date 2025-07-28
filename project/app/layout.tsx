@@ -13,6 +13,18 @@ export const metadata: Metadata = {
 };
 
 const gi = Geist({ subsets: ["latin"] });
+const clerkProviderProps = {
+  signInUrl: "/sign-in",
+  localization: {
+    dividerText: "OR CONTINUE WITH",
+    socialButtonsBlockButton: "Continue With {{provider|titleize}}",
+    formFieldLabel__emailAddress: "Email Address",
+    formFieldInputPlaceholder__emailAddress: "me@example.com",
+  },
+  appearance: {
+    baseTheme: shadcn,
+  },
+};
 
 export default function RootLayout({
   children,
@@ -20,18 +32,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <ClerkProvider
-      signInUrl="/sign-in"
-      localization={{
-        dividerText: "OR CONTINUE WITH",
-        socialButtonsBlockButton: "Continue With {{provider|titleize}}",
-        formFieldLabel__emailAddress: "Email Address",
-        formFieldInputPlaceholder__emailAddress: "me@example.com",
-      }}
-      appearance={{
-        baseTheme: shadcn,
-      }}
-    >
+    <ClerkProvider {...clerkProviderProps}>
       <html
         lang="en"
         suppressHydrationWarning
