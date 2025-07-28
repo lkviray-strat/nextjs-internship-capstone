@@ -37,7 +37,7 @@
   --sidebar-accent-foreground: oklch(1 0 0);
   --sidebar-border: oklch(0.9288 0.0126 255.5078);
   --sidebar-ring: oklch(0.5461 0.2152 262.8809);
-  --font-geist: Geist;
+  --font-sans: Geist;
   --font-serif: Lora;
   --font-mono: Geist Mono;
   --radius: 0.5rem;
@@ -91,7 +91,7 @@
   --sidebar-accent-foreground: oklch(1 0 0);
   --sidebar-border: oklch(0.2795 0.0368 260.031);
   --sidebar-ring: oklch(0.6231 0.188 259.8145);
-  --font-geist: Geist;
+  --font-sans: Geist;
   --font-serif: Lora;
   --font-mono: Geist Mono;
   --radius: 0.5rem;
