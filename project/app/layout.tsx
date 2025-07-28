@@ -1,6 +1,7 @@
 import { ThemeProvider } from "@/components/theme-provider";
 import "@/styles/globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
+import { shadcn } from "@clerk/themes";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import type React from "react";
@@ -19,7 +20,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <ClerkProvider signInUrl="/sign-in">
+    <ClerkProvider
+      signInUrl="/sign-in"
+      appearance={{
+        baseTheme: shadcn,
+        variables: {
+          colorMuted: "var(--card)",
+        },
+      }}
+    >
       <html
         lang="en"
         suppressHydrationWarning
