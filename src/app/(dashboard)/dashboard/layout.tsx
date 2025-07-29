@@ -2,10 +2,10 @@
 
 import type React from "react"
 
-import { useState, Suspense } from "react"
+import { ThemeToggle } from "@/src/components/theme-toggle"
+import { BarChart3, Bell, Calendar, FolderOpen, Home, Menu, Search, Settings, Users, X } from "lucide-react"
 import Link from "next/link"
-import { ThemeToggle } from "@/components/theme-toggle"
-import { Home, FolderOpen, Users, Settings, Menu, X, BarChart3, Calendar, Bell, Search } from "lucide-react"
+import { Suspense, useState } from "react"
 
 const navigation = [
   { name: "Dashboard", href: "/dashboard", icon: Home, current: true },

@@ -1,4 +1,4 @@
-import { ThemeToggle } from "@/components/theme-toggle";
+import { ThemeToggle } from "@/src/components/theme-toggle";
 import { SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
 import { ArrowRight, CheckCircle, Kanban, Users } from "lucide-react";
 import Link from "next/link";

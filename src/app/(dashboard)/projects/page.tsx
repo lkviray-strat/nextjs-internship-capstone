@@ -1,5 +1,5 @@
-import { Plus, Search, Filter } from "lucide-react"
-import { DashboardLayout } from "@/components/dashboard-layout"
+import { DashboardLayout } from "@/src/components/dashboard-layout"
+import { Filter, Plus, Search } from "lucide-react"
 
 export default function ProjectsPage() {
   return (
