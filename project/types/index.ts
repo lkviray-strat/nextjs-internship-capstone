@@ -7,6 +7,7 @@ import {
   teams,
   users,
 } from "@/lib/db/schema";
+import { WithRelations } from "@/lib/utils";
 import { InferSelectModel } from "drizzle-orm";
 
 export type User = InferSelectModel<typeof users>;
@@ -17,58 +18,58 @@ export type Projects = InferSelectModel<typeof projects>;
 export type TeamMembers = InferSelectModel<typeof teamMembers>;
 export type ProjectTeams = InferSelectModel<typeof projectTeams>;
 
-// export interface User {
-//   id: string
-//   clerkId: string
-//   email: string
-//   name: string
-//   createdAt: Date
-//   updatedAt: Date
-// }
+export type UserWithRelations = WithRelations<
+  User,
+  {
+    teamMembers: TeamMembers[];
+    ledTeams: Teams[];
+    assignedTasks: Tasks[];
+    createdTasks: Tasks[];
+    createdProjects: Projects[];
+    comments: Comments[];
+  }
+>;
 
-// export interface Project {
-//   id: string
-//   name: string
-//   description?: string
-//   ownerId: string
-//   createdAt: Date
-//   updatedAt: Date
-//   dueDate?: Date
-//   lists: List[]
-// }
+export type TeamsWithRelations = WithRelations<
+  Teams,
+  {
+    members: TeamMembers[];
+    projects: ProjectTeams[];
+    leader: User;
+  }
+>;
 
-// export interface List {
-//   id: string
-//   name: string
-//   projectId: string
-//   position: number
-//   createdAt: Date
-//   updatedAt: Date
-//   tasks: Task[]
-// }
+export type TasksWithRelations = WithRelations<
+  Tasks,
+  {
+    project: Projects;
+    assignee: User;
+    createdBy: User;
+    comments: Comments[];
+  }
+>;
 
-// export interface Task {
-//   id: string
-//   title: string
-//   description?: string
-//   listId: string
-//   assigneeId?: string
-//   priority: "low" | "medium" | "high"
-//   dueDate?: Date
-//   position: number
-//   createdAt: Date
-//   updatedAt: Date
-//   comments: Comment[]
-// }
+export type ProjectsWithRelations = WithRelations<
+  Projects,
+  {
+    teams: ProjectTeams[];
+    tasks: Tasks[];
+    createdBy: User;
+  }
+>;
 
-// export interface Comment {
-//   id: string
-//   content: string
-//   taskId: string
-//   authorId: string
-//   createdAt: Date
-//   updatedAt: Date
-// }
+export type ProjectTeamsWithRelations = WithRelations<
+  ProjectTeams,
+  {
+    project: Projects;
+    team: Teams;
+  }
+>;
 
-// Note for interns: These types should match your database schema
-// Update as needed when implementing the actual database schema
+export type CommentsWithRelations = WithRelations<
+  Comments,
+  {
+    task: Tasks;
+    author: User;
+  }
+>;
