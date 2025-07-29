@@ -1,10 +1,10 @@
 import { defineConfig } from "drizzle-kit";
-import { POSTGRES_DATABASE_URL } from "./lib/db/index";
+import { POSTGRES_DATABASE_URL } from "./src/lib/db/index";
 
 export default defineConfig({
-  out: "./lib/db/migrations",
+  out: "./src/lib/db/migrations",
   dialect: "postgresql",
-  schema: "./lib/db/schema.ts",
+  schema: "./src/lib/db/schema.ts",
 
   dbCredentials: {
     url:
