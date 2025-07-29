@@ -182,6 +182,28 @@ export const tasks = pgTable(
   ]
 );
 
+// Comments
+export const comments = pgTable(
+  "comments",
+  {
+    id: uuid("id").primaryKey(),
+    content: text("content").notNull(),
+    taskId: integer("task_id").references(() => tasks.id, {
+      onDelete: "cascade",
+    }),
+    authorId: uuid("author_id").references(() => users.id, {
+      onDelete: "set null",
+    }),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    updatedAt: timestamp("updated_at").defaultNow().notNull(),
+  },
+  (table) => [
+    index("comments_task_idx").on(table.taskId),
+    index("comments_author_idx").on(table.authorId),
+    index("comments_created_idx").on(table.createdAt),
+  ]
+);
+
 // Define relations
 export const usersRelations = relations(users, ({ many }) => ({
   teamMembers: many(teamMembers),
@@ -189,6 +211,7 @@ export const usersRelations = relations(users, ({ many }) => ({
   assignedTasks: many(tasks, { relationName: "task_assignee" }),
   createdTasks: many(tasks, { relationName: "task_creator" }),
   createdProjects: many(projects, { relationName: "project_creator" }),
+  comments: many(comments, { relationName: "comment_author" }),
 }));
 
 export const teamsRelations = relations(teams, ({ many, one }) => ({
@@ -199,6 +222,24 @@ export const teamsRelations = relations(teams, ({ many, one }) => ({
     references: [users.id],
     relationName: "team_leader",
   }),
+}));
+
+export const tasksRelations = relations(tasks, ({ many, one }) => ({
+  project: one(projects, {
+    fields: [tasks.projectId],
+    references: [projects.id],
+  }),
+  assignee: one(users, {
+    fields: [tasks.assigneeId],
+    references: [users.id],
+    relationName: "task_assignee",
+  }),
+  createdBy: one(users, {
+    fields: [tasks.createdById],
+    references: [users.id],
+    relationName: "task_creator",
+  }),
+  comments: many(comments),
 }));
 
 export const projectsRelations = relations(projects, ({ many, one }) => ({
@@ -219,6 +260,18 @@ export const projectTeamsRelations = relations(projectTeams, ({ one }) => ({
   team: one(teams, {
     fields: [projectTeams.teamId],
     references: [teams.id],
+  }),
+}));
+
+export const commentsRelations = relations(comments, ({ one }) => ({
+  task: one(tasks, {
+    fields: [comments.taskId],
+    references: [tasks.id],
+  }),
+  author: one(users, {
+    fields: [comments.authorId],
+    references: [users.id],
+    relationName: "comment_author",
   }),
 }));
 
