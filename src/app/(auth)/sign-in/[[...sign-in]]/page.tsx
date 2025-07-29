@@ -3,18 +3,17 @@ import { Loader2 } from "lucide-react";
 
 export default function SignInPage() {
   return (
-    <div className="flex items-center justify-center -mt-8 w-full min-h-screen">
+    <div className="flex bg-accent bg-gradient-to-br from-primary/20 via-primary/10 to-primary/0 dark:from-background dark:via-background/80 dark:to-background/30 items-center justify-center -mt-8 w-full min-h-screen">
       <ClerkLoaded>
         <SignIn
           appearance={{
             elements: {
-              card: "p-6 gap-6",
+              card: "p-6 gap-6 bg-card",
               main: "gap-5",
               form: "gap-5",
-              headerTitle: "text-2xl tablet:text-left",
-              headerSubtitle: "tablet:text-left",
+              headerTitle: "text-2xl",
               formFieldInput: "py-1.5",
-              socialButtonsBlockButtonText: "text-white text-[15px]",
+              socialButtonsBlockButtonText: "text-foreground text-[15px]",
               socialButtonsBlockButton:
                 "bg-background py-2 hover:bg-accent transition-colors duration-200",
               formButtonPrimary: "bg-primary text-white hover:bg-primary/90",
