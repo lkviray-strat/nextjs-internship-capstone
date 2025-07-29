@@ -1,5 +1,5 @@
 import { ThemeProvider } from "@/src/components/theme-provider";
-import "@/styles/globals.css";
+import "@/src/styles/globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
 import { shadcn } from "@clerk/themes";
 import type { Metadata } from "next";
