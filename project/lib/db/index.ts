@@ -4,13 +4,15 @@ import { drizzle as drizzleNeon } from "drizzle-orm/neon-http";
 import { drizzle as drizzlePg } from "drizzle-orm/node-postgres";
 import { Pool } from "pg";
 
+export const POSTGRES_DATABASE_URL = `postgres://${process.env.POSTGRES_USER}:${process.env.POSTGRES_PASSWORD}@${process.env.POSTGRES_HOST}:${process.env.POSTGRES_PORT}/${process.env.POSTGRES_DB}`;
+
 export const db = () => {
   if (process.env.USE_NEON?.toLowerCase() === "true") {
     const sql = neon(process.env.NEON_DATABASE_URL!);
     return drizzleNeon({ client: sql });
   } else {
     const pool = new Pool({
-      connectionString: process.env.POSTGRES_DATABASE_URL!,
+      connectionString: POSTGRES_DATABASE_URL,
     });
     return drizzlePg({ client: pool });
   }
