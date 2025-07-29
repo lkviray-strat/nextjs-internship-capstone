@@ -1,13 +1,13 @@
 import {
-  comments,
-  projects,
-  projectTeams,
-  tasks,
-  teamMembers,
-  teams,
-  users,
-} from "@/lib/db/schema";
-import { WithRelations } from "@/lib/utils";
+    comments,
+    projects,
+    projectTeams,
+    tasks,
+    teamMembers,
+    teams,
+    users,
+} from "@/src/lib/db/schema";
+import { WithRelations } from "@/src/lib/utils";
 import { InferInsertModel, InferSelectModel } from "drizzle-orm";
 
 export type User = InferSelectModel<typeof users>;
