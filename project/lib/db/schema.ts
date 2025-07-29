@@ -15,46 +15,10 @@ import {
 } from "drizzle-orm/pg-core";
 import { pgTable } from "drizzle-orm/pg-core/table";
 
-/*
-TODO: Implementation Notes for Interns:
-
-1. Install Drizzle ORM dependencies:
-   - drizzle-orm
-   - drizzle-kit
-   - @vercel/postgres (if using Vercel Postgres)
-   - OR pg + @types/pg (if using regular PostgreSQL)
-
-2. Define schemas for:
-   - users (id, clerkId, email, name, createdAt, updatedAt)
-   - projects (id, name, description, ownerId, createdAt, updatedAt, dueDate)
-   - lists (id, name, projectId, position, createdAt, updatedAt)
-   - tasks (id, title, description, listId, assigneeId, priority, dueDate, position, createdAt, updatedAt)
-   - comments (id, content, taskId, authorId, createdAt, updatedAt)
-
-3. Set up proper relationships between tables
-4. Add indexes for performance
-5. Configure migrations
-
-Example structure:
-import { pgTable, text, timestamp, integer, uuid } from 'drizzle-orm/pg-core'
-
-export const users = pgTable('users', {
-  id: uuid('id').defaultRandom().primaryKey(),
-  clerkId: text('clerk_id').notNull().unique(),
-  email: text('email').notNull(),
-  name: text('name').notNull(),
-  createdAt: timestamp('created_at').defaultNow(),
-  updatedAt: timestamp('updated_at').defaultNow(),
-})
-
-// ... other tables
-*/
-
-// Users table (syncs with Clerk webhook)
 export const users = pgTable(
   "users",
   {
-    id: uuid("id").primaryKey(),
+    id: uuid("id").primaryKey().defaultRandom(),
     email: varchar("email", { length: 255 }).unique().notNull(),
     firstName: varchar("first_name", { length: 100 }),
     lastName: varchar("last_name", { length: 100 }),
@@ -72,7 +36,7 @@ export const users = pgTable(
 export const teams = pgTable(
   "teams",
   {
-    id: uuid("id").primaryKey(),
+    id: uuid("id").primaryKey().defaultRandom(),
     name: varchar("name", { length: 100 }).notNull(),
     description: text("description"),
     leaderId: uuid("leader_id").references(() => users.id, {
@@ -108,7 +72,7 @@ export const teamMembers = pgTable(
 export const projects = pgTable(
   "projects",
   {
-    id: uuid("id").primaryKey(),
+    id: uuid("id").primaryKey().defaultRandom(),
     name: varchar("name", { length: 255 }).notNull(),
     description: text("description"),
     status: varchar("status", { length: 50 }).notNull().default("active"), // 'active', 'archived', 'completed'
@@ -186,7 +150,7 @@ export const tasks = pgTable(
 export const comments = pgTable(
   "comments",
   {
-    id: uuid("id").primaryKey(),
+    id: uuid("id").primaryKey().defaultRandom(),
     content: text("content").notNull(),
     taskId: integer("task_id").references(() => tasks.id, {
       onDelete: "cascade",
