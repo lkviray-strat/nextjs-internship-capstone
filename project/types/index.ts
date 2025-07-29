@@ -8,7 +8,7 @@ import {
   users,
 } from "@/lib/db/schema";
 import { WithRelations } from "@/lib/utils";
-import { InferSelectModel } from "drizzle-orm";
+import { InferInsertModel, InferSelectModel } from "drizzle-orm";
 
 export type User = InferSelectModel<typeof users>;
 export type Teams = InferSelectModel<typeof teams>;
@@ -17,6 +17,14 @@ export type Comments = InferSelectModel<typeof comments>;
 export type Projects = InferSelectModel<typeof projects>;
 export type TeamMembers = InferSelectModel<typeof teamMembers>;
 export type ProjectTeams = InferSelectModel<typeof projectTeams>;
+
+export type UserRequest = InferInsertModel<typeof users>;
+export type TeamsRequest = InferInsertModel<typeof teams>;
+export type TasksRequest = InferInsertModel<typeof tasks>;
+export type CommentsRequest = InferInsertModel<typeof comments>;
+export type ProjectsRequest = InferInsertModel<typeof projects>;
+export type TeamMembersRequest = InferInsertModel<typeof teamMembers>;
+export type ProjectTeamsRequest = InferInsertModel<typeof projectTeams>;
 
 export type UserWithRelations = WithRelations<
   User,
