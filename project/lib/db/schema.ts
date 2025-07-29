@@ -1,6 +1,3 @@
-// TODO: Task 3.1 - Design database schema for users, projects, lists, and tasks
-// TODO: Task 3.3 - Set up Drizzle ORM with type-safe schema definitions
-
 import {
   boolean,
   index,
