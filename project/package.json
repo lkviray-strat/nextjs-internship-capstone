@@ -19,7 +19,10 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "d:gen": "drizzle-kit generate",
+    "d:push": "drizzle-kit push",
+    "d:migrate": "drizzle-kit migrate"
   },
   "dependencies": {
     "@clerk/nextjs": "^6.25.5",
