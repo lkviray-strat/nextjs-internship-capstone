@@ -1,0 +1,13 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1753788761470,
+      "tag": "20250729113241_flashy_wolf_cub",
+      "breakpoints": true
+    }
+  ]
+}
