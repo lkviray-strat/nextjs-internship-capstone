@@ -15,6 +15,7 @@ import {
 } from "drizzle-orm/pg-core";
 import { pgTable } from "drizzle-orm/pg-core/table";
 
+// Users
 export const users = pgTable(
   "users",
   {
@@ -48,67 +49,6 @@ export const teams = pgTable(
   (table) => [
     index("teams_name_idx").on(table.name),
     index("teams_leader_idx").on(table.leaderId),
-  ]
-);
-
-// Team Members (junction table for users and teams)
-export const teamMembers = pgTable(
-  "team_members",
-  {
-    userId: uuid("user_id").references(() => users.id, { onDelete: "cascade" }),
-    teamId: uuid("team_id").references(() => teams.id, { onDelete: "cascade" }),
-    role: varchar("role", { length: 50 }).notNull().default("member"), // 'member', 'admin', 'owner'
-    createdAt: timestamp("created_at").defaultNow().notNull(),
-  },
-  (table) => [
-    primaryKey({ columns: [table.userId, table.teamId] }),
-    index("team_members_user_idx").on(table.userId),
-    index("team_members_team_idx").on(table.teamId),
-    index("team_members_role_idx").on(table.role),
-  ]
-);
-
-// Projects
-export const projects = pgTable(
-  "projects",
-  {
-    id: uuid("id").primaryKey().defaultRandom(),
-    name: varchar("name", { length: 255 }).notNull(),
-    description: text("description"),
-    status: varchar("status", { length: 50 }).notNull().default("active"), // 'active', 'archived', 'completed'
-    startDate: timestamp("start_date"),
-    endDate: timestamp("end_date"),
-    createdAt: timestamp("created_at").defaultNow().notNull(),
-    updatedAt: timestamp("updated_at").defaultNow().notNull(),
-    createdById: uuid("created_by").references(() => users.id, {
-      onDelete: "set null",
-    }), // User who created
-  },
-  (table) => [
-    index("projects_status_idx").on(table.status),
-    index("projects_date_range_idx").on(table.startDate, table.endDate),
-    index("projects_creator_idx").on(table.createdById),
-  ]
-);
-
-// Project Teams (junction table for projects and teams)
-export const projectTeams = pgTable(
-  "project_teams",
-  {
-    projectId: uuid("project_id").references(() => projects.id, {
-      onDelete: "cascade",
-    }),
-    teamId: uuid("team_id").references(() => teams.id, { onDelete: "cascade" }),
-    role: varchar("role", { length: 50 }).notNull().default("contributor"), // 'owner', 'contributor', 'viewer'
-    isCreator: boolean("is_creator").notNull().default(false), // Marks the creating team
-    createdAt: timestamp("created_at").defaultNow().notNull(),
-  },
-  (table) => [
-    primaryKey({ columns: [table.projectId, table.teamId] }),
-    index("project_teams_project_idx").on(table.projectId),
-    index("project_teams_team_idx").on(table.teamId),
-    index("project_teams_role_idx").on(table.role),
-    index("project_teams_creator_idx").on(table.isCreator),
   ]
 );
 
@@ -165,6 +105,67 @@ export const comments = pgTable(
     index("comments_task_idx").on(table.taskId),
     index("comments_author_idx").on(table.authorId),
     index("comments_created_idx").on(table.createdAt),
+  ]
+);
+
+// Projects
+export const projects = pgTable(
+  "projects",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    name: varchar("name", { length: 255 }).notNull(),
+    description: text("description"),
+    status: varchar("status", { length: 50 }).notNull().default("active"), // 'active', 'archived', 'completed'
+    startDate: timestamp("start_date"),
+    endDate: timestamp("end_date"),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    updatedAt: timestamp("updated_at").defaultNow().notNull(),
+    createdById: uuid("created_by").references(() => users.id, {
+      onDelete: "set null",
+    }), // User who created
+  },
+  (table) => [
+    index("projects_status_idx").on(table.status),
+    index("projects_date_range_idx").on(table.startDate, table.endDate),
+    index("projects_creator_idx").on(table.createdById),
+  ]
+);
+
+// Team Members (junction table for users and teams)
+export const teamMembers = pgTable(
+  "team_members",
+  {
+    userId: uuid("user_id").references(() => users.id, { onDelete: "cascade" }),
+    teamId: uuid("team_id").references(() => teams.id, { onDelete: "cascade" }),
+    role: varchar("role", { length: 50 }).notNull().default("member"), // 'member', 'admin', 'owner'
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+  },
+  (table) => [
+    primaryKey({ columns: [table.userId, table.teamId] }),
+    index("team_members_user_idx").on(table.userId),
+    index("team_members_team_idx").on(table.teamId),
+    index("team_members_role_idx").on(table.role),
+  ]
+);
+
+// Project Teams (junction table for projects and teams)
+export const projectTeams = pgTable(
+  "project_teams",
+  {
+    projectId: uuid("project_id").references(() => projects.id, {
+      onDelete: "cascade",
+    }),
+    teamId: uuid("team_id").references(() => teams.id, { onDelete: "cascade" }),
+    role: varchar("role", { length: 50 }).notNull().default("contributor"), // 'owner', 'contributor', 'viewer'
+    isCreator: boolean("is_creator").notNull().default(false), // Marks the creating team
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+  },
+  (table) => [
+    primaryKey({ columns: [table.projectId, table.teamId] }),
+    index("project_teams_project_idx").on(table.projectId),
+    index("project_teams_team_idx").on(table.teamId),
+    index("project_teams_role_idx").on(table.role),
+    index("project_teams_creator_idx").on(table.isCreator),
   ]
 );
 
