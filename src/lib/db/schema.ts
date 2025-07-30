@@ -3,7 +3,6 @@ import {
   index,
   integer,
   primaryKey,
-  serial,
   text,
   timestamp,
   uuid,
@@ -52,7 +51,7 @@ export const teams = pgTable(
 export const tasks = pgTable(
   "tasks",
   {
-    id: serial("id").primaryKey(),
+    id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
     title: varchar("title", { length: 255 }).notNull(),
     description: text("description"),
     projectId: uuid("project_id").references(() => projects.id, {
