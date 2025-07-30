@@ -2,7 +2,6 @@ import {
   boolean,
   index,
   integer,
-  pgEnum,
   primaryKey,
   text,
   timestamp,
@@ -10,36 +9,14 @@ import {
   varchar,
 } from "drizzle-orm/pg-core";
 import { pgTable } from "drizzle-orm/pg-core/table";
+import {
+  projectStatusEnum,
+  taskPriorityEnum,
+  taskStatusEnum,
+  teamMemberRoleEnum,
+} from "./enums";
 
-export const taskStatusEnum = pgEnum("task_status", [
-  "todo",
-  "in_progress",
-  "in_review",
-  "done",
-  "backlog",
-]);
-
-export const taskPriorityEnum = pgEnum("task_priority", [
-  "low",
-  "medium",
-  "high",
-  "urgent",
-]);
-
-export const projectStatusEnum = pgEnum("project_status", [
-  "planning",
-  "active",
-  "archived",
-  "completed",
-  "on_hold",
-]);
-
-export const teamMemberRoleEnum = pgEnum("team_member_role", [
-  "viewer",
-  "member",
-  "admin",
-  "owner",
-]);
+export * from "./enums";
 
 // Users
 export const users = pgTable(
@@ -240,5 +217,3 @@ export const projectTeams = pgTable(
     index("project_teams_creator_idx").on(table.isCreator),
   ]
 );
-
-// Placeholder exports to prevent import errors
