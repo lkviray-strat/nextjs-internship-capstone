@@ -2,6 +2,7 @@ import {
   boolean,
   index,
   integer,
+  pgEnum,
   primaryKey,
   text,
   timestamp,
@@ -9,6 +10,36 @@ import {
   varchar,
 } from "drizzle-orm/pg-core";
 import { pgTable } from "drizzle-orm/pg-core/table";
+
+export const taskStatusEnum = pgEnum("task_status", [
+  "todo",
+  "in_progress",
+  "in_review",
+  "done",
+  "backlog",
+]);
+
+export const taskPriorityEnum = pgEnum("task_priority", [
+  "low",
+  "medium",
+  "high",
+  "urgent",
+]);
+
+export const projectStatusEnum = pgEnum("project_status", [
+  "planning",
+  "active",
+  "archived",
+  "completed",
+  "on_hold",
+]);
+
+export const teamMemberRoleEnum = pgEnum("team_member_role", [
+  "viewer",
+  "member",
+  "admin",
+  "owner",
+]);
 
 // Users
 export const users = pgTable(
@@ -57,8 +88,8 @@ export const tasks = pgTable(
     projectId: uuid("project_id").references(() => projects.id, {
       onDelete: "cascade",
     }),
-    status: varchar("status", { length: 50 }).notNull().default("todo"),
-    priority: varchar("priority", { length: 20 }).notNull().default("medium"),
+    status: taskStatusEnum("status").notNull().default("backlog"),
+    priority: taskPriorityEnum("priority").notNull().default("low"),
     dueDate: timestamp("due_date"),
     estimatedHours: integer("estimated_hours"),
     assigneeId: uuid("assignee_id").references(() => users.id, {
@@ -67,6 +98,13 @@ export const tasks = pgTable(
     createdById: uuid("created_by_id").references(() => users.id, {
       onDelete: "set null",
     }),
+    order: integer("order").notNull().default(0),
+    kanbanColumnId: uuid("kanban_column_id").references(
+      () => kanbanColumns.id,
+      {
+        onDelete: "set null",
+      }
+    ),
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at").defaultNow().notNull(),
   },
@@ -78,6 +116,8 @@ export const tasks = pgTable(
     index("tasks_due_date_idx").on(table.dueDate),
     index("tasks_creator_idx").on(table.createdById),
     index("tasks_status_priority_idx").on(table.status, table.priority),
+    index("tasks_kanban_column_idx").on(table.kanbanColumnId),
+    index("tasks_order_idx").on(table.order),
   ]
 );
 
@@ -110,11 +150,12 @@ export const projects = pgTable(
     id: uuid("id").primaryKey().defaultRandom(),
     name: varchar("name", { length: 255 }).notNull(),
     description: text("description"),
-    status: varchar("status", { length: 50 }).notNull().default("active"), // 'active', 'archived', 'completed'
+    status: projectStatusEnum("status").notNull().default("planning"),
     startDate: timestamp("start_date"),
     endDate: timestamp("end_date"),
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at").defaultNow().notNull(),
+    defaultBoardId: uuid("default_board_id").notNull(),
     createdById: uuid("created_by").references(() => users.id, {
       onDelete: "set null",
     }), // User who created
@@ -123,8 +164,46 @@ export const projects = pgTable(
     index("projects_status_idx").on(table.status),
     index("projects_date_range_idx").on(table.startDate, table.endDate),
     index("projects_creator_idx").on(table.createdById),
+    index("projects_default_board_idx").on(table.defaultBoardId),
   ]
 );
+
+// Kanban Boards
+export const kanbanBoards = pgTable(
+  "kanban_boards",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    name: varchar("name", { length: 100 }).notNull(),
+    projectId: uuid("project_id").references(() => projects.id, {
+      onDelete: "cascade",
+    }),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    updatedAt: timestamp("updated_at").defaultNow().notNull(),
+  },
+  (table) => [index("kanban_boards_project_idx").on(table.projectId)]
+);
+
+// Kanban Columns
+export const kanbanColumns = pgTable(
+  "kanban_columns",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    name: varchar("name", { length: 100 }).notNull(),
+    boardId: uuid("board_id").references(() => kanbanBoards.id, {
+      onDelete: "cascade",
+    }),
+    order: integer("order").notNull(),
+    color: varchar("color", { length: 20 }),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    updatedAt: timestamp("updated_at").defaultNow().notNull(),
+  },
+  (table) => [
+    index("kanban_columns_board_idx").on(table.boardId),
+    index("kanban_columns_order_idx").on(table.order),
+  ]
+);
+
+// ==================================================================
 
 // Team Members (junction table for users and teams)
 export const teamMembers = pgTable(
@@ -132,7 +211,7 @@ export const teamMembers = pgTable(
   {
     userId: uuid("user_id").references(() => users.id, { onDelete: "cascade" }),
     teamId: uuid("team_id").references(() => teams.id, { onDelete: "cascade" }),
-    role: varchar("role", { length: 50 }).notNull().default("member"), // 'member', 'admin', 'owner'
+    role: teamMemberRoleEnum("role").notNull().default("member"),
     createdAt: timestamp("created_at").defaultNow().notNull(),
   },
   (table) => [
@@ -151,7 +230,6 @@ export const projectTeams = pgTable(
       onDelete: "cascade",
     }),
     teamId: uuid("team_id").references(() => teams.id, { onDelete: "cascade" }),
-    role: varchar("role", { length: 50 }).notNull().default("contributor"), // 'owner', 'contributor', 'viewer'
     isCreator: boolean("is_creator").notNull().default(false), // Marks the creating team
     createdAt: timestamp("created_at").defaultNow().notNull(),
   },
@@ -159,7 +237,6 @@ export const projectTeams = pgTable(
     primaryKey({ columns: [table.projectId, table.teamId] }),
     index("project_teams_project_idx").on(table.projectId),
     index("project_teams_team_idx").on(table.teamId),
-    index("project_teams_role_idx").on(table.role),
     index("project_teams_creator_idx").on(table.isCreator),
   ]
 );

@@ -1,6 +1,8 @@
 import { relations } from "drizzle-orm";
 import {
   comments,
+  kanbanBoards,
+  kanbanColumns,
   projects,
   projectTeams,
   tasks,
@@ -44,6 +46,10 @@ export const tasksRelations = relations(tasks, ({ many, one }) => ({
     relationName: "task_creator",
   }),
   comments: many(comments),
+  kanbanColumn: one(kanbanColumns, {
+    fields: [tasks.kanbanColumnId],
+    references: [kanbanColumns.id],
+  }),
 }));
 
 export const projectsRelations = relations(projects, ({ many, one }) => ({
@@ -53,6 +59,11 @@ export const projectsRelations = relations(projects, ({ many, one }) => ({
     fields: [projects.createdById],
     references: [users.id],
     relationName: "project_creator",
+  }),
+  kanbanBoards: many(kanbanBoards),
+  defaultBoard: one(kanbanBoards, {
+    fields: [projects.defaultBoardId],
+    references: [kanbanBoards.id],
   }),
 }));
 
