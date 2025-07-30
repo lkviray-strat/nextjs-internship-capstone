@@ -22,7 +22,7 @@ export * from "./enums";
 export const users = pgTable(
   "users",
   {
-    id: uuid("id").primaryKey().defaultRandom(),
+    id: varchar("id").primaryKey(),
     email: varchar("email", { length: 255 }).unique().notNull(),
     firstName: varchar("first_name", { length: 100 }),
     lastName: varchar("last_name", { length: 100 }),
@@ -43,7 +43,7 @@ export const teams = pgTable(
     id: uuid("id").primaryKey().defaultRandom(),
     name: varchar("name", { length: 100 }).notNull(),
     description: text("description"),
-    leaderId: uuid("leader_id").references(() => users.id, {
+    leaderId: varchar("leader_id").references(() => users.id, {
       onDelete: "set null",
     }), // Team leader
     createdAt: timestamp("created_at").defaultNow().notNull(),
@@ -69,10 +69,10 @@ export const tasks = pgTable(
     priority: taskPriorityEnum("priority").notNull().default("low"),
     dueDate: timestamp("due_date"),
     estimatedHours: integer("estimated_hours"),
-    assigneeId: uuid("assignee_id").references(() => users.id, {
+    assigneeId: varchar("assignee_id").references(() => users.id, {
       onDelete: "set null",
     }),
-    createdById: uuid("created_by_id").references(() => users.id, {
+    createdById: varchar("created_by_id").references(() => users.id, {
       onDelete: "set null",
     }),
     order: integer("order").notNull().default(0),
@@ -107,7 +107,7 @@ export const comments = pgTable(
     taskId: integer("task_id").references(() => tasks.id, {
       onDelete: "cascade",
     }),
-    authorId: uuid("author_id").references(() => users.id, {
+    authorId: varchar("author_id").references(() => users.id, {
       onDelete: "set null",
     }),
     createdAt: timestamp("created_at").defaultNow().notNull(),
@@ -133,7 +133,7 @@ export const projects = pgTable(
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at").defaultNow().notNull(),
     defaultBoardId: uuid("default_board_id").notNull(),
-    createdById: uuid("created_by").references(() => users.id, {
+    createdById: varchar("created_by").references(() => users.id, {
       onDelete: "set null",
     }), // User who created
   },
@@ -186,7 +186,9 @@ export const kanbanColumns = pgTable(
 export const teamMembers = pgTable(
   "team_members",
   {
-    userId: uuid("user_id").references(() => users.id, { onDelete: "cascade" }),
+    userId: varchar("user_id").references(() => users.id, {
+      onDelete: "cascade",
+    }),
     teamId: uuid("team_id").references(() => teams.id, { onDelete: "cascade" }),
     role: teamMemberRoleEnum("role").notNull().default("member"),
     createdAt: timestamp("created_at").defaultNow().notNull(),
