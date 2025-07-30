@@ -1,5 +1,5 @@
 {
-  "id": "74bd4f48-56df-47eb-910c-9efa025f421b",
+  "id": "495f5fe8-c36f-48ab-9aba-bc71709a8860",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -29,7 +29,7 @@
         },
         "author_id": {
           "name": "author_id",
-          "type": "uuid",
+          "type": "varchar",
           "primaryKey": false,
           "notNull": false
         },
@@ -493,7 +493,7 @@
         },
         "created_by": {
           "name": "created_by",
-          "type": "uuid",
+          "type": "varchar",
           "primaryKey": false,
           "notNull": false
         }
@@ -656,13 +656,13 @@
         },
         "assignee_id": {
           "name": "assignee_id",
-          "type": "uuid",
+          "type": "varchar",
           "primaryKey": false,
           "notNull": false
         },
         "created_by_id": {
           "name": "created_by_id",
-          "type": "uuid",
+          "type": "varchar",
           "primaryKey": false,
           "notNull": false
         },
@@ -903,7 +903,7 @@
       "columns": {
         "user_id": {
           "name": "user_id",
-          "type": "uuid",
+          "type": "varchar",
           "primaryKey": false,
           "notNull": false
         },
@@ -1043,7 +1043,7 @@
         },
         "leader_id": {
           "name": "leader_id",
-          "type": "uuid",
+          "type": "varchar",
           "primaryKey": false,
           "notNull": false
         },
@@ -1121,10 +1121,9 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "uuid",
+          "type": "varchar",
           "primaryKey": true,
-          "notNull": true,
-          "default": "gen_random_uuid()"
+          "notNull": true
         },
         "email": {
           "name": "email",

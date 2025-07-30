@@ -6,7 +6,7 @@ CREATE TABLE "comments" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"content" text NOT NULL,
 	"task_id" integer,
-	"author_id" uuid,
+	"author_id" varchar,
 	"created_at" timestamp DEFAULT now() NOT NULL,
 	"updated_at" timestamp DEFAULT now() NOT NULL
 );
@@ -47,7 +47,7 @@ CREATE TABLE "projects" (
 	"created_at" timestamp DEFAULT now() NOT NULL,
 	"updated_at" timestamp DEFAULT now() NOT NULL,
 	"default_board_id" uuid NOT NULL,
-	"created_by" uuid
+	"created_by" varchar
 );
 --> statement-breakpoint
 CREATE TABLE "tasks" (
@@ -59,8 +59,8 @@ CREATE TABLE "tasks" (
 	"priority" "task_priority" DEFAULT 'low' NOT NULL,
 	"due_date" timestamp,
 	"estimated_hours" integer,
-	"assignee_id" uuid,
-	"created_by_id" uuid,
+	"assignee_id" varchar,
+	"created_by_id" varchar,
 	"order" integer DEFAULT 0 NOT NULL,
 	"kanban_column_id" uuid,
 	"created_at" timestamp DEFAULT now() NOT NULL,
@@ -68,7 +68,7 @@ CREATE TABLE "tasks" (
 );
 --> statement-breakpoint
 CREATE TABLE "team_members" (
-	"user_id" uuid,
+	"user_id" varchar,
 	"team_id" uuid,
 	"role" "team_member_role" DEFAULT 'member' NOT NULL,
 	"created_at" timestamp DEFAULT now() NOT NULL,
@@ -79,13 +79,13 @@ CREATE TABLE "teams" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"name" varchar(100) NOT NULL,
 	"description" text,
-	"leader_id" uuid,
+	"leader_id" varchar,
 	"created_at" timestamp DEFAULT now() NOT NULL,
 	"updated_at" timestamp DEFAULT now() NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE "users" (
-	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"id" varchar PRIMARY KEY NOT NULL,
 	"email" varchar(255) NOT NULL,
 	"first_name" varchar(100),
 	"last_name" varchar(100),
