@@ -67,6 +67,28 @@ export const projectsRelations = relations(projects, ({ many, one }) => ({
   }),
 }));
 
+export const kanbanBoardsRelations = relations(
+  kanbanBoards,
+  ({ many, one }) => ({
+    project: one(projects, {
+      fields: [kanbanBoards.projectId],
+      references: [projects.id],
+    }),
+    columns: many(kanbanColumns),
+  })
+);
+
+export const kanbanColumnsRelations = relations(
+  kanbanColumns,
+  ({ many, one }) => ({
+    board: one(kanbanBoards, {
+      fields: [kanbanColumns.boardId],
+      references: [kanbanBoards.id],
+    }),
+    tasks: many(tasks),
+  })
+);
+
 export const projectTeamsRelations = relations(projectTeams, ({ one }) => ({
   project: one(projects, {
     fields: [projectTeams.projectId],
