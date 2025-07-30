@@ -1,6 +1,6 @@
 {
-  "id": "647593d8-5a90-412c-a90d-69134ea2276c",
-  "prevId": "9a21bddf-c89a-43dc-9f3f-b91ddaf2c58c",
+  "id": "74bd4f48-56df-47eb-910c-9efa025f421b",
+  "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -129,6 +129,185 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
+    "public.kanban_boards": {
+      "name": "kanban_boards",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "project_id": {
+          "name": "project_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "kanban_boards_project_idx": {
+          "name": "kanban_boards_project_idx",
+          "columns": [
+            {
+              "expression": "project_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "kanban_boards_project_id_projects_id_fk": {
+          "name": "kanban_boards_project_id_projects_id_fk",
+          "tableFrom": "kanban_boards",
+          "tableTo": "projects",
+          "columnsFrom": [
+            "project_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.kanban_columns": {
+      "name": "kanban_columns",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "board_id": {
+          "name": "board_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "order": {
+          "name": "order",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "color": {
+          "name": "color",
+          "type": "varchar(20)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "kanban_columns_board_idx": {
+          "name": "kanban_columns_board_idx",
+          "columns": [
+            {
+              "expression": "board_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "kanban_columns_order_idx": {
+          "name": "kanban_columns_order_idx",
+          "columns": [
+            {
+              "expression": "order",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "kanban_columns_board_id_kanban_boards_id_fk": {
+          "name": "kanban_columns_board_id_kanban_boards_id_fk",
+          "tableFrom": "kanban_columns",
+          "tableTo": "kanban_boards",
+          "columnsFrom": [
+            "board_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
     "public.project_teams": {
       "name": "project_teams",
       "schema": "",
@@ -144,13 +323,6 @@
           "type": "uuid",
           "primaryKey": false,
           "notNull": false
-        },
-        "role": {
-          "name": "role",
-          "type": "varchar(50)",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "'contributor'"
         },
         "is_creator": {
           "name": "is_creator",
@@ -188,21 +360,6 @@
           "columns": [
             {
               "expression": "team_id",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": false,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
-        },
-        "project_teams_role_idx": {
-          "name": "project_teams_role_idx",
-          "columns": [
-            {
-              "expression": "role",
               "isExpression": false,
               "asc": true,
               "nulls": "last"
@@ -296,10 +453,11 @@
         },
         "status": {
           "name": "status",
-          "type": "varchar(50)",
+          "type": "project_status",
+          "typeSchema": "public",
           "primaryKey": false,
           "notNull": true,
-          "default": "'active'"
+          "default": "'planning'"
         },
         "start_date": {
           "name": "start_date",
@@ -326,6 +484,12 @@
           "primaryKey": false,
           "notNull": true,
           "default": "now()"
+        },
+        "default_board_id": {
+          "name": "default_board_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
         },
         "created_by": {
           "name": "created_by",
@@ -385,6 +549,21 @@
           "concurrently": false,
           "method": "btree",
           "with": {}
+        },
+        "projects_default_board_idx": {
+          "name": "projects_default_board_idx",
+          "columns": [
+            {
+              "expression": "default_board_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
         }
       },
       "foreignKeys": {
@@ -414,9 +593,20 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "serial",
+          "type": "integer",
           "primaryKey": true,
-          "notNull": true
+          "notNull": true,
+          "identity": {
+            "type": "always",
+            "name": "tasks_id_seq",
+            "schema": "public",
+            "increment": "1",
+            "startWith": "1",
+            "minValue": "1",
+            "maxValue": "2147483647",
+            "cache": "1",
+            "cycle": false
+          }
         },
         "title": {
           "name": "title",
@@ -438,17 +628,19 @@
         },
         "status": {
           "name": "status",
-          "type": "varchar(50)",
+          "type": "task_status",
+          "typeSchema": "public",
           "primaryKey": false,
           "notNull": true,
-          "default": "'todo'"
+          "default": "'backlog'"
         },
         "priority": {
           "name": "priority",
-          "type": "varchar(20)",
+          "type": "task_priority",
+          "typeSchema": "public",
           "primaryKey": false,
           "notNull": true,
-          "default": "'medium'"
+          "default": "'low'"
         },
         "due_date": {
           "name": "due_date",
@@ -470,6 +662,19 @@
         },
         "created_by_id": {
           "name": "created_by_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "order": {
+          "name": "order",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "kanban_column_id": {
+          "name": "kanban_column_id",
           "type": "uuid",
           "primaryKey": false,
           "notNull": false
@@ -600,6 +805,36 @@
           "concurrently": false,
           "method": "btree",
           "with": {}
+        },
+        "tasks_kanban_column_idx": {
+          "name": "tasks_kanban_column_idx",
+          "columns": [
+            {
+              "expression": "kanban_column_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "tasks_order_idx": {
+          "name": "tasks_order_idx",
+          "columns": [
+            {
+              "expression": "order",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
         }
       },
       "foreignKeys": {
@@ -641,6 +876,19 @@
           ],
           "onDelete": "set null",
           "onUpdate": "no action"
+        },
+        "tasks_kanban_column_id_kanban_columns_id_fk": {
+          "name": "tasks_kanban_column_id_kanban_columns_id_fk",
+          "tableFrom": "tasks",
+          "tableTo": "kanban_columns",
+          "columnsFrom": [
+            "kanban_column_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "set null",
+          "onUpdate": "no action"
         }
       },
       "compositePrimaryKeys": {},
@@ -667,7 +915,8 @@
         },
         "role": {
           "name": "role",
-          "type": "varchar(50)",
+          "type": "team_member_role",
+          "typeSchema": "public",
           "primaryKey": false,
           "notNull": true,
           "default": "'member'"
@@ -970,7 +1219,50 @@
       "isRLSEnabled": false
     }
   },
-  "enums": {},
+  "enums": {
+    "public.project_status": {
+      "name": "project_status",
+      "schema": "public",
+      "values": [
+        "planning",
+        "active",
+        "archived",
+        "completed",
+        "on_hold"
+      ]
+    },
+    "public.task_priority": {
+      "name": "task_priority",
+      "schema": "public",
+      "values": [
+        "low",
+        "medium",
+        "high",
+        "urgent"
+      ]
+    },
+    "public.task_status": {
+      "name": "task_status",
+      "schema": "public",
+      "values": [
+        "todo",
+        "in_progress",
+        "in_review",
+        "done",
+        "backlog"
+      ]
+    },
+    "public.team_member_role": {
+      "name": "team_member_role",
+      "schema": "public",
+      "values": [
+        "viewer",
+        "member",
+        "admin",
+        "owner"
+      ]
+    }
+  },
   "schemas": {},
   "sequences": {},
   "roles": {},
