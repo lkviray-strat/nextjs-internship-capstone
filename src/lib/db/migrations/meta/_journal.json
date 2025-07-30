@@ -5,22 +5,8 @@
     {
       "idx": 0,
       "version": "7",
-      "when": 1753788761470,
-      "tag": "20250729113241_flashy_wolf_cub",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "7",
-      "when": 1753792736737,
-      "tag": "20250729123856_lyrical_chronomancer",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "7",
-      "when": 1753793771011,
-      "tag": "20250729125611_normal_union_jack",
+      "when": 1753859610548,
+      "tag": "20250730071330_classy_justin_hammer",
       "breakpoints": true
     }
   ]
