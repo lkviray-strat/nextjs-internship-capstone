@@ -22,7 +22,8 @@
     "lint": "next lint",
     "d:gen": "drizzle-kit generate",
     "d:push": "drizzle-kit push",
-    "d:migrate": "drizzle-kit migrate"
+    "d:migrate": "drizzle-kit migrate",
+    "d:seed": "tsx src/lib/db/seed.ts"
   },
   "dependencies": {
     "@clerk/nextjs": "^6.25.5",
