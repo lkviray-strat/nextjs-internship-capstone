@@ -1,41 +1,310 @@
-// TODO: Task 3.6 - Set up data validation with Zod schemas
+import z from "zod";
+import {
+  PROJECT_STATUS_ENUM,
+  TASK_PRIORITY_ENUM,
+  TASK_STATUS_ENUM,
+  TEAM_MEMBER_ROLE_ENUM,
+} from "./db/enums";
 
-/*
-TODO: Implementation Notes for Interns:
+const errorMessages = {
+  required: (field: string) => `${field} is required`,
+  numMinimum: (min: number) => `Minimum value is ${min}`,
+  numMaximum: (max: number) => `Maximum value is ${max}`,
+  minLength: (min: number) => `Minimum length is ${min} characters`,
+  maxLength: (max: number) => `Maximum length is ${max} characters`,
+  invalidEmail: "Invalid email address",
+  invalidUrl: "Invalid URL format",
+};
 
-1. Install Zod: pnpm add zod
-2. Create validation schemas for all forms and API endpoints
-3. Add proper error messages
-4. Set up client and server-side validation
+// Base schema for common fields
+export const clerkUsersSchema = z.object({
+  id: z.string().optional(),
+  emailAddresses: z
+    .array(
+      z.object({
+        email: z
+          .email()
+          .min(1, errorMessages.required("Email"))
+          .max(255, errorMessages.maxLength(255)),
+      })
+    )
+    .min(1, errorMessages.required("Email addresses")),
+  firstName: z
+    .string()
+    .min(1, errorMessages.required("First name"))
+    .max(100, errorMessages.maxLength(100)),
+  lastName: z
+    .string()
+    .min(1, errorMessages.required("Last name"))
+    .max(100, errorMessages.maxLength(100)),
+  profileImageUrl: z
+    .url(errorMessages.invalidUrl)
+    .max(512, errorMessages.maxLength(512))
+    .optional()
+    .refine(
+      async (url) => {
+        if (!url) return true;
+        try {
+          const res = await fetch(url, { method: "HEAD" });
+          const contentType = res.headers.get("content-type");
+          return !!contentType && contentType.startsWith("image/");
+        } catch {
+          return false;
+        }
+      },
+      { message: "Profile image URL must point to an image." }
+    ),
+  createdAt: z.date().optional().nullable(),
+  updatedAt: z.date().optional().nullable(),
+});
 
-Example schemas needed:
-- Project creation/update
-- Task creation/update
-- User profile update
-- List/column management
-- Comment creation
-
-Example structure:
-import { z } from 'zod'
-
-export const projectSchema = z.object({
-  name: z.string().min(1, 'Name is required').max(100, 'Name too long'),
-  description: z.string().max(500, 'Description too long').optional(),
-  dueDate: z.date().min(new Date(), 'Due date must be in future').optional(),
-})
+export const teamsSchema = z.object({
+  id: z.uuid(),
+  name: z
+    .string()
+    .min(1, errorMessages.required("Team name"))
+    .max(100, errorMessages.maxLength(100)),
+  description: z.string().max(500, errorMessages.maxLength(500)).optional(),
+  leaderId: z.string(),
+  createdAt: z.date().optional().nullable(),
+  updatedAt: z.date().optional().nullable(),
+});
 
 export const taskSchema = z.object({
-  title: z.string().min(1, 'Title is required').max(200, 'Title too long'),
-  description: z.string().max(1000, 'Description too long').optional(),
-  priority: z.enum(['low', 'medium', 'high']),
+  id: z.uuid(),
+  title: z
+    .string()
+    .min(1, errorMessages.required("Title"))
+    .max(255, errorMessages.maxLength(255)),
+  description: z.string().max(4000, errorMessages.maxLength(4000)).optional(),
+  projectId: z.uuid(),
+  status: z.enum(TASK_STATUS_ENUM),
+  priority: z.enum(TASK_PRIORITY_ENUM).optional(),
   dueDate: z.date().optional(),
-  assigneeId: z.string().uuid().optional(),
-})
-*/
+  estimatedHours: z
+    .number()
+    .min(0, errorMessages.numMinimum(0))
+    .max(1000, errorMessages.numMaximum(1000))
+    .optional(),
+  assigneeId: z.string(),
+  createdById: z.string(),
+  order: z
+    .number()
+    .min(0, errorMessages.numMinimum(0))
+    .max(1000, errorMessages.numMaximum(1000))
+    .optional(),
+  kanbanColumnId: z.uuid(),
+  createdAt: z.date().optional().nullable(),
+  updatedAt: z.date().optional().nullable(),
+});
 
-// Placeholder exports to prevent import errors
-export const projectSchema = "TODO: Implement project validation schema"
-export const taskSchema = "TODO: Implement task validation schema"
-export const userSchema = "TODO: Implement user validation schema"
-export const listSchema = "TODO: Implement list validation schema"
-export const commentSchema = "TODO: Implement comment validation schema"
+export const commentsSchema = z.object({
+  id: z.uuid(),
+  content: z
+    .string()
+    .min(1, errorMessages.required("Comment"))
+    .max(1500, errorMessages.maxLength(1500)),
+  taskId: z.number().optional(),
+  authorId: z.string(),
+  createdAt: z.date().optional().nullable(),
+  updatedAt: z.date().optional().nullable(),
+});
+
+export const projectsSchema = z.object({
+  id: z.uuid(),
+  name: z
+    .string()
+    .min(1, errorMessages.required("Project name"))
+    .max(100, errorMessages.maxLength(100)),
+  description: z.string().max(500, errorMessages.maxLength(500)).optional(),
+  status: z.enum(PROJECT_STATUS_ENUM),
+  startDate: z.date(),
+  endDate: z.date(),
+  defaultBoardId: z.uuid(),
+  createdById: z.string(),
+  createdAt: z.date().optional().nullable(),
+  updatedAt: z.date().optional().nullable(),
+});
+
+export const kanbanBoardsSchema = z.object({
+  id: z.uuid(),
+  name: z
+    .string()
+    .min(1, errorMessages.required("Board name"))
+    .max(100, errorMessages.maxLength(100)),
+  projectId: z.uuid(),
+  createdAt: z.date().optional().nullable(),
+  updatedAt: z.date().optional().nullable(),
+});
+
+export const kanbanColumnsSchema = z.object({
+  id: z.uuid(),
+  name: z
+    .string()
+    .min(1, errorMessages.required("Column name"))
+    .max(100, errorMessages.maxLength(100)),
+  order: z.number().min(0, errorMessages.numMinimum(0)),
+  color: z.string().max(20, errorMessages.maxLength(20)),
+  createdAt: z.date().optional().nullable(),
+  updatedAt: z.date().optional().nullable(),
+});
+
+export const teamMembersSchema = z.object({
+  userId: z.string(),
+  teamId: z.uuid(),
+  role: z.enum(TEAM_MEMBER_ROLE_ENUM).optional(),
+  createdAt: z.date().optional().nullable(),
+});
+
+export const projectTeamsSchema = z.object({
+  projectId: z.uuid(),
+  teamId: z.uuid(),
+  isCreator: z.boolean().optional(),
+  createdAt: z.date().optional().nullable(),
+});
+
+// Schemas for insert operations
+export const createTeamRequestSchema = teamsSchema.omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const createTaskRequestSchema = taskSchema.omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const createCommentRequestSchema = commentsSchema.omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const createProjectRequestSchema = projectsSchema.omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const createKanbanBoardsRequestSchema = kanbanBoardsSchema.omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const createKanbanColumnRequestSchema = kanbanColumnsSchema.omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const createTeamMemberRequestSchema = teamMembersSchema.omit({
+  createdAt: true,
+});
+
+export const createProjectTeamRequestSchema = projectTeamsSchema.omit({
+  createdAt: true,
+});
+
+// Schemas for update operations
+export const updateTeamRequestSchema = teamsSchema.partial().omit({
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const updateTaskRequestSchema = taskSchema.partial().omit({
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const updateCommentRequestSchema = commentsSchema.partial().omit({
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const updateProjectRequestSchema = projectsSchema.partial().omit({
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const updateKanbanBoardsRequestSchema = kanbanBoardsSchema
+  .partial()
+  .omit({
+    createdAt: true,
+    updatedAt: true,
+  });
+
+export const updateKanbanColumnRequestSchema = kanbanColumnsSchema
+  .partial()
+  .omit({
+    createdAt: true,
+    updatedAt: true,
+  });
+
+export const updateTeamMemberRequestSchema = teamMembersSchema.partial().omit({
+  createdAt: true,
+});
+
+export const updateProjectTeamRequestSchema = projectTeamsSchema
+  .partial()
+  .omit({
+    createdAt: true,
+  });
+
+//  Schemas for response operations
+export const userResponseSchema = clerkUsersSchema.extend({
+  teamMembers: z.array(teamMembersSchema).optional().nullable(),
+  ledTeams: z.array(teamsSchema).optional().nullable(),
+  assignedTasks: z.array(taskSchema).optional().nullable(),
+  createdTasks: z.array(taskSchema).optional().nullable(),
+  comments: z.array(commentsSchema).optional().nullable(),
+});
+
+export const teamResponseSchema = teamsSchema.extend({
+  members: z.array(teamMembersSchema).optional().nullable(),
+  projects: z.array(projectTeamsSchema).optional().nullable(),
+  leader: clerkUsersSchema.optional().nullable(),
+});
+
+export const taskResponseSchema = taskSchema.extend({
+  project: projectsSchema.optional().nullable(),
+  assignee: clerkUsersSchema.optional().nullable(),
+  createdBy: clerkUsersSchema.optional().nullable(),
+  comments: z.array(commentsSchema).optional().nullable(),
+  kanbanColumn: kanbanColumnsSchema.optional().nullable(),
+});
+
+export const commentsResponseSchema = commentsSchema.extend({
+  task: taskSchema.optional().nullable(),
+  author: clerkUsersSchema.optional().nullable(),
+});
+
+export const projectResponseSchema = projectsSchema.extend({
+  teams: z.array(projectTeamsSchema).optional().nullable(),
+  tasks: z.array(taskSchema).optional().nullable(),
+  createdBy: clerkUsersSchema.optional().nullable(),
+  kanbanBoardss: z.array(kanbanBoardsSchema).optional().nullable(),
+  defaultBoard: kanbanBoardsSchema.optional().nullable(),
+});
+
+export const kanbanBoardsResponseSchema = kanbanBoardsSchema.extend({
+  project: projectsSchema.optional().nullable(),
+  columns: z.array(kanbanColumnsSchema).optional().nullable(),
+});
+
+export const kanbanColumnsResponseSchema = kanbanColumnsSchema.extend({
+  board: kanbanBoardsResponseSchema.optional().nullable(),
+  tasks: z.array(taskSchema).optional().nullable(),
+});
+
+export const teamMembersResponseSchema = teamMembersSchema.extend({
+  user: clerkUsersSchema.optional().nullable(),
+  team: teamsSchema.optional().nullable(),
+});
+
+export const projectTeamsResponseSchema = projectTeamsSchema.extend({
+  project: projectsSchema.optional().nullable(),
+  team: teamsSchema.optional().nullable(),
+});
