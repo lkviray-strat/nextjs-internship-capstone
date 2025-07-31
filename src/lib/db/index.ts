@@ -3,20 +3,16 @@ import { neon } from "@neondatabase/serverless";
 import { drizzle as drizzleNeon } from "drizzle-orm/neon-http";
 import { drizzle as drizzlePg } from "drizzle-orm/node-postgres";
 import { Pool } from "pg";
+import * as schema from "./schema";
 
 export const POSTGRES_DATABASE_URL = `postgres://${process.env.POSTGRES_USER}:${process.env.POSTGRES_PASSWORD}@${process.env.POSTGRES_HOST}:${process.env.POSTGRES_PORT}/${process.env.POSTGRES_DB}`;
 
-export const db = () => {
-  if (process.env.USE_NEON?.toLowerCase() === "true") {
-    const sql = neon(process.env.NEON_DATABASE_URL!);
-    return drizzleNeon({ client: sql });
-  } else {
-    const pool = new Pool({
-      connectionString: POSTGRES_DATABASE_URL,
-    });
-    return drizzlePg({ client: pool });
-  }
-};
+export const db =
+  process.env.USE_NEON?.toLowerCase() === "true"
+    ? drizzleNeon(neon(process.env.NEON_DATABASE_URL!), { schema })
+    : drizzlePg(new Pool({ connectionString: POSTGRES_DATABASE_URL }), {
+        schema,
+      });
 
 export const queries = {
   projects: {
