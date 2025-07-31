@@ -52,6 +52,18 @@ export const tasksRelations = relations(tasks, ({ many, one }) => ({
   }),
 }));
 
+export const commentsRelations = relations(comments, ({ one }) => ({
+  task: one(tasks, {
+    fields: [comments.taskId],
+    references: [tasks.id],
+  }),
+  author: one(users, {
+    fields: [comments.authorId],
+    references: [users.id],
+    relationName: "comment_author",
+  }),
+}));
+
 export const projectsRelations = relations(projects, ({ many, one }) => ({
   teams: many(projectTeams),
   tasks: many(tasks),
@@ -89,6 +101,17 @@ export const kanbanColumnsRelations = relations(
   })
 );
 
+export const teamMembersRelations = relations(teamMembers, ({ one }) => ({
+  user: one(users, {
+    fields: [teamMembers.userId],
+    references: [users.id],
+  }),
+  team: one(teams, {
+    fields: [teamMembers.teamId],
+    references: [teams.id],
+  }),
+}));
+
 export const projectTeamsRelations = relations(projectTeams, ({ one }) => ({
   project: one(projects, {
     fields: [projectTeams.projectId],
@@ -97,17 +120,5 @@ export const projectTeamsRelations = relations(projectTeams, ({ one }) => ({
   team: one(teams, {
     fields: [projectTeams.teamId],
     references: [teams.id],
-  }),
-}));
-
-export const commentsRelations = relations(comments, ({ one }) => ({
-  task: one(tasks, {
-    fields: [comments.taskId],
-    references: [tasks.id],
-  }),
-  author: one(users, {
-    fields: [comments.authorId],
-    references: [users.id],
-    relationName: "comment_author",
   }),
 }));
