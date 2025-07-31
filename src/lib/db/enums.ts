@@ -1,31 +1,36 @@
 import { pgEnum } from "drizzle-orm/pg-core";
 
-export const taskStatusEnum = pgEnum("task_status", [
+// Enum arrays
+export const TASK_STATUS_ENUM = [
   "todo",
   "in_progress",
   "in_review",
   "done",
   "backlog",
-]);
+] as const;
 
-export const taskPriorityEnum = pgEnum("task_priority", [
-  "low",
-  "medium",
-  "high",
-  "urgent",
-]);
+export const TASK_PRIORITY_ENUM = ["low", "medium", "high", "urgent"] as const;
 
-export const projectStatusEnum = pgEnum("project_status", [
+export const PROJECT_STATUS_ENUM = [
   "planning",
   "active",
   "archived",
   "completed",
   "on_hold",
-]);
+] as const;
 
-export const teamMemberRoleEnum = pgEnum("team_member_role", [
+export const TEAM_MEMBER_ROLE_ENUM = [
   "viewer",
   "member",
   "admin",
   "owner",
-]);
+] as const;
+
+// pgEnums for drizzle schema
+export const taskStatusEnum = pgEnum("task_status", TASK_STATUS_ENUM);
+export const taskPriorityEnum = pgEnum("task_priority", TASK_PRIORITY_ENUM);
+export const projectStatusEnum = pgEnum("project_status", PROJECT_STATUS_ENUM);
+export const teamMemberRoleEnum = pgEnum(
+  "team_member_role",
+  TEAM_MEMBER_ROLE_ENUM
+);
