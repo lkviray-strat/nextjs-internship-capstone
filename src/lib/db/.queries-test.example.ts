@@ -1,7 +1,7 @@
 import "dotenv/config";
 
 // Copy this file to `queries-test.ts` to run manual tests
-// cp .example.test-queries.ts queries-test.ts
+// cp src/lib/db/.queries-test.example.ts src/lib/db/queries-test.ts
 
 async function main() {
   console.log("Running sample queries...");
