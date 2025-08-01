@@ -23,7 +23,8 @@
     "d:gen": "drizzle-kit generate",
     "d:push": "drizzle-kit push",
     "d:migrate": "drizzle-kit migrate",
-    "d:seed": "tsx src/lib/db/seed.ts"
+    "d:seed": "tsx src/lib/db/seed.ts",
+    "test-query": "tsx src/lib/db/queries-test.ts"
   },
   "dependencies": {
     "@clerk/nextjs": "^6.25.5",
