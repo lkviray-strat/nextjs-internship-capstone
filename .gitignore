@@ -26,5 +26,9 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
 # clerk configuration (can include secrets)
 /.clerk/
+
+# ignore manual test file
+/src/lib/db/queries-test.ts
