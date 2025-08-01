@@ -89,6 +89,7 @@ export const tasks = pgTable(
   },
   (table) => [
     index("tasks_project_idx").on(table.projectId),
+    index("tasks_title_idx").on(table.title),
     index("tasks_status_idx").on(table.status),
     index("tasks_priority_idx").on(table.priority),
     index("tasks_assignee_idx").on(table.assigneeId),

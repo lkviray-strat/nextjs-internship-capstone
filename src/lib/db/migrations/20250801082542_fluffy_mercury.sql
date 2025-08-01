@@ -1,0 +1,1 @@
+CREATE INDEX "tasks_title_idx" ON "tasks" USING btree ("title");
