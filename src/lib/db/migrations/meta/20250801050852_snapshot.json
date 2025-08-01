@@ -1,5 +1,5 @@
 {
-  "id": "495f5fe8-c36f-48ab-9aba-bc71709a8860",
+  "id": "61fb01b4-16aa-4c03-b01b-8cb2c28744dd",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -930,6 +930,22 @@
         }
       },
       "indexes": {
+        "team_members_unique_owner_idx": {
+          "name": "team_members_unique_owner_idx",
+          "columns": [
+            {
+              "expression": "team_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "where": "role = 'owner'",
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
         "team_members_user_idx": {
           "name": "team_members_user_idx",
           "columns": [

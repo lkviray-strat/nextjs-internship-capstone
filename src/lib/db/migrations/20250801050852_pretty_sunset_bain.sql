@@ -131,6 +131,7 @@ CREATE INDEX "tasks_creator_idx" ON "tasks" USING btree ("created_by_id");--> st
 CREATE INDEX "tasks_status_priority_idx" ON "tasks" USING btree ("status","priority");--> statement-breakpoint
 CREATE INDEX "tasks_kanban_column_idx" ON "tasks" USING btree ("kanban_column_id");--> statement-breakpoint
 CREATE INDEX "tasks_order_idx" ON "tasks" USING btree ("order");--> statement-breakpoint
+CREATE UNIQUE INDEX "team_members_unique_owner_idx" ON "team_members" USING btree ("team_id") WHERE role = 'owner';--> statement-breakpoint
 CREATE INDEX "team_members_user_idx" ON "team_members" USING btree ("user_id");--> statement-breakpoint
 CREATE INDEX "team_members_team_idx" ON "team_members" USING btree ("team_id");--> statement-breakpoint
 CREATE INDEX "team_members_role_idx" ON "team_members" USING btree ("role");--> statement-breakpoint
