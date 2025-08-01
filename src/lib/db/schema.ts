@@ -119,7 +119,6 @@ export const comments = pgTable(
   (table) => [
     index("comments_task_idx").on(table.taskId),
     index("comments_author_idx").on(table.authorId),
-    index("comments_created_idx").on(table.createdAt),
   ]
 );
 
@@ -141,6 +140,7 @@ export const projects = pgTable(
     }), // User who created
   },
   (table) => [
+    index("projects_name_idx").on(table.name),
     index("projects_status_idx").on(table.status),
     index("projects_date_range_idx").on(table.startDate, table.endDate),
     index("projects_creator_idx").on(table.createdById),

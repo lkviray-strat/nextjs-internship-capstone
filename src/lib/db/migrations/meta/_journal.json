@@ -15,6 +15,13 @@
       "when": 1754036743005,
       "tag": "20250801082542_fluffy_mercury",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1754040915898,
+      "tag": "20250801093515_giant_rage",
+      "breakpoints": true
     }
   ]
 }
