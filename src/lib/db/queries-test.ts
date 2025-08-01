@@ -1,3 +1,4 @@
+import "dotenv/config";
 import { queries } from "./queries";
 
 async function main() {
