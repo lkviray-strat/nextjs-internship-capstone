@@ -2,7 +2,7 @@ import {
   ProjectStatusEnum,
   TaskPriorityEnum,
   TaskStatusEnum,
-} from "@/src/types/enums";
+} from "@/src/types";
 import { and, eq } from "drizzle-orm";
 import { db } from ".";
 import { TeamMemberRoleEnum } from "../../types/enums";
