@@ -1,3 +1,4 @@
+import { sql } from "drizzle-orm";
 import {
   boolean,
   index,
@@ -5,6 +6,7 @@ import {
   primaryKey,
   text,
   timestamp,
+  uniqueIndex,
   uuid,
   varchar,
 } from "drizzle-orm/pg-core";
@@ -195,6 +197,9 @@ export const teamMembers = pgTable(
   },
   (table) => [
     primaryKey({ columns: [table.userId, table.teamId] }),
+    uniqueIndex("team_members_unique_owner_idx")
+      .on(table.teamId)
+      .where(sql`role = 'owner'`),
     index("team_members_user_idx").on(table.userId),
     index("team_members_team_idx").on(table.teamId),
     index("team_members_role_idx").on(table.role),
