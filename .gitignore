@@ -31,4 +31,4 @@ next-env.d.ts
 /.clerk/
 
 # ignore manual test file
-/src/lib/db/queries-test.ts
+/src/lib/db/__test__/queries-test.ts
