@@ -24,7 +24,7 @@ export async function createUserAction(clerkUser: UserJSON) {
     if (error instanceof ZodError) {
       return { success: false, error: z.flattenError(error).fieldErrors };
     }
-    return { success: false, error: "Unknown error" };
+    return { success: false, error };
   }
 }
 
@@ -47,7 +47,7 @@ export async function updateUserAction(clerkUser: UserJSON) {
       return { success: false, error: z.flattenError(error).fieldErrors };
     }
     console.error("Error updating user:", error);
-    return { success: false, error: "Unknown error" };
+    return { success: false, error };
   }
 }
 
