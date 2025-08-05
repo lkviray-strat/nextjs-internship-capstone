@@ -38,6 +38,7 @@ export const clerkUsersSchema = z.object({
     .refine(
       async (url) => {
         if (!url) return true;
+        if (url.startsWith("https://img.clerk.com/")) return true;
         try {
           const res = await fetch(url, { method: "HEAD" });
           const contentType = res.headers.get("content-type");
