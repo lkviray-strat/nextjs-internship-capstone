@@ -204,31 +204,54 @@ export const createProjectTeamRequestSchema = projectTeamsSchema.omit({
 });
 
 // Schemas for update operations
-export const updateTeamRequestSchema = teamsSchema.partial().omit({
-  createdAt: true,
-  updatedAt: true,
-});
+export const updateTeamRequestSchema = teamsSchema
+  .partial()
+  .omit({
+    createdAt: true,
+    updatedAt: true,
+  })
+  .extend({
+    id: teamsSchema.shape.id,
+  });
 
-export const updateTaskRequestSchema = taskSchema.partial().omit({
-  createdAt: true,
-  updatedAt: true,
-});
+export const updateTaskRequestSchema = taskSchema
+  .partial()
+  .omit({
+    createdAt: true,
+    updatedAt: true,
+  })
+  .extend({
+    id: taskSchema.shape.id,
+  });
 
-export const updateCommentRequestSchema = commentsSchema.partial().omit({
-  createdAt: true,
-  updatedAt: true,
-});
+export const updateCommentRequestSchema = commentsSchema
+  .partial()
+  .omit({
+    createdAt: true,
+    updatedAt: true,
+  })
+  .extend({
+    id: commentsSchema.shape.id,
+  });
 
-export const updateProjectRequestSchema = projectsSchema.partial().omit({
-  createdAt: true,
-  updatedAt: true,
-});
+export const updateProjectRequestSchema = projectsSchema
+  .partial()
+  .omit({
+    createdAt: true,
+    updatedAt: true,
+  })
+  .extend({
+    id: projectsSchema.shape.id,
+  });
 
 export const updateKanbanBoardsRequestSchema = kanbanBoardsSchema
   .partial()
   .omit({
     createdAt: true,
     updatedAt: true,
+  })
+  .extend({
+    id: kanbanBoardsSchema.shape.id,
   });
 
 export const updateKanbanColumnRequestSchema = kanbanColumnsSchema
@@ -236,16 +259,29 @@ export const updateKanbanColumnRequestSchema = kanbanColumnsSchema
   .omit({
     createdAt: true,
     updatedAt: true,
+  })
+  .extend({
+    id: kanbanColumnsSchema.shape.id,
   });
 
-export const updateTeamMemberRequestSchema = teamMembersSchema.partial().omit({
-  createdAt: true,
-});
+export const updateTeamMemberRequestSchema = teamMembersSchema
+  .partial()
+  .omit({
+    createdAt: true,
+  })
+  .extend({
+    userId: teamMembersSchema.shape.userId,
+    teamId: teamMembersSchema.shape.teamId,
+  });
 
 export const updateProjectTeamRequestSchema = projectTeamsSchema
   .partial()
   .omit({
     createdAt: true,
+  })
+  .extend({
+    projectId: projectTeamsSchema.shape.projectId,
+    teamId: projectTeamsSchema.shape.teamId,
   });
 
 //  Schemas for response operations
