@@ -8,7 +8,12 @@
   ],
   "editor.formatOnSave": true,
   "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": "always"
+    "source.fixAll.eslint": "always",
+    "source.fixAll.ts": "always",
+    "source.fixAll.tslint": "always",
+    "source.fixAll.stylelint": "always",
+    "source.organizeImports": "always",
+    "source.addMissingImports": "always"
   },
   "eslint.useFlatConfig": true
 }
