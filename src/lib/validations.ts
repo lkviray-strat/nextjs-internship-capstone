@@ -18,17 +18,11 @@ const errorMessages = {
 
 // Base schema for common fields
 export const clerkUsersSchema = z.object({
-  id: z.string().optional(),
-  emailAddresses: z
-    .array(
-      z.object({
-        email: z
-          .email()
-          .min(1, errorMessages.required("Email"))
-          .max(255, errorMessages.maxLength(255)),
-      })
-    )
-    .min(1, errorMessages.required("Email addresses")),
+  id: z.string(),
+  email: z
+    .email()
+    .min(1, errorMessages.required("Email"))
+    .max(255, errorMessages.maxLength(255)),
   firstName: z
     .string()
     .min(1, errorMessages.required("First name"))
@@ -54,8 +48,8 @@ export const clerkUsersSchema = z.object({
       },
       { message: "Profile image URL must point to an image." }
     ),
-  createdAt: z.date().optional().nullable(),
-  updatedAt: z.date().optional().nullable(),
+  createdAt: z.date().optional(),
+  updatedAt: z.date().optional(),
 });
 
 export const teamsSchema = z.object({
