@@ -2,6 +2,7 @@ import {
   ProjectStatusEnum,
   TaskPriorityEnum,
   TaskStatusEnum,
+  UserRequest,
 } from "@/src/types";
 import { and, eq } from "drizzle-orm";
 import { db } from ".";
@@ -36,6 +37,15 @@ export const queries = {
         .where(
           and(eq(users.firstName, firstName), eq(users.lastName, lastName))
         );
+    },
+    createUser: (user: UserRequest) => {
+      return db.insert(users).values(user);
+    },
+    updateUser: (id: string, user: UserRequest) => {
+      return db.update(users).set(user).where(eq(users.id, id));
+    },
+    deleteUser: (id: string) => {
+      return db.delete(users).where(eq(users.id, id));
     },
   },
   teams: {
