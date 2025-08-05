@@ -2,6 +2,7 @@ import {
   ProjectStatusEnum,
   TaskPriorityEnum,
   TaskStatusEnum,
+  TeamsRequest,
   UserRequest,
 } from "@/src/types";
 import { and, eq } from "drizzle-orm";
@@ -60,6 +61,15 @@ export const queries = {
     },
     getTeamsByLeaderId: (leaderId: string) => {
       return db.select().from(teams).where(eq(teams.leaderId, leaderId));
+    },
+    createTeam: (team: TeamsRequest) => {
+      return db.insert(teams).values(team);
+    },
+    updateTeam: (id: string, team: TeamsRequest) => {
+      return db.update(teams).set(team).where(eq(teams.id, id));
+    },
+    deleteTeam: (id: string) => {
+      return db.delete(teams).where(eq(teams.id, id));
     },
   },
   tasks: {
