@@ -2,8 +2,10 @@ import {
   ProjectStatusEnum,
   TaskPriorityEnum,
   TaskStatusEnum,
-  TeamsRequest,
-  UserRequest,
+  TeamsInsertRequest,
+  TeamsUpdateRequest,
+  UserInsertRequest,
+  UserUpdateRequest,
 } from "@/src/types";
 import { and, eq } from "drizzle-orm";
 import { db } from ".";
@@ -39,10 +41,10 @@ export const queries = {
           and(eq(users.firstName, firstName), eq(users.lastName, lastName))
         );
     },
-    createUser: (user: UserRequest) => {
+    createUser: (user: UserInsertRequest) => {
       return db.insert(users).values(user);
     },
-    updateUser: (id: string, user: UserRequest) => {
+    updateUser: (id: string, user: UserUpdateRequest) => {
       return db.update(users).set(user).where(eq(users.id, id));
     },
     deleteUser: (id: string) => {
@@ -62,10 +64,10 @@ export const queries = {
     getTeamsByLeaderId: (leaderId: string) => {
       return db.select().from(teams).where(eq(teams.leaderId, leaderId));
     },
-    createTeam: (team: TeamsRequest) => {
+    createTeam: (team: TeamsInsertRequest) => {
       return db.insert(teams).values(team);
     },
-    updateTeam: (id: string, team: TeamsRequest) => {
+    updateTeam: (id: string, team: TeamsUpdateRequest) => {
       return db.update(teams).set(team).where(eq(teams.id, id));
     },
     deleteTeam: (id: string) => {
