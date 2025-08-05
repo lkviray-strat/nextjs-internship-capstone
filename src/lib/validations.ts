@@ -61,8 +61,8 @@ export const teamsSchema = z.object({
     .max(100, errorMessages.maxLength(100)),
   description: z.string().max(500, errorMessages.maxLength(500)).optional(),
   leaderId: z.string(),
-  createdAt: z.date().optional().nullable(),
-  updatedAt: z.date().optional().nullable(),
+  createdAt: z.date().optional(),
+  updatedAt: z.date().optional(),
 });
 
 export const taskSchema = z.object({
@@ -89,8 +89,8 @@ export const taskSchema = z.object({
     .max(1000, errorMessages.numMaximum(1000))
     .optional(),
   kanbanColumnId: z.uuid(),
-  createdAt: z.date().optional().nullable(),
-  updatedAt: z.date().optional().nullable(),
+  createdAt: z.date().optional(),
+  updatedAt: z.date().optional(),
 });
 
 export const commentsSchema = z.object({
@@ -101,8 +101,8 @@ export const commentsSchema = z.object({
     .max(1500, errorMessages.maxLength(1500)),
   taskId: z.number().optional(),
   authorId: z.string(),
-  createdAt: z.date().optional().nullable(),
-  updatedAt: z.date().optional().nullable(),
+  createdAt: z.date().optional(),
+  updatedAt: z.date().optional(),
 });
 
 export const projectsSchema = z.object({
@@ -117,8 +117,8 @@ export const projectsSchema = z.object({
   endDate: z.date(),
   defaultBoardId: z.uuid(),
   createdById: z.string(),
-  createdAt: z.date().optional().nullable(),
-  updatedAt: z.date().optional().nullable(),
+  createdAt: z.date().optional(),
+  updatedAt: z.date().optional(),
 });
 
 export const kanbanBoardsSchema = z.object({
@@ -128,8 +128,8 @@ export const kanbanBoardsSchema = z.object({
     .min(1, errorMessages.required("Board name"))
     .max(100, errorMessages.maxLength(100)),
   projectId: z.uuid(),
-  createdAt: z.date().optional().nullable(),
-  updatedAt: z.date().optional().nullable(),
+  createdAt: z.date().optional(),
+  updatedAt: z.date().optional(),
 });
 
 export const kanbanColumnsSchema = z.object({
@@ -140,22 +140,22 @@ export const kanbanColumnsSchema = z.object({
     .max(100, errorMessages.maxLength(100)),
   order: z.number().min(0, errorMessages.numMinimum(0)),
   color: z.string().max(20, errorMessages.maxLength(20)),
-  createdAt: z.date().optional().nullable(),
-  updatedAt: z.date().optional().nullable(),
+  createdAt: z.date().optional(),
+  updatedAt: z.date().optional(),
 });
 
 export const teamMembersSchema = z.object({
   userId: z.string(),
   teamId: z.uuid(),
   role: z.enum(TEAM_MEMBER_ROLE_ENUM).optional(),
-  createdAt: z.date().optional().nullable(),
+  createdAt: z.date().optional(),
 });
 
 export const projectTeamsSchema = z.object({
   projectId: z.uuid(),
   teamId: z.uuid(),
   isCreator: z.boolean().optional(),
-  createdAt: z.date().optional().nullable(),
+  createdAt: z.date().optional(),
 });
 
 // Schemas for insert operations
