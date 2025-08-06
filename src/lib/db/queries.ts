@@ -1,7 +1,9 @@
 import type {
   CommentsInsertRequest,
   CommentsUpdateRequest,
+  ProjectsInsertRequest,
   ProjectStatusEnum,
+  ProjectsUpdateRequest,
   TaskPriorityEnum,
   TasksInsertRequest,
   TaskStatusEnum,
@@ -151,6 +153,15 @@ export const queries = {
         .select()
         .from(projects)
         .where(eq(projects.createdById, createdById));
+    },
+    createProject: (project: ProjectsInsertRequest) => {
+      return db.insert(projects).values(project);
+    },
+    updateProject: (id: string, project: ProjectsUpdateRequest) => {
+      return db.update(projects).set(project).where(eq(projects.id, id));
+    },
+    deleteProject: (id: string) => {
+      return db.delete(projects).where(eq(projects.id, id));
     },
   },
   kanbanBoards: {
