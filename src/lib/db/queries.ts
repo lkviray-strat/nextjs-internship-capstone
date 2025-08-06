@@ -114,6 +114,9 @@ export const queries = {
     getAllComments: () => {
       return db.select().from(comments);
     },
+    getCommentsById: (id: string) => {
+      return db.select().from(comments).where(eq(comments.id, id));
+    },
     getCommentsByTaskId: (taskId: number) => {
       return db.select().from(comments).where(eq(comments.taskId, taskId));
     },
