@@ -51,8 +51,9 @@ export async function deleteTeamAction(teamId: string) {
       throw new Error("Team with the given ID does not exist");
     }
 
-    await queries.teams.deleteTeam(teamId);
-    return { success: true };
+    const result = await queries.teams.deleteTeam(teamId);
+
+    return { success: true, data: result };
   } catch (error) {
     if (error instanceof z.ZodError) {
       throw new Error(JSON.stringify(z.flattenError(error).fieldErrors));
