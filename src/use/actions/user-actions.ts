@@ -3,7 +3,7 @@
 import { queries } from "@/src/lib/db/queries";
 import { clerkUsersSchema } from "@/src/lib/validations";
 import type { ClerkUsersInput } from "@/src/types";
-import { UserJSON } from "@clerk/nextjs/server";
+import type { UserJSON } from "@clerk/nextjs/server";
 import z, { ZodError } from "zod";
 
 export async function createUserAction(clerkUser: UserJSON) {
