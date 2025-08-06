@@ -204,6 +204,8 @@ async function main() {
           description: f.loremIpsum({ sentencesCount: 4 }),
           status: f.valuesFromArray({ values: taskStatusNames }),
           priority: f.valuesFromArray({ values: taskPriorityNames }),
+          taskNumber: f.int({ isUnique: true, minValue: 1 }),
+          order: f.int({ isUnique: true, minValue: 0 }),
           estimatedHours: f.int({ minValue: 1, maxValue: 40 }),
         },
       },
