@@ -11,7 +11,7 @@ import type {
 } from "@/src/types";
 import { and, eq } from "drizzle-orm";
 import { db } from ".";
-import { TeamMemberRoleEnum } from "../../types/enums";
+import type { TeamMemberRoleEnum } from "../../types/enums";
 import {
   comments,
   kanbanBoards,
