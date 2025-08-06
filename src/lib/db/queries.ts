@@ -1,6 +1,8 @@
 import type {
   CommentsInsertRequest,
   CommentsUpdateRequest,
+  KanbanBoardsInsertRequest,
+  KanbanBoardsUpdateRequest,
   ProjectsInsertRequest,
   ProjectStatusEnum,
   ProjectsUpdateRequest,
@@ -179,6 +181,15 @@ export const queries = {
         .select()
         .from(kanbanBoards)
         .where(eq(kanbanBoards.projectId, projectId));
+    },
+    createKanbanBoard: (board: KanbanBoardsInsertRequest) => {
+      return db.insert(kanbanBoards).values(board);
+    },
+    updateKanbanBoard: (id: string, board: KanbanBoardsUpdateRequest) => {
+      return db.update(kanbanBoards).set(board).where(eq(kanbanBoards.id, id));
+    },
+    deleteKanbanBoard: (id: string) => {
+      return db.delete(kanbanBoards).where(eq(kanbanBoards.id, id));
     },
   },
   kanbanColumns: {
