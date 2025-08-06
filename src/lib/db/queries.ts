@@ -1,4 +1,6 @@
 import type {
+  CommentsInsertRequest,
+  CommentsUpdateRequest,
   ProjectStatusEnum,
   TaskPriorityEnum,
   TasksInsertRequest,
@@ -117,6 +119,15 @@ export const queries = {
     },
     getCommentsByAuthorId: (authorId: string) => {
       return db.select().from(comments).where(eq(comments.authorId, authorId));
+    },
+    createComment: (comment: CommentsInsertRequest) => {
+      return db.insert(comments).values(comment);
+    },
+    updateComment: (id: string, comment: CommentsUpdateRequest) => {
+      return db.update(comments).set(comment).where(eq(comments.id, id));
+    },
+    deleteComment: (id: string) => {
+      return db.delete(comments).where(eq(comments.id, id));
     },
   },
   projects: {
