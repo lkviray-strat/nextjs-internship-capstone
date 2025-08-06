@@ -66,7 +66,7 @@ export const teamsSchema = z.object({
 });
 
 export const taskSchema = z.object({
-  id: z.uuid(),
+  id: z.number(),
   title: z
     .string()
     .min(1, errorMessages.required("Title"))
