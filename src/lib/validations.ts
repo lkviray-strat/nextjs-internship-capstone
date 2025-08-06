@@ -139,6 +139,7 @@ export const kanbanColumnsSchema = z.object({
     .string()
     .min(1, errorMessages.required("Column name"))
     .max(100, errorMessages.maxLength(100)),
+  boardId: z.guid(),
   order: z.number().min(0, errorMessages.numMinimum(0)),
   color: z.string().max(20, errorMessages.maxLength(20)),
   createdAt: z.date().optional(),
