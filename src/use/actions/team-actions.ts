@@ -32,8 +32,8 @@ export async function updateTeamAction(team: UpdateTeamRequestInput) {
       throw new Error("Team with the given ID does not exist");
     }
 
-    const parsed = updateTeamRequestSchema.parse(team);
-    const result = await queries.teams.updateTeam(parsed.id as string, parsed);
+    const { id, ...parsedData } = updateTeamRequestSchema.parse(team);
+    const result = await queries.teams.updateTeam(id as string, parsedData);
 
     return { success: true, data: result };
   } catch (error) {
