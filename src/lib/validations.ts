@@ -83,6 +83,7 @@ export const taskSchema = z.object({
     .optional(),
   assigneeId: z.string(),
   createdById: z.string(),
+  taskNumber: z.number().min(1, errorMessages.numMinimum(1)),
   order: z
     .number()
     .min(0, errorMessages.numMinimum(0))
