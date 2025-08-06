@@ -183,6 +183,7 @@ async function main() {
       teams: {
         count: config.counts.teams,
         columns: {
+          id: f.uuid(),
           name: f.valuesFromArray({ values: teamNames }),
           description: f.loremIpsum(),
         },
@@ -190,6 +191,7 @@ async function main() {
       projects: {
         count: config.counts.projects,
         columns: {
+          id: f.uuid(),
           name: f.valuesFromArray({ values: projectNames }),
           description: f.loremIpsum({ sentencesCount: 3 }),
           status: f.valuesFromArray({ values: projectStatusNames }),
@@ -200,6 +202,11 @@ async function main() {
       tasks: {
         count: config.counts.tasks,
         columns: {
+          id: f.int({
+            isUnique: true,
+            minValue: 10000,
+            maxValue: config.counts.tasks + 10000,
+          }),
           title: f.valuesFromArray({ values: taskTitles }),
           description: f.loremIpsum({ sentencesCount: 4 }),
           status: f.valuesFromArray({ values: taskStatusNames }),
@@ -212,18 +219,21 @@ async function main() {
       comments: {
         count: config.counts.comments,
         columns: {
+          id: f.uuid(),
           content: f.loremIpsum({ sentencesCount: 3 }),
         },
       },
       kanbanBoards: {
         count: config.counts.kanbanBoards,
         columns: {
+          id: f.uuid(),
           name: f.valuesFromArray({ values: kanbanBoardNames }),
         },
       },
       kanbanColumns: {
         count: config.counts.kanbanColumns,
         columns: {
+          id: f.uuid(),
           name: f.valuesFromArray({ values: kanbanColumnNames }),
           color: f.valuesFromArray({ values: kanbanColumnColors }),
           order: f.int({
@@ -235,6 +245,13 @@ async function main() {
       },
     }));
     console.log("✅ Main tables seeded successfully");
+
+    await tx.execute(
+      sql`
+      SELECT setval(pg_get_serial_sequence('tasks', 'id'), coalesce(max(id), 10000) + 1, false) FROM tasks
+      `
+    );
+    console.log("✅ Updated Sequence for tasks");
 
     // Step 3: Fetch generated IDs for relationships
     console.log("🔍 Fetching data for junction tables...");
@@ -326,5 +343,6 @@ async function main() {
 
 main().catch((e) => {
   console.error("❌ Seeding failed:", e);
+  console.info("ℹ️ Process terminated due to error.");
   process.exit(1);
 });
