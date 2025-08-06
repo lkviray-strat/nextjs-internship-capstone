@@ -61,7 +61,9 @@ export const teams = pgTable(
 export const tasks = pgTable(
   "tasks",
   {
-    id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
+    id: integer("id")
+      .primaryKey()
+      .generatedAlwaysAsIdentity({ startWith: 10000 }),
     title: varchar("title", { length: 255 }).notNull(),
     description: text("description"),
     projectId: uuid("project_id").references(() => projects.id, {
@@ -77,6 +79,7 @@ export const tasks = pgTable(
     createdById: varchar("created_by_id").references(() => users.id, {
       onDelete: "set null",
     }),
+    taskNumber: integer("task_number").notNull(),
     order: integer("order").notNull().default(0),
     kanbanColumnId: uuid("kanban_column_id").references(
       () => kanbanColumns.id,
@@ -88,6 +91,10 @@ export const tasks = pgTable(
     updatedAt: timestamp("updated_at").defaultNow().notNull(),
   },
   (table) => [
+    uniqueIndex("tasks_unique_task_number_idx").on(
+      table.taskNumber,
+      table.projectId
+    ),
     index("tasks_project_idx").on(table.projectId),
     index("tasks_title_idx").on(table.title),
     index("tasks_status_idx").on(table.status),
