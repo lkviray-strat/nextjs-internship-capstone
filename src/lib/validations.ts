@@ -54,7 +54,7 @@ export const clerkUsersSchema = z.object({
 });
 
 export const teamsSchema = z.object({
-  id: z.uuid(),
+  id: z.guid(),
   name: z
     .string()
     .min(1, errorMessages.required("Team name"))
@@ -72,7 +72,7 @@ export const taskSchema = z.object({
     .min(1, errorMessages.required("Title"))
     .max(255, errorMessages.maxLength(255)),
   description: z.string().max(4000, errorMessages.maxLength(4000)).optional(),
-  projectId: z.uuid(),
+  projectId: z.guid(),
   status: z.enum(TASK_STATUS_ENUM),
   priority: z.enum(TASK_PRIORITY_ENUM).optional(),
   dueDate: z.date().optional(),
@@ -89,13 +89,13 @@ export const taskSchema = z.object({
     .min(0, errorMessages.numMinimum(0))
     .max(1000, errorMessages.numMaximum(1000))
     .optional(),
-  kanbanColumnId: z.uuid(),
+  kanbanColumnId: z.guid(),
   createdAt: z.date().optional(),
   updatedAt: z.date().optional(),
 });
 
 export const commentsSchema = z.object({
-  id: z.uuid(),
+  id: z.guid(),
   content: z
     .string()
     .min(1, errorMessages.required("Comment"))
@@ -107,7 +107,7 @@ export const commentsSchema = z.object({
 });
 
 export const projectsSchema = z.object({
-  id: z.uuid(),
+  id: z.guid(),
   name: z
     .string()
     .min(1, errorMessages.required("Project name"))
@@ -116,25 +116,25 @@ export const projectsSchema = z.object({
   status: z.enum(PROJECT_STATUS_ENUM),
   startDate: z.date(),
   endDate: z.date(),
-  defaultBoardId: z.uuid(),
+  defaultBoardId: z.guid(),
   createdById: z.string(),
   createdAt: z.date().optional(),
   updatedAt: z.date().optional(),
 });
 
 export const kanbanBoardsSchema = z.object({
-  id: z.uuid(),
+  id: z.guid(),
   name: z
     .string()
     .min(1, errorMessages.required("Board name"))
     .max(100, errorMessages.maxLength(100)),
-  projectId: z.uuid(),
+  projectId: z.guid(),
   createdAt: z.date().optional(),
   updatedAt: z.date().optional(),
 });
 
 export const kanbanColumnsSchema = z.object({
-  id: z.uuid(),
+  id: z.guid(),
   name: z
     .string()
     .min(1, errorMessages.required("Column name"))
@@ -147,14 +147,14 @@ export const kanbanColumnsSchema = z.object({
 
 export const teamMembersSchema = z.object({
   userId: z.string(),
-  teamId: z.uuid(),
+  teamId: z.guid(),
   role: z.enum(TEAM_MEMBER_ROLE_ENUM).optional(),
   createdAt: z.date().optional(),
 });
 
 export const projectTeamsSchema = z.object({
-  projectId: z.uuid(),
-  teamId: z.uuid(),
+  projectId: z.guid(),
+  teamId: z.guid(),
   isCreator: z.boolean().optional(),
   createdAt: z.date().optional(),
 });
