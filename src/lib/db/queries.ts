@@ -3,6 +3,8 @@ import type {
   CommentsUpdateRequest,
   KanbanBoardsInsertRequest,
   KanbanBoardsUpdateRequest,
+  KanbanColumnsInsertRequest,
+  KanbanColumnsUpdateRequest,
   ProjectsInsertRequest,
   ProjectStatusEnum,
   ProjectsUpdateRequest,
@@ -216,6 +218,18 @@ export const queries = {
         .select()
         .from(kanbanColumns)
         .where(eq(kanbanColumns.order, order));
+    },
+    createKanbanColumn: (column: KanbanColumnsInsertRequest) => {
+      return db.insert(kanbanColumns).values(column);
+    },
+    updateKanbanColumn: (id: string, column: KanbanColumnsUpdateRequest) => {
+      return db
+        .update(kanbanColumns)
+        .set(column)
+        .where(eq(kanbanColumns.id, id));
+    },
+    deleteKanbanColumn: (id: string) => {
+      return db.delete(kanbanColumns).where(eq(kanbanColumns.id, id));
     },
   },
   teamMembers: {
