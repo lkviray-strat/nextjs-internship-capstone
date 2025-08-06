@@ -56,6 +56,7 @@ export async function deleteUserAction(userId: string) {
     const user = (await queries.users.getUsersById(userId)).at(0);
 
     if (!user) {
+      console.log("⚠️  User with the given ID does not exist");
       return { success: true };
     }
 
