@@ -1,7 +1,9 @@
 import {
   ProjectStatusEnum,
   TaskPriorityEnum,
+  TasksInsertRequest,
   TaskStatusEnum,
+  TasksUpdateRequest,
   TeamsInsertRequest,
   TeamsUpdateRequest,
   UserInsertRequest,
@@ -95,6 +97,15 @@ export const queries = {
     },
     getTasksByOrder: (order: number) => {
       return db.select().from(tasks).where(eq(tasks.order, order));
+    },
+    createTask: (task: TasksInsertRequest) => {
+      return db.insert(tasks).values(task);
+    },
+    updateTask: (id: number, task: TasksUpdateRequest) => {
+      return db.update(tasks).set(task).where(eq(tasks.id, id));
+    },
+    deleteTask: (id: number) => {
+      return db.delete(tasks).where(eq(tasks.id, id));
     },
   },
   comments: {
