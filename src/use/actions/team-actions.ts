@@ -5,7 +5,10 @@ import {
   createTeamRequestSchema,
   updateTeamRequestSchema,
 } from "@/src/lib/validations";
-import { CreateTeamRequestInput, UpdateTeamRequestInput } from "@/src/types";
+import type {
+  CreateTeamRequestInput,
+  UpdateTeamRequestInput,
+} from "@/src/types";
 import z from "zod";
 
 export async function createTeamAction(team: CreateTeamRequestInput) {
