@@ -100,7 +100,7 @@ export const commentsSchema = z.object({
     .string()
     .min(1, errorMessages.required("Comment"))
     .max(1500, errorMessages.maxLength(1500)),
-  taskId: z.number().optional(),
+  taskId: z.number(),
   authorId: z.string(),
   createdAt: z.date().optional(),
   updatedAt: z.date().optional(),
