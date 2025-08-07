@@ -301,6 +301,22 @@ export const queries = {
         )
         .returning();
     },
+    getTeamMembersByIdsWithTeamWithLeaderId: (
+      userId: string,
+      teamId: string
+    ) => {
+      return db.query.teamMembers.findFirst({
+        where: (teamMembers, { eq, and }) =>
+          and(eq(teamMembers.userId, userId), eq(teamMembers.teamId, teamId)),
+        with: {
+          team: {
+            columns: {
+              leaderId: true,
+            },
+          },
+        },
+      });
+    },
   },
   projectTeams: {
     getAllProjectTeams: () => {
