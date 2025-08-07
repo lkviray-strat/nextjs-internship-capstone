@@ -1,0 +1,1 @@
+ALTER TABLE "projects" ALTER COLUMN "default_board_id" DROP NOT NULL;

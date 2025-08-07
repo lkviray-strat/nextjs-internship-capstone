@@ -141,7 +141,7 @@ export const projects = pgTable(
     endDate: timestamp("end_date"),
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at").defaultNow().notNull(),
-    defaultBoardId: uuid("default_board_id").notNull(),
+    defaultBoardId: uuid("default_board_id"),
     createdById: varchar("created_by").references(() => users.id, {
       onDelete: "set null",
     }), // User who created
