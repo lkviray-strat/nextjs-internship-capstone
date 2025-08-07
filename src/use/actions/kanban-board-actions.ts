@@ -13,10 +13,12 @@ import type {
   CreateKanbanBoardsRequestInput,
   CreateKanbanColumnRequestInput,
   UpdateKanbanBoardsRequestInput,
+  UpdateProjectRequestInput,
 } from "@/src/types";
 import z from "zod";
 import { enumToWord } from "../../lib/utils";
 import { createKanbanColumnAction } from "./kanban-column-actions";
+import { updateProjectAction } from "./project-actions";
 
 export async function createKanbanBoardAction(
   board: CreateKanbanBoardsRequestInput
@@ -24,6 +26,12 @@ export async function createKanbanBoardAction(
   try {
     const parsed = createKanbanBoardsRequestSchema.parse(board);
     const result = await queries.kanbanBoards.createKanbanBoard(parsed);
+
+    const defaultKanban: UpdateProjectRequestInput = {
+      id: result[0].projectId as string,
+      defaultBoardId: result[0].id,
+    };
+    await updateProjectAction(defaultKanban);
 
     DEFAULT_KANBAN_BOARD_COLUMNS.map(async (colName, idx) => {
       const name = enumToWord(colName);
