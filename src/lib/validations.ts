@@ -116,7 +116,7 @@ export const projectsSchema = z.object({
   status: z.enum(PROJECT_STATUS_ENUM),
   startDate: z.date(),
   endDate: z.date(),
-  defaultBoardId: z.guid(),
+  defaultBoardId: z.guid().nullable(),
   createdById: z.string(),
   createdAt: z.date().optional(),
   updatedAt: z.date().optional(),
