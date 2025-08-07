@@ -12,6 +12,8 @@ import type {
   TasksInsertRequest,
   TaskStatusEnum,
   TasksUpdateRequest,
+  TeamMembersInsertRequest,
+  TeamMembersUpdateRequest,
   TeamsInsertRequest,
   TeamsUpdateRequest,
   UserInsertRequest,
@@ -252,6 +254,14 @@ export const queries = {
     getAllTeamMembers: () => {
       return db.select().from(teamMembers);
     },
+    getTeamMembersByIds: (userId: string, teamId: string) => {
+      return db
+        .select()
+        .from(teamMembers)
+        .where(
+          and(eq(teamMembers.userId, userId), eq(teamMembers.teamId, teamId))
+        );
+    },
     getTeamMembersByTeamId: (teamId: string) => {
       return db
         .select()
@@ -266,6 +276,30 @@ export const queries = {
     },
     getTeamMembersByRole: (role: TeamMemberRoleEnum) => {
       return db.select().from(teamMembers).where(eq(teamMembers.role, role));
+    },
+    createTeamMembers: (member: TeamMembersInsertRequest) => {
+      return db.insert(teamMembers).values(member).returning();
+    },
+    updateTeamMembers: (
+      userId: string,
+      teamId: string,
+      teamMember: TeamMembersUpdateRequest
+    ) => {
+      return db
+        .update(teamMembers)
+        .set(teamMember)
+        .where(
+          and(eq(teamMembers.userId, userId), eq(teamMembers.teamId, teamId))
+        )
+        .returning();
+    },
+    deleteTeamMembers: (userId: string, teamId: string) => {
+      return db
+        .delete(teamMembers)
+        .where(
+          and(eq(teamMembers.userId, userId), eq(teamMembers.teamId, teamId))
+        )
+        .returning();
     },
   },
   projectTeams: {
