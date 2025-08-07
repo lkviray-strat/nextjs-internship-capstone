@@ -1,6 +1,25 @@
 import { pgEnum } from "drizzle-orm/pg-core";
 
 // Enum arrays
+export const DEFAULT_KANBAN_BOARD_COLUMNS = [
+  "backlog",
+  "todo",
+  "in_progress",
+  "in_review",
+  "done",
+] as const;
+
+export const KANBAN_COLUMN_TW_COLORS: Record<
+  (typeof DEFAULT_KANBAN_BOARD_COLUMNS)[number],
+  string
+> = {
+  backlog: "bg-gray-400",
+  todo: "bg-blue-500",
+  in_progress: "bg-orange-400",
+  in_review: "bg-yellow-500",
+  done: "bg-green-500",
+};
+
 export const TASK_STATUS_ENUM = [
   "todo",
   "in_progress",
