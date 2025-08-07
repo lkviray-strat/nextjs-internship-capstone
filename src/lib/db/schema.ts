@@ -19,6 +19,7 @@ import {
 } from "./enums";
 
 export * from "./enums";
+export * from "./relations";
 
 // Users
 export const users = pgTable(
