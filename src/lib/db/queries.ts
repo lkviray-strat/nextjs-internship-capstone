@@ -52,13 +52,13 @@ export const queries = {
         );
     },
     createUser: (user: UserInsertRequest) => {
-      return db.insert(users).values(user);
+      return db.insert(users).values(user).returning();
     },
     updateUser: (id: string, user: UserUpdateRequest) => {
-      return db.update(users).set(user).where(eq(users.id, id));
+      return db.update(users).set(user).where(eq(users.id, id)).returning();
     },
     deleteUser: (id: string) => {
-      return db.delete(users).where(eq(users.id, id));
+      return db.delete(users).where(eq(users.id, id)).returning();
     },
   },
   teams: {
@@ -75,13 +75,13 @@ export const queries = {
       return db.select().from(teams).where(eq(teams.leaderId, leaderId));
     },
     createTeam: (team: TeamsInsertRequest) => {
-      return db.insert(teams).values(team);
+      return db.insert(teams).values(team).returning();
     },
     updateTeam: (id: string, team: TeamsUpdateRequest) => {
-      return db.update(teams).set(team).where(eq(teams.id, id));
+      return db.update(teams).set(team).where(eq(teams.id, id)).returning();
     },
     deleteTeam: (id: string) => {
-      return db.delete(teams).where(eq(teams.id, id));
+      return db.delete(teams).where(eq(teams.id, id)).returning();
     },
   },
   tasks: {
@@ -107,13 +107,13 @@ export const queries = {
       return db.select().from(tasks).where(eq(tasks.order, order));
     },
     createTask: (task: TasksInsertRequest) => {
-      return db.insert(tasks).values(task);
+      return db.insert(tasks).values(task).returning();
     },
     updateTask: (id: number, task: TasksUpdateRequest) => {
-      return db.update(tasks).set(task).where(eq(tasks.id, id));
+      return db.update(tasks).set(task).where(eq(tasks.id, id)).returning();
     },
     deleteTask: (id: number) => {
-      return db.delete(tasks).where(eq(tasks.id, id));
+      return db.delete(tasks).where(eq(tasks.id, id)).returning();
     },
   },
   comments: {
@@ -130,13 +130,17 @@ export const queries = {
       return db.select().from(comments).where(eq(comments.authorId, authorId));
     },
     createComment: (comment: CommentsInsertRequest) => {
-      return db.insert(comments).values(comment);
+      return db.insert(comments).values(comment).returning();
     },
     updateComment: (id: string, comment: CommentsUpdateRequest) => {
-      return db.update(comments).set(comment).where(eq(comments.id, id));
+      return db
+        .update(comments)
+        .set(comment)
+        .where(eq(comments.id, id))
+        .returning();
     },
     deleteComment: (id: string) => {
-      return db.delete(comments).where(eq(comments.id, id));
+      return db.delete(comments).where(eq(comments.id, id)).returning();
     },
   },
   projects: {
@@ -159,13 +163,17 @@ export const queries = {
         .where(eq(projects.createdById, createdById));
     },
     createProject: (project: ProjectsInsertRequest) => {
-      return db.insert(projects).values(project);
+      return db.insert(projects).values(project).returning();
     },
     updateProject: (id: string, project: ProjectsUpdateRequest) => {
-      return db.update(projects).set(project).where(eq(projects.id, id));
+      return db
+        .update(projects)
+        .set(project)
+        .where(eq(projects.id, id))
+        .returning();
     },
     deleteProject: (id: string) => {
-      return db.delete(projects).where(eq(projects.id, id));
+      return db.delete(projects).where(eq(projects.id, id)).returning();
     },
   },
   kanbanBoards: {
@@ -185,13 +193,17 @@ export const queries = {
         .where(eq(kanbanBoards.projectId, projectId));
     },
     createKanbanBoard: (board: KanbanBoardsInsertRequest) => {
-      return db.insert(kanbanBoards).values(board);
+      return db.insert(kanbanBoards).values(board).returning();
     },
     updateKanbanBoard: (id: string, board: KanbanBoardsUpdateRequest) => {
-      return db.update(kanbanBoards).set(board).where(eq(kanbanBoards.id, id));
+      return db
+        .update(kanbanBoards)
+        .set(board)
+        .where(eq(kanbanBoards.id, id))
+        .returning();
     },
     deleteKanbanBoard: (id: string) => {
-      return db.delete(kanbanBoards).where(eq(kanbanBoards.id, id));
+      return db.delete(kanbanBoards).where(eq(kanbanBoards.id, id)).returning();
     },
   },
   kanbanColumns: {
@@ -220,16 +232,20 @@ export const queries = {
         .where(eq(kanbanColumns.order, order));
     },
     createKanbanColumn: (column: KanbanColumnsInsertRequest) => {
-      return db.insert(kanbanColumns).values(column);
+      return db.insert(kanbanColumns).values(column).returning();
     },
     updateKanbanColumn: (id: string, column: KanbanColumnsUpdateRequest) => {
       return db
         .update(kanbanColumns)
         .set(column)
-        .where(eq(kanbanColumns.id, id));
+        .where(eq(kanbanColumns.id, id))
+        .returning();
     },
     deleteKanbanColumn: (id: string) => {
-      return db.delete(kanbanColumns).where(eq(kanbanColumns.id, id));
+      return db
+        .delete(kanbanColumns)
+        .where(eq(kanbanColumns.id, id))
+        .returning();
     },
   },
   teamMembers: {
