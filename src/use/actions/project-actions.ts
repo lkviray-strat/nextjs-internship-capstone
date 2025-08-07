@@ -6,15 +6,23 @@ import {
   updateProjectRequestSchema,
 } from "@/src/lib/validations";
 import type {
+  CreateKanbanBoardsRequestInput,
   CreateProjectRequestInput,
   UpdateProjectRequestInput,
 } from "@/src/types";
 import z from "zod";
+import { createKanbanBoardAction } from "./kanban-board-actions";
 
 export async function createProjectAction(project: CreateProjectRequestInput) {
   try {
     const parsed = createProjectRequestSchema.parse(project);
     const result = await queries.projects.createProject(parsed);
+
+    const kanbanBoard: CreateKanbanBoardsRequestInput = {
+      name: "Default Board",
+      projectId: result[0].id,
+    };
+    await createKanbanBoardAction(kanbanBoard);
 
     return { success: true, data: result };
   } catch (error) {
