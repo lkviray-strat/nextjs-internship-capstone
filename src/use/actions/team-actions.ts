@@ -6,15 +6,25 @@ import {
   updateTeamRequestSchema,
 } from "@/src/lib/validations";
 import type {
+  CreateTeamMemberRequestInput,
   CreateTeamRequestInput,
   UpdateTeamRequestInput,
 } from "@/src/types";
 import z from "zod";
+import { createTeamMembersAction } from "./team-member-actions";
 
 export async function createTeamAction(team: CreateTeamRequestInput) {
   try {
     const parsed = createTeamRequestSchema.parse(team);
     const result = await queries.teams.createTeam(parsed);
+
+    const ownerTeamMember: CreateTeamMemberRequestInput = {
+      userId: result[0].leaderId as string,
+      teamId: result[0].id,
+      role: "owner",
+    };
+
+    await createTeamMembersAction(ownerTeamMember);
 
     return { success: true, data: result };
   } catch (error) {
@@ -33,7 +43,7 @@ export async function updateTeamAction(team: UpdateTeamRequestInput) {
     }
 
     const { id, ...parsedData } = updateTeamRequestSchema.parse(team);
-    const result = await queries.teams.updateTeam(id as string, parsedData);
+    const result = await queries.teams.updateTeam(id, parsedData);
 
     return { success: true, data: result };
   } catch (error) {
