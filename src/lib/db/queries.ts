@@ -55,7 +55,14 @@ export const queries = {
         );
     },
     createUser: (user: UserInsertRequest) => {
-      return db.insert(users).values(user).returning();
+      return db
+        .insert(users)
+        .values(user)
+        .onConflictDoUpdate({
+          target: users.email,
+          set: user,
+        })
+        .returning();
     },
     updateUser: (id: string, user: UserUpdateRequest) => {
       return db.update(users).set(user).where(eq(users.id, id)).returning();
