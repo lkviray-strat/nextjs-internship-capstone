@@ -8,10 +8,12 @@ import {
 import type {
   CreateKanbanBoardsRequestInput,
   CreateProjectRequestInput,
+  CreateProjectTeamRequestInput,
   UpdateProjectRequestInput,
 } from "@/src/types";
 import z from "zod";
 import { createKanbanBoardAction } from "./kanban-board-actions";
+import { createProjectTeamAction } from "./project-team-actions";
 
 export async function createProjectAction(project: CreateProjectRequestInput) {
   try {
@@ -23,6 +25,13 @@ export async function createProjectAction(project: CreateProjectRequestInput) {
       projectId: result[0].id,
     };
     await createKanbanBoardAction(kanbanBoard);
+
+    const projectTeam: CreateProjectTeamRequestInput = {
+      projectId: result[0].id,
+      teamId: project.createdByTeamId,
+      isOwner: true,
+    };
+    await createProjectTeamAction(projectTeam);
 
     return { success: true, data: result };
   } catch (error) {
