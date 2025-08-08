@@ -45,6 +45,11 @@ export const TEAM_MEMBER_ROLE_ENUM = [
   "owner",
 ] as const;
 
+export const TEAM_MEMBER_ROLE_DESIGNATION_PRIORITY = [
+  "admin",
+  "member",
+] as const;
+
 // pgEnums for drizzle schema
 export const taskStatusEnum = pgEnum("task_status", TASK_STATUS_ENUM);
 export const taskPriorityEnum = pgEnum("task_priority", TASK_PRIORITY_ENUM);
