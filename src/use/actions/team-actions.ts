@@ -8,9 +8,13 @@ import {
 import type {
   CreateTeamMemberRequestInput,
   CreateTeamRequestInput,
+  UpdateProjectRequestInput,
+  UpdateProjectTeamRequestInput,
   UpdateTeamRequestInput,
 } from "@/src/types";
 import z from "zod";
+import { updateProjectAction } from "./project-actions";
+import { updateProjectTeamAction } from "./project-team-actions";
 import { createTeamMembersAction } from "./team-member-actions";
 
 export async function createTeamAction(team: CreateTeamRequestInput) {
@@ -56,9 +60,13 @@ export async function updateTeamAction(team: UpdateTeamRequestInput) {
 
 export async function deleteTeamAction(teamId: string) {
   try {
-    const existingTeam = (await queries.teams.getTeamsById(teamId)).at(0);
+    const existingTeam = await queries.teams.getTeamsByIdWithProjects(teamId);
     if (!existingTeam) {
       throw new Error("Team with the given ID does not exist");
+    }
+
+    for (const project of existingTeam.projects) {
+      await reassignOrArchiveProject(project.projectId as string);
     }
 
     const result = await queries.teams.deleteTeam(teamId);
@@ -70,4 +78,27 @@ export async function deleteTeamAction(teamId: string) {
     }
     throw error;
   }
+}
+
+export async function reassignOrArchiveProject(projectId: string) {
+  const designation =
+    await queries.projectTeams.getProjectTeamsByProjectIdAsc(projectId);
+
+  if (designation.length === 0) {
+    const updateProject: UpdateProjectRequestInput = {
+      id: projectId,
+      status: "archived",
+    };
+    await updateProjectAction(updateProject);
+    return { success: true, data: null, action: "archived_project" };
+  }
+
+  const updatedProjectTeam: UpdateProjectTeamRequestInput = {
+    projectId: projectId,
+    teamId: designation[0].teamId as string,
+    isOwner: true,
+  };
+  await updateProjectTeamAction(updatedProjectTeam);
+
+  return { success: true, data: designation, action: "reassigned_project" };
 }
