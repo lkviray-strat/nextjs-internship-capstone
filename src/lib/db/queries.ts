@@ -416,7 +416,7 @@ export const queries = {
         )
         .returning();
     },
-    getProjectTeamsByIdsWithProjectWithCreatedById: (
+    getProjectTeamsByIdsWithProjectWithCreatedByTeamId: (
       projectId: string,
       teamId: string
     ) => {
@@ -429,7 +429,7 @@ export const queries = {
         with: {
           project: {
             columns: {
-              createdById: true,
+              createdByTeamId: true,
             },
           },
         },
