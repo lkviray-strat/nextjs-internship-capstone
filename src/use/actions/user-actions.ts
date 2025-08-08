@@ -10,7 +10,7 @@ import type {
 } from "@/src/types";
 import type { UserJSON } from "@clerk/nextjs/server";
 import z, { ZodError } from "zod";
-import { updateTeamAction } from "./team-actions";
+import { deleteTeamAction, updateTeamAction } from "./team-actions";
 import { updateTeamMembersAction } from "./team-member-actions";
 
 export async function createUserAction(clerkUser: UserJSON) {
@@ -85,7 +85,7 @@ export async function reassignOrDeleteTeam(teamId: string) {
       await queries.teamMembers.getTeamMembersByTeamIdAndRoleAsc(teamId, role);
 
     if (designation.length === 0) {
-      await queries.teams.deleteTeam(teamId);
+      await deleteTeamAction(teamId);
       return { success: true, data: null, action: "deleted_team" };
     }
 
