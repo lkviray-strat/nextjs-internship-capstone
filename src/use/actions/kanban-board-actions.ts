@@ -33,16 +33,16 @@ export async function createKanbanBoardAction(
     };
     await updateProjectAction(defaultKanban);
 
-    DEFAULT_KANBAN_BOARD_COLUMNS.map(async (colName, idx) => {
-      const name = enumToWord(colName);
-      const column: CreateKanbanColumnRequestInput = {
+    for (const column of DEFAULT_KANBAN_BOARD_COLUMNS) {
+      const name = enumToWord(column);
+      const kanbanColumn: CreateKanbanColumnRequestInput = {
         name,
         boardId: result[0].id,
-        order: idx + 1,
-        color: KANBAN_COLUMN_TW_COLORS[colName],
+        order: DEFAULT_KANBAN_BOARD_COLUMNS.indexOf(column) + 1,
+        color: KANBAN_COLUMN_TW_COLORS[column],
       };
-      await createKanbanColumnAction(column);
-    });
+      await createKanbanColumnAction(kanbanColumn);
+    }
 
     return { success: true, data: result };
   } catch (error) {
