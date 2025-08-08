@@ -84,24 +84,24 @@ export async function reassignOrDeleteTeam(teamId: string) {
     const designation =
       await queries.teamMembers.getTeamMembersByTeamIdAndRoleAsc(teamId, role);
 
-    if (designation) {
-      const updatedTeam: UpdateTeamRequestInput = {
-        id: teamId,
-        leaderId: designation[0].userId as string,
-      };
-      await updateTeamAction(updatedTeam);
-
-      const updatedTeamMember: UpdateTeamMemberRequestInput = {
-        userId: designation[0].userId as string,
-        teamId: teamId,
-        role: "owner",
-      };
-      await updateTeamMembersAction(updatedTeamMember);
-
-      return { success: true, data: designation, action: `promoted_${role}` };
+    if (designation.length === 0) {
+      await queries.teams.deleteTeam(teamId);
+      return { success: true, data: null, action: "deleted_team" };
     }
-  }
 
-  await queries.teams.deleteTeam(teamId);
-  return { success: true, data: null, action: "deleted_team" };
+    const updatedTeam: UpdateTeamRequestInput = {
+      id: teamId,
+      leaderId: designation[0].userId as string,
+    };
+    await updateTeamAction(updatedTeam);
+
+    const updatedTeamMember: UpdateTeamMemberRequestInput = {
+      userId: designation[0].userId as string,
+      teamId: teamId,
+      role: "owner",
+    };
+    await updateTeamMembersAction(updatedTeamMember);
+
+    return { success: true, data: designation, action: `promoted_${role}` };
+  }
 }
