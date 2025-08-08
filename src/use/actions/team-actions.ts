@@ -84,7 +84,7 @@ export async function reassignOrArchiveProject(projectId: string) {
   const designation =
     await queries.projectTeams.getProjectTeamsByProjectIdAsc(projectId);
 
-  if (designation.length === 0) {
+  if (designation.length === 1) {
     const updateProject: UpdateProjectRequestInput = {
       id: projectId,
       status: "archived",
