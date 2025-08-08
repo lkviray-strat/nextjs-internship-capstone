@@ -156,7 +156,7 @@ export const teamMembersSchema = z.object({
 export const projectTeamsSchema = z.object({
   projectId: z.guid(),
   teamId: z.guid(),
-  isCreator: z.boolean().optional(),
+  isOwner: z.boolean().optional(),
   createdAt: z.date().optional(),
 });
 

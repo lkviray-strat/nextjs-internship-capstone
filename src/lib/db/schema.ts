@@ -223,13 +223,13 @@ export const projectTeams = pgTable(
       onDelete: "cascade",
     }),
     teamId: uuid("team_id").references(() => teams.id, { onDelete: "cascade" }),
-    isCreator: boolean("is_creator").notNull().default(false), // Marks the creating team
+    isOwner: boolean("is_owner").notNull().default(false), // Marks the creating team
     createdAt: timestamp("created_at").defaultNow().notNull(),
   },
   (table) => [
     primaryKey({ columns: [table.projectId, table.teamId] }),
     index("project_teams_project_idx").on(table.projectId),
     index("project_teams_team_idx").on(table.teamId),
-    index("project_teams_creator_idx").on(table.isCreator),
+    index("project_teams_owner_idx").on(table.isOwner),
   ]
 );
