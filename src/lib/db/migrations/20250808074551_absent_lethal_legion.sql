@@ -1,0 +1,1 @@
+CREATE UNIQUE INDEX "project_teams_unique_owner_idx" ON "project_teams" USING btree ("project_id") WHERE is_owner = true;
