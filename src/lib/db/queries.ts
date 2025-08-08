@@ -8,6 +8,7 @@ import type {
   ProjectsInsertRequest,
   ProjectStatusEnum,
   ProjectsUpdateRequest,
+  ProjectTeamsInsertRequest,
   TaskPriorityEnum,
   TasksInsertRequest,
   TaskStatusEnum,
@@ -361,6 +362,36 @@ export const queries = {
         .select()
         .from(projectTeams)
         .where(eq(projectTeams.isCreator, isCreator));
+    },
+    createProjectTeams: (projectTeam: ProjectTeamsInsertRequest) => {
+      return db.insert(projectTeams).values(projectTeam).returning();
+    },
+    updateProjectTeams: (
+      projectId: string,
+      teamId: string,
+      projectTeam: ProjectTeamsInsertRequest
+    ) => {
+      return db
+        .update(projectTeams)
+        .set(projectTeam)
+        .where(
+          and(
+            eq(projectTeams.projectId, projectId),
+            eq(projectTeams.teamId, teamId)
+          )
+        )
+        .returning();
+    },
+    deleteProjectTeams: (projectId: string, teamId: string) => {
+      return db
+        .delete(projectTeams)
+        .where(
+          and(
+            eq(projectTeams.projectId, projectId),
+            eq(projectTeams.teamId, teamId)
+          )
+        )
+        .returning();
     },
   },
 };
