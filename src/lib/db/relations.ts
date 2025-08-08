@@ -67,6 +67,11 @@ export const commentsRelations = relations(comments, ({ one }) => ({
 export const projectsRelations = relations(projects, ({ many, one }) => ({
   teams: many(projectTeams),
   tasks: many(tasks),
+  createdByTeam: one(teams, {
+    fields: [projects.createdByTeamId],
+    references: [teams.id],
+    relationName: "project_creator_team",
+  }),
   createdBy: one(users, {
     fields: [projects.createdById],
     references: [users.id],
