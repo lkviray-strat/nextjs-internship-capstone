@@ -98,6 +98,18 @@ export const queries = {
     deleteTeam: (id: string) => {
       return db.delete(teams).where(eq(teams.id, id)).returning();
     },
+    getTeamsByIdWithProjects: (id: string) => {
+      return db.query.teams.findFirst({
+        where: (teams, { eq }) => eq(teams.id, id),
+        with: {
+          projects: {
+            columns: {
+              projectId: true,
+            },
+          },
+        },
+      });
+    },
   },
   tasks: {
     getAlltasks: () => {
@@ -368,11 +380,11 @@ export const queries = {
         .from(projectTeams)
         .where(eq(projectTeams.teamId, teamId));
     },
-    getProjectTeamsByIsCreator: (isCreator: boolean) => {
+    getProjectTeamsByIsOwner: (isOwner: boolean) => {
       return db
         .select()
         .from(projectTeams)
-        .where(eq(projectTeams.isCreator, isCreator));
+        .where(eq(projectTeams.isOwner, isOwner));
     },
     createProjectTeams: (projectTeam: ProjectTeamsInsertRequest) => {
       return db.insert(projectTeams).values(projectTeam).returning();
@@ -403,6 +415,25 @@ export const queries = {
           )
         )
         .returning();
+    },
+    getProjectTeamsByIdsWithProjectWithCreatedById: (
+      projectId: string,
+      teamId: string
+    ) => {
+      return db.query.projectTeams.findFirst({
+        where: (projectTeams, { eq, and }) =>
+          and(
+            eq(projectTeams.projectId, projectId),
+            eq(projectTeams.teamId, teamId)
+          ),
+        with: {
+          project: {
+            columns: {
+              createdById: true,
+            },
+          },
+        },
+      });
     },
   },
 };
