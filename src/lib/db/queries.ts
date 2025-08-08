@@ -435,5 +435,12 @@ export const queries = {
         },
       });
     },
+    getProjectTeamsByProjectIdAsc: (projectId: string) => {
+      return db
+        .select()
+        .from(projectTeams)
+        .where(eq(projectTeams.projectId, projectId))
+        .orderBy(asc(projectTeams.createdAt));
+    },
   },
 };
