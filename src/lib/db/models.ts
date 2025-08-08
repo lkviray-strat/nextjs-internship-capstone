@@ -230,5 +230,8 @@ export const projectTeams = pgTable(
     index("project_teams_project_idx").on(table.projectId),
     index("project_teams_team_idx").on(table.teamId),
     index("project_teams_owner_idx").on(table.isOwner),
+    uniqueIndex("project_teams_unique_owner_idx")
+      .on(table.projectId)
+      .where(sql`is_owner = true`),
   ]
 );
