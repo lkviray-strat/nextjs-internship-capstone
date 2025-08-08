@@ -117,6 +117,7 @@ export const projectsSchema = z.object({
   startDate: z.date(),
   endDate: z.date(),
   defaultBoardId: z.guid().nullable(),
+  createdByTeamId: z.guid(),
   createdById: z.string(),
   createdAt: z.date().optional(),
   updatedAt: z.date().optional(),

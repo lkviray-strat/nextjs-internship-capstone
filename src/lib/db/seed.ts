@@ -330,7 +330,10 @@ async function main() {
         if (creatorUser) {
           await tx
             .update(schema.projects)
-            .set({ createdById: creatorUser.userId })
+            .set({
+              createdById: creatorUser.userId,
+              createdByTeamId: creatorTeam.teamId,
+            })
             .where(sql`${schema.projects.id} = ${project.id}`);
         }
       }
