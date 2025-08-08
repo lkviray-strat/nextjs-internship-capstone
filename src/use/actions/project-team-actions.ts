@@ -65,7 +65,7 @@ export async function deleteProjectTeamAction(
 ) {
   try {
     const existingProjectTeam =
-      await queries.projectTeams.getProjectTeamsByIdsWithProjectWithCreatedById(
+      await queries.projectTeams.getProjectTeamsByIdsWithProjectWithCreatedByTeamId(
         projectId,
         teamId
       );
@@ -80,7 +80,11 @@ export async function deleteProjectTeamAction(
       throw new Error("Team with the given ID does not exist");
     }
 
-    if (existingProjectTeam.isOwner) {
+    if (
+      existingProjectTeam.isOwner ||
+      existingProjectTeam.teamId ===
+        existingProjectTeam.project?.createdByTeamId
+    ) {
       throw new Error("Transfer ownership before leaving the project team");
     }
 
