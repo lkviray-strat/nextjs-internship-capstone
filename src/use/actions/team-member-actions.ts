@@ -60,10 +60,10 @@ export async function updateTeamMembersAction(
 export async function deleteTeamMembersAction(userId: string, teamId: string) {
   try {
     const existingTeamMember =
-      (await queries.teamMembers.getTeamMembersByIdsWithTeamWithLeaderId(
+      await queries.teamMembers.getTeamMembersByIdsWithTeamWithLeaderId(
         userId,
         teamId
-      )) ?? null;
+      );
 
     if (!existingTeamMember) {
       throw new Error("Team member with the given ID does not exist");
@@ -79,11 +79,11 @@ export async function deleteTeamMembersAction(userId: string, teamId: string) {
     const existingMembers =
       await queries.teamMembers.getTeamMembersByTeamId(teamId);
 
+    const result = await queries.teamMembers.deleteTeamMembers(userId, teamId);
+
     if (existingMembers.length === 1 && existingMembers[0].userId === userId) {
       await deleteTeamAction(teamId);
     }
-
-    const result = await queries.teamMembers.deleteTeamMembers(userId, teamId);
 
     return { success: true, data: result };
   } catch (error) {
