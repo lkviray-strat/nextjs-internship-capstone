@@ -1,10 +1,18 @@
 "use server";
 
+import { db } from "@/src/lib/db";
+import { TEAM_MEMBER_ROLE_DESIGNATION_PRIORITY } from "@/src/lib/db/enums";
 import { queries } from "@/src/lib/db/queries";
 import { clerkUsersSchema } from "@/src/lib/validations";
-import type { ClerkUsersInput } from "@/src/types";
+import type {
+  ClerkUsersInput,
+  UpdateTeamMemberRequestInput,
+  UpdateTeamRequestInput,
+} from "@/src/types";
 import type { UserJSON } from "@clerk/nextjs/server";
 import z, { ZodError } from "zod";
+import { updateTeamAction } from "./team-actions";
+import { updateTeamMembersAction } from "./team-member-actions";
 
 export async function createUserAction(clerkUser: UserJSON) {
   try {
@@ -53,11 +61,15 @@ export async function updateUserAction(clerkUser: UserJSON) {
 
 export async function deleteUserAction(userId: string) {
   try {
-    const user = (await queries.users.getUsersById(userId)).at(0);
+    const user = await queries.users.getUsersByIdWithTeams(userId);
 
     if (!user) {
       console.log("⚠️  User with the given ID does not exist");
       return { success: true };
+    }
+
+    for (const team of user.ledTeams) {
+      await reassignOrDeleteTeam(team.id);
     }
 
     const data = await queries.users.deleteUser(userId);
@@ -66,4 +78,31 @@ export async function deleteUserAction(userId: string) {
   } catch (error) {
     return { success: false, error: error };
   }
+}
+
+export async function reassignOrDeleteTeam(teamId: string, tx = db) {
+  for (const role of TEAM_MEMBER_ROLE_DESIGNATION_PRIORITY) {
+    const designation =
+      await queries.teamMembers.getTeamMembersByTeamIdAndRoleAsc(teamId, role);
+
+    if (designation) {
+      const updatedTeam: UpdateTeamRequestInput = {
+        id: teamId,
+        leaderId: designation[0].userId as string,
+      };
+      await updateTeamAction(updatedTeam);
+
+      const updatedTeamMember: UpdateTeamMemberRequestInput = {
+        userId: designation[0].userId as string,
+        teamId: teamId,
+        role: "owner",
+      };
+      await updateTeamMembersAction(updatedTeamMember);
+
+      return { success: true, data: designation, action: `promoted_${role}` };
+    }
+  }
+
+  await queries.teams.deleteTeam(teamId);
+  return { success: true, data: null, action: "deleted_team" };
 }

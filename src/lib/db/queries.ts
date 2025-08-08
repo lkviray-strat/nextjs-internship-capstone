@@ -19,7 +19,7 @@ import type {
   UserInsertRequest,
   UserUpdateRequest,
 } from "@/src/types";
-import { and, eq } from "drizzle-orm";
+import { and, asc, eq } from "drizzle-orm";
 import { db } from ".";
 import type { TeamMemberRoleEnum } from "../../types/enums";
 import {
@@ -61,6 +61,18 @@ export const queries = {
     },
     deleteUser: (id: string) => {
       return db.delete(users).where(eq(users.id, id)).returning();
+    },
+    getUsersByIdWithTeams: (id: string) => {
+      return db.query.users.findFirst({
+        where: (users, { eq }) => eq(users.id, id),
+        with: {
+          ledTeams: {
+            columns: {
+              id: true,
+            },
+          },
+        },
+      });
     },
   },
   teams: {
@@ -276,6 +288,16 @@ export const queries = {
     },
     getTeamMembersByRole: (role: TeamMemberRoleEnum) => {
       return db.select().from(teamMembers).where(eq(teamMembers.role, role));
+    },
+    getTeamMembersByTeamIdAndRoleAsc: (
+      teamId: string,
+      role: TeamMemberRoleEnum
+    ) => {
+      return db
+        .select()
+        .from(teamMembers)
+        .where(and(eq(teamMembers.teamId, teamId), eq(teamMembers.role, role)))
+        .orderBy(asc(teamMembers.createdAt));
     },
     createTeamMembers: (member: TeamMembersInsertRequest) => {
       return db.insert(teamMembers).values(member).returning();
