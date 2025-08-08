@@ -345,6 +345,17 @@ export const queries = {
     getAllProjectTeams: () => {
       return db.select().from(projectTeams);
     },
+    getProjectTeamsByIds: (projectId: string, teamId: string) => {
+      return db
+        .select()
+        .from(projectTeams)
+        .where(
+          and(
+            eq(projectTeams.projectId, projectId),
+            eq(projectTeams.teamId, teamId)
+          )
+        );
+    },
     getProjectTeamsByProjectId: (projectId: string) => {
       return db
         .select()
