@@ -1,6 +1,5 @@
 "use server";
 
-import { db } from "@/src/lib/db";
 import { TEAM_MEMBER_ROLE_DESIGNATION_PRIORITY } from "@/src/lib/db/enums";
 import { queries } from "@/src/lib/db/queries";
 import { clerkUsersSchema } from "@/src/lib/validations";
@@ -80,7 +79,7 @@ export async function deleteUserAction(userId: string) {
   }
 }
 
-export async function reassignOrDeleteTeam(teamId: string, tx = db) {
+export async function reassignOrDeleteTeam(teamId: string) {
   for (const role of TEAM_MEMBER_ROLE_DESIGNATION_PRIORITY) {
     const designation =
       await queries.teamMembers.getTeamMembersByTeamIdAndRoleAsc(teamId, role);
