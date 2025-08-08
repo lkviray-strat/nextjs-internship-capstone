@@ -307,7 +307,7 @@ async function main() {
       return assignedTeams.map((team, index) => ({
         projectId: project.id,
         teamId: team.id,
-        isCreator: index === 0, // First team is the creator
+        isOwner: index === 0, // First team is the owner
         createdAt: faker.date.past(),
       }));
     });
@@ -319,7 +319,7 @@ async function main() {
 
     for (const project of projects) {
       const creatorTeam = projectTeamsData.find(
-        (pt) => pt.projectId === project.id && pt.isCreator
+        (pt) => pt.projectId === project.id && pt.isOwner
       );
       if (creatorTeam) {
         const teamMembers = teamMembersData.filter(
