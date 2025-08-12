@@ -3,36 +3,17 @@ import { faker } from "@faker-js/faker";
 import "dotenv/config";
 import { sql } from "drizzle-orm";
 import { seed } from "drizzle-seed";
-import { db } from ".";
-import * as schema from "./schema";
-
-const config = {
-  // Number of records to generate for each table
-  counts: {
-    users: 20,
-    teams: 10,
-    projects: 15,
-    tasks: 100,
-    comments: 200,
-    kanbanBoards: 8,
-    kanbanColumns: 40, // ~5 per board
-  },
-
-  // Relationship configuration
-  relationships: {
-    teamMembersPerTeam: { min: 1, max: 5 },
-    teamsPerProject: { min: 1, max: 3 },
-    taskAssignmentChance: 0.7,
-    taskDueDateChance: 0.5,
-  },
-
-  // Role distribution (must sum to 1)
-  roles: {
-    admin: 0.2,
-    member: 0.5,
-    viewer: 0.2,
-  },
-};
+import { db } from "..";
+import * as schema from "../schema";
+import { config } from "./config";
+import {
+  kanbanBoardNames,
+  kanbanColumnColors,
+  kanbanColumnNames,
+  projectNames,
+  taskTitles,
+  teamNames,
+} from "./data";
 
 function getRandomElements<T>(array: T[], count: number): T[] {
   const shuffled = [...array].sort(() => 0.5 - Math.random());
@@ -74,87 +55,6 @@ async function main() {
     kanbanBoards: schema.kanbanBoards,
     kanbanColumns: schema.kanbanColumns,
   };
-
-  const teamNames = [
-    "Software Team",
-    "Product Team",
-    "Development Team",
-    "QA Team",
-    "Design Team",
-    "DevOps Team",
-    "Support Team",
-    "Research Team",
-    "Marketing Team",
-    "Data Team",
-  ];
-
-  const projectNames = [
-    "Apollo CRM",
-    "Nebula Analytics",
-    "Quantum Tasker",
-    "PixelForge Studio",
-    "SprintFlow",
-    "CodeAtlas",
-    "DevSync Portal",
-    "BugTracker Pro",
-    "ReleaseRadar",
-    "AgileBoard",
-    "StackVision",
-    "CloudPilot",
-    "TestLab",
-    "FeaturePulse",
-    "DeployMate",
-  ];
-
-  const taskTitles = [
-    "Design login page UI",
-    "Implement authentication flow",
-    "Set up database schema",
-    "Write API documentation",
-    "Fix bug in user registration",
-    "Optimize dashboard performance",
-    "Create onboarding tutorial",
-    "Integrate third-party analytics",
-    "Refactor project structure",
-    "Develop notification system",
-    "Test payment gateway integration",
-    "Update dependencies",
-    "Configure CI/CD pipeline",
-    "Review pull requests",
-    "Deploy to staging environment",
-    "Conduct usability testing",
-    "Implement role-based access control",
-    "Write unit tests for models",
-    "Improve error handling",
-    "Schedule team meeting",
-  ];
-
-  const kanbanBoardNames = [
-    "Sprint Board",
-    "Product Roadmap",
-    "Bug Tracking",
-    "Release Planning",
-    "Design Workflow",
-    "QA Pipeline",
-    "Feature Development",
-    "Support Tickets",
-  ];
-
-  const kanbanColumnNames = [
-    "Backlog",
-    "To Do",
-    "In Progress",
-    "Review",
-    "Done",
-  ];
-
-  const kanbanColumnColors = [
-    "#A3A3A3", // Backlog - gray
-    "#2563EB", // To Do - blue
-    "#F59E42", // In Progress - orange
-    "#FACC15", // Review - yellow
-    "#22C55E", // Done - green
-  ];
 
   const projectStatusNames = schema.PROJECT_STATUS_ENUM.map((status) =>
     status.toLowerCase()
