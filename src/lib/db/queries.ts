@@ -30,6 +30,7 @@ import {
   permissions,
   projects,
   projectTeams,
+  rolePermissions,
   roles,
   tasks,
   teamMembers,
@@ -503,6 +504,23 @@ export const queries = {
             eq(permissions.resource, resource)
           )
         );
+    },
+  },
+  rolePermissions: {
+    getAllRolePermissions: () => {
+      return db.select().from(rolePermissions);
+    },
+    getRolePermissionsByRoleId: (roleId: string) => {
+      return db
+        .select()
+        .from(rolePermissions)
+        .where(eq(rolePermissions.roleId, roleId));
+    },
+    getRolePermissionsByPermissionId: (permissionId: string) => {
+      return db
+        .select()
+        .from(rolePermissions)
+        .where(eq(rolePermissions.permissionId, permissionId));
     },
   },
 };
