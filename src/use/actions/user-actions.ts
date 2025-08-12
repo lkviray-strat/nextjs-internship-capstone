@@ -67,7 +67,7 @@ export async function deleteUserAction(userId: string) {
     }
 
     for (const team of user.ledTeams) {
-      await reassignOrDeleteTeam(team.id);
+      await reassignOrDeleteTeam(team.id, user.id);
     }
 
     const data = await queries.users.deleteUser(userId);
@@ -78,7 +78,7 @@ export async function deleteUserAction(userId: string) {
   }
 }
 
-export async function reassignOrDeleteTeam(teamId: string) {
+export async function reassignOrDeleteTeam(teamId: string, userId: string) {
   const roles = await queries.roles.getAllRolesByCanLead(true);
 
   for (const role of roles) {
@@ -88,26 +88,26 @@ export async function reassignOrDeleteTeam(teamId: string) {
         role.id
       );
 
-    if (designation.length === 0) {
-      await deleteTeamAction(teamId);
-      return { success: true, data: null, action: "deleted_team" };
+    if (designation.length > 0 && designation[0].userId !== userId) {
+      const updatedTeam: UpdateTeamRequestInput = {
+        id: teamId,
+        leaderId: designation[0].userId as string,
+      };
+      await updateTeamAction(updatedTeam);
+
+      const firstPriorityRole = await queries.roles.getRoleByPriority(0);
+
+      const updatedTeamMember: UpdateTeamMemberRequestInput = {
+        userId: designation[0].userId as string,
+        teamId: teamId,
+        roleId: firstPriorityRole[0].id,
+      };
+      await updateTeamMembersAction(updatedTeamMember);
+
+      return { success: true, data: designation, action: `promoted_${role}` };
     }
-
-    const updatedTeam: UpdateTeamRequestInput = {
-      id: teamId,
-      leaderId: designation[0].userId as string,
-    };
-    await updateTeamAction(updatedTeam);
-
-    const firstPriorityRole = await queries.roles.getRoleByPriority(0);
-
-    const updatedTeamMember: UpdateTeamMemberRequestInput = {
-      userId: designation[0].userId as string,
-      teamId: teamId,
-      roleId: firstPriorityRole[0].id,
-    };
-    await updateTeamMembersAction(updatedTeamMember);
-
-    return { success: true, data: designation, action: `promoted_${role}` };
   }
+
+  await deleteTeamAction(teamId);
+  return { success: true, data: null, action: "deleted_team" };
 }
