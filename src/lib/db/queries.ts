@@ -361,6 +361,12 @@ export const queries = {
         },
       });
     },
+    getTeamMembersCountByTeamIdAndRoleId: (teamId: string, roleId: string) => {
+      return db.$count(
+        teamMembers,
+        and(eq(teamMembers.teamId, teamId), eq(teamMembers.roleId, roleId))
+      );
+    },
   },
   projectTeams: {
     getAllProjectTeams: () => {
