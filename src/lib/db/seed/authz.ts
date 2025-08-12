@@ -1,39 +1,8 @@
 import type { PermissionInsertRequest, RoleInsertRequest } from "@/src/types";
 import "dotenv/config";
-import { db } from ".";
-import * as schema from "./schema";
-
-export const authorizations = {
-  owner: {
-    priority: 0,
-    canLead: true,
-    permissions: [
-      "create:project",
-      "view:project",
-      "update:project",
-      "delete:project",
-      "create:team",
-      "view:team",
-      "update:team",
-      "delete:team",
-    ],
-  },
-  admin: {
-    priority: 1,
-    canLead: true,
-    permissions: ["view:project", "update:project", "view:team", "update:team"],
-  },
-  member: {
-    priority: 2,
-    canLead: true,
-    permissions: ["view:project", "view:team"],
-  },
-  viewer: {
-    priority: 3,
-    canLead: false,
-    permissions: [],
-  },
-} as const;
+import { db } from "..";
+import * as schema from "../schema";
+import { authorizations } from "./config";
 
 export const roles: RoleInsertRequest[] = Object.entries(authorizations).map(
   ([name, { priority, canLead }]) => ({
