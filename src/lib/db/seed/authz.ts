@@ -1,5 +1,6 @@
 import type { PermissionInsertRequest, RoleInsertRequest } from "@/src/types";
 import "dotenv/config";
+import { sql } from "drizzle-orm";
 import { db } from "..";
 import * as schema from "../schema";
 import { authorizations } from "./config";
@@ -25,14 +26,31 @@ export const permissions: PermissionInsertRequest[] = Array.from(
 
 async function main() {
   await db.transaction(async (tx) => {
-    console.log("🧹 Resetting Roles & Permissions Database...");
-    await tx.delete(schema.roles);
-    await tx.delete(schema.permissions);
-    await tx.delete(schema.rolePermissions);
-    console.log("✅ Roles & Permissions reset successfully");
+    console.log("🌱 Seeding Authorization tables...");
 
-    await tx.insert(schema.roles).values(roles);
-    await tx.insert(schema.permissions).values(permissions);
+    await tx.delete(schema.rolePermissions);
+
+    await tx
+      .insert(schema.roles)
+      .values(roles)
+      .onConflictDoUpdate({
+        target: [schema.roles.name],
+        set: {
+          description: sql`excluded.description`,
+          priority: sql`excluded.priority`,
+          canLead: sql`excluded.can_lead`,
+        },
+      });
+    await tx
+      .insert(schema.permissions)
+      .values(permissions)
+      .onConflictDoUpdate({
+        target: [schema.permissions.action, schema.permissions.resource],
+        set: {
+          action: sql`excluded.action`,
+          resource: sql`excluded.resource`,
+        },
+      });
 
     const existingRoles = await tx.select().from(schema.roles);
     const existingPermissions = await tx.select().from(schema.permissions);
