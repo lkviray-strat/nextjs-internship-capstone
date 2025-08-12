@@ -197,7 +197,9 @@ export const teamMembers = pgTable(
       onDelete: "cascade",
     }),
     teamId: uuid("team_id").references(() => teams.id, { onDelete: "cascade" }),
-    role: uuid("role").references(() => roles.id, { onDelete: "restrict" }),
+    roleId: uuid("role_id")
+      .references(() => roles.id, { onDelete: "restrict" })
+      .notNull(),
     createdAt: timestamp("created_at").defaultNow().notNull(),
   },
   (table) => [
@@ -207,7 +209,7 @@ export const teamMembers = pgTable(
       .where(sql`role = 'owner'`),
     index("team_members_user_idx").on(table.userId),
     index("team_members_team_idx").on(table.teamId),
-    index("team_members_role_idx").on(table.role),
+    index("team_members_role_idx").on(table.roleId),
   ]
 );
 
