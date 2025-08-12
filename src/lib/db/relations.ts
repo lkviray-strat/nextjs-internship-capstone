@@ -3,8 +3,11 @@ import {
   comments,
   kanbanBoards,
   kanbanColumns,
+  permissions,
   projects,
   projectTeams,
+  rolePermissions,
+  roles,
   tasks,
   teamMembers,
   teams,
@@ -115,6 +118,10 @@ export const teamMembersRelations = relations(teamMembers, ({ one }) => ({
     fields: [teamMembers.teamId],
     references: [teams.id],
   }),
+  role: one(roles, {
+    fields: [teamMembers.role],
+    references: [roles.id],
+  }),
 }));
 
 export const projectTeamsRelations = relations(projectTeams, ({ one }) => ({
@@ -127,3 +134,26 @@ export const projectTeamsRelations = relations(projectTeams, ({ one }) => ({
     references: [teams.id],
   }),
 }));
+
+export const rolesRelations = relations(roles, ({ many }) => ({
+  rolePermissions: many(rolePermissions),
+  teamMembers: many(teamMembers),
+}));
+
+export const permissionsRelations = relations(permissions, ({ many }) => ({
+  rolePermissions: many(rolePermissions),
+}));
+
+export const rolePermissionsRelations = relations(
+  rolePermissions,
+  ({ one }) => ({
+    role: one(roles, {
+      fields: [rolePermissions.roleId],
+      references: [roles.id],
+    }),
+    permission: one(permissions, {
+      fields: [rolePermissions.permissionId],
+      references: [permissions.id],
+    }),
+  })
+);
