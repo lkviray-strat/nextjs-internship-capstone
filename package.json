@@ -23,7 +23,9 @@
     "d:gen": "drizzle-kit generate",
     "d:push": "drizzle-kit push",
     "d:migrate": "drizzle-kit migrate",
-    "d:seed": "tsx src/lib/db/seed.ts",
+    "d:seed-auth": "tsx src/lib/db/seed.auth.ts",
+    "d:seed-data": "tsx src/lib/db/seed.data.ts",
+    "d:seed": "tsx src/lib/db/seed.auth.ts && tsx src/lib/db/seed.data.ts",
     "test-query": "tsx src/lib/db/__test__/queries-test.ts"
   },
   "dependencies": {
