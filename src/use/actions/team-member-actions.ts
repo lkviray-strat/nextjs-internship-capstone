@@ -40,6 +40,19 @@ export async function updateTeamMembersAction(
       throw new Error("Team member with the given ID does not exist");
     }
 
+    const highestRolePriority = await queries.roles.getRoleByPriority(0);
+    const highestRoleCount =
+      await queries.teamMembers.getTeamMembersCountByTeamIdAndRoleId(
+        existingTeamMember.teamId as string,
+        highestRolePriority[0].id
+      );
+    if (
+      teamMember.roleId === highestRolePriority[0].id &&
+      highestRoleCount > 1
+    ) {
+      throw new Error("Each team can only have two highest ranking role");
+    }
+
     const { userId, teamId, ...parsedData } =
       createTeamMemberRequestSchema.parse(teamMember);
     const result = await queries.teamMembers.updateTeamMembers(
