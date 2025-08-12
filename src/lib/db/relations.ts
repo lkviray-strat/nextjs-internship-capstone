@@ -119,7 +119,7 @@ export const teamMembersRelations = relations(teamMembers, ({ one }) => ({
     references: [teams.id],
   }),
   role: one(roles, {
-    fields: [teamMembers.role],
+    fields: [teamMembers.roleId],
     references: [roles.id],
   }),
 }));
