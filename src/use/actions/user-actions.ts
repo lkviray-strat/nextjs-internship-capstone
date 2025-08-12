@@ -1,6 +1,5 @@
 "use server";
 
-import { TEAM_MEMBER_ROLE_DESIGNATION_PRIORITY } from "@/src/lib/db/enums";
 import { queries } from "@/src/lib/db/queries";
 import { clerkUsersSchema } from "@/src/lib/validations";
 import type {
@@ -80,9 +79,14 @@ export async function deleteUserAction(userId: string) {
 }
 
 export async function reassignOrDeleteTeam(teamId: string) {
-  for (const role of TEAM_MEMBER_ROLE_DESIGNATION_PRIORITY) {
+  const roles = await queries.roles.getAllRolesByCanLead(true);
+
+  for (const role of roles) {
     const designation =
-      await queries.teamMembers.getTeamMembersByTeamIdAndRoleAsc(teamId, role);
+      await queries.teamMembers.getTeamMembersByTeamIdAndRoleAsc(
+        teamId,
+        role.id
+      );
 
     if (designation.length === 0) {
       await deleteTeamAction(teamId);
@@ -95,10 +99,12 @@ export async function reassignOrDeleteTeam(teamId: string) {
     };
     await updateTeamAction(updatedTeam);
 
+    const firstPriorityRole = await queries.roles.getRoleByPriority(0);
+
     const updatedTeamMember: UpdateTeamMemberRequestInput = {
       userId: designation[0].userId as string,
       teamId: teamId,
-      role: "owner",
+      roleId: firstPriorityRole[0].id,
     };
     await updateTeamMembersAction(updatedTeamMember);
 

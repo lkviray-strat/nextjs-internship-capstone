@@ -69,8 +69,11 @@ export async function deleteTeamMembersAction(userId: string, teamId: string) {
       throw new Error("Team member with the given ID does not exist");
     }
 
+    const rolePriority = await queries.roles.getRoleById(
+      existingTeamMember.roleId ?? ""
+    );
     if (
-      existingTeamMember.role === "owner" ||
+      rolePriority[0].priority < 1 ||
       existingTeamMember.userId === existingTeamMember.team?.leaderId
     ) {
       throw new Error("Cannot leave as the team leader or owner of the team");
