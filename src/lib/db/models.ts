@@ -12,9 +12,9 @@ import {
   varchar,
 } from "drizzle-orm/pg-core";
 import {
+  permissionActionsEnum,
+  permissionResourcesEnum,
   projectStatusEnum,
-  roleActionsEnum,
-  roleResourcesEnum,
   taskPriorityEnum,
 } from "./enums";
 
@@ -255,8 +255,8 @@ export const permissions = pgTable(
   "permissions",
   {
     id: uuid("id").primaryKey().defaultRandom(),
-    action: roleActionsEnum("action").notNull(),
-    resource: roleResourcesEnum("resource").notNull(),
+    action: permissionActionsEnum("action").notNull(),
+    resource: permissionResourcesEnum("resource").notNull(),
   },
   (table) => [
     uniqueIndex("permissions_action_resource_idx").on(
