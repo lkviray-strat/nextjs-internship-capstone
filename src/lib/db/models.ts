@@ -245,8 +245,8 @@ export const roles = pgTable(
     canLead: boolean("can_lead").notNull().default(false),
   },
   (table) => [
-    index("roles_name_idx").on(table.name),
-    index("roles_priority_idx").on(table.priority),
+    uniqueIndex("roles_name_idx").on(table.name),
+    uniqueIndex("roles_priority_idx").on(table.priority),
   ]
 );
 
