@@ -13,9 +13,9 @@ import {
 } from "drizzle-orm/pg-core";
 import {
   projectStatusEnum,
+  roleActionsEnum,
+  roleResourcesEnum,
   taskPriorityEnum,
-  taskStatusEnum,
-  teamMemberRoleEnum,
 } from "./enums";
 
 export const users = pgTable(
@@ -66,7 +66,6 @@ export const tasks = pgTable(
     projectId: uuid("project_id").references(() => projects.id, {
       onDelete: "cascade",
     }),
-    status: taskStatusEnum("status").notNull().default("backlog"),
     priority: taskPriorityEnum("priority").notNull().default("low"),
     dueDate: timestamp("due_date"),
     estimatedHours: integer("estimated_hours"),
@@ -94,12 +93,10 @@ export const tasks = pgTable(
     ),
     index("tasks_project_idx").on(table.projectId),
     index("tasks_title_idx").on(table.title),
-    index("tasks_status_idx").on(table.status),
     index("tasks_priority_idx").on(table.priority),
     index("tasks_assignee_idx").on(table.assigneeId),
     index("tasks_due_date_idx").on(table.dueDate),
     index("tasks_creator_idx").on(table.createdById),
-    index("tasks_status_priority_idx").on(table.status, table.priority),
     index("tasks_kanban_column_idx").on(table.kanbanColumnId),
     index("tasks_order_idx").on(table.order),
   ]
@@ -200,7 +197,7 @@ export const teamMembers = pgTable(
       onDelete: "cascade",
     }),
     teamId: uuid("team_id").references(() => teams.id, { onDelete: "cascade" }),
-    role: teamMemberRoleEnum("role").notNull().default("member"),
+    role: uuid("role").references(() => roles.id, { onDelete: "restrict" }),
     createdAt: timestamp("created_at").defaultNow().notNull(),
   },
   (table) => [
@@ -233,5 +230,59 @@ export const projectTeams = pgTable(
     uniqueIndex("project_teams_unique_owner_idx")
       .on(table.projectId)
       .where(sql`is_owner = true`),
+  ]
+);
+
+// ==================================================================
+
+// Roles table
+export const roles = pgTable(
+  "roles",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    name: varchar("name", { length: 50 }).notNull().unique(),
+    description: text("description"),
+    priority: integer("priority").notNull(),
+    canLead: boolean("can_lead").notNull().default(false),
+  },
+  (table) => [
+    index("roles_name_idx").on(table.name),
+    index("roles_priority_idx").on(table.priority),
+  ]
+);
+
+// Permissions table
+export const permissions = pgTable(
+  "permissions",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    action: roleActionsEnum("action").notNull(),
+    resource: roleResourcesEnum("resource").notNull(),
+  },
+  (table) => [
+    uniqueIndex("permissions_action_resource_idx").on(
+      table.action,
+      table.resource
+    ),
+    index("permissions_action_idx").on(table.action),
+    index("permissions_resource_idx").on(table.resource),
+  ]
+);
+
+// Role Permissions (junction table for roles and permissions)
+export const rolePermissions = pgTable(
+  "role_permissions",
+  {
+    roleId: uuid("role_id").references(() => roles.id, {
+      onDelete: "cascade",
+    }),
+    permissionId: uuid("permission_id").references(() => permissions.id, {
+      onDelete: "cascade",
+    }),
+  },
+  (table) => [
+    primaryKey({ columns: [table.roleId, table.permissionId] }),
+    index("role_permissions_role_idx").on(table.roleId),
+    index("role_permissions_permission_idx").on(table.permissionId),
   ]
 );
