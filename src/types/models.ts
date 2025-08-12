@@ -2,14 +2,17 @@ import {
   comments,
   kanbanBoards,
   kanbanColumns,
+  permissions,
   projects,
   projectTeams,
+  rolePermissions,
+  roles,
   tasks,
   teamMembers,
   teams,
   users,
 } from "@/src/lib/db/schema";
-import { InferInsertModel, InferSelectModel } from "drizzle-orm";
+import type { InferInsertModel, InferSelectModel } from "drizzle-orm";
 
 // Model Types
 export type User = InferSelectModel<typeof users>;
@@ -48,4 +51,16 @@ export type TeamMembersUpdateRequest = Partial<
 >;
 export type ProjectTeamsUpdateRequest = Partial<
   InferInsertModel<typeof projectTeams>
+>;
+
+// ============================================
+
+export type Role = InferSelectModel<typeof roles>;
+export type Permission = InferSelectModel<typeof permissions>;
+export type RolePermissions = InferSelectModel<typeof rolePermissions>;
+
+export type RoleInsertRequest = InferInsertModel<typeof roles>;
+export type PermissionInsertRequest = InferInsertModel<typeof permissions>;
+export type RolePermissionsInsertRequest = InferInsertModel<
+  typeof rolePermissions
 >;
