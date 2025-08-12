@@ -1,7 +1,8 @@
+import type { Role } from "@/src/types";
 import { faker } from "@faker-js/faker";
 import "dotenv/config";
 import { sql } from "drizzle-orm";
-import { reset, seed } from "drizzle-seed";
+import { seed } from "drizzle-seed";
 import { db } from ".";
 import * as schema from "./schema";
 
@@ -42,18 +43,24 @@ function getRandomElement<T>(array: T[]): T {
   return array[Math.floor(Math.random() * array.length)];
 }
 
-function getRandomRole(): typeof schema.teamMembers.$inferInsert.role {
+function getRandomRole(): typeof schema.teamMembers.$inferInsert.roleId {
   const rand = Math.random();
   let cumulative = 0;
 
   for (const [role, probability] of Object.entries(config.roles)) {
     cumulative += probability;
     if (rand <= cumulative) {
-      return role as typeof schema.teamMembers.$inferInsert.role;
+      return role as typeof schema.teamMembers.$inferInsert.roleId;
     }
   }
 
   return "member";
+}
+
+function getRoleId(roleName: string, roles: Role[]) {
+  const role = roles.find((r) => r.name === roleName);
+  if (!role) throw new Error(`Role not found: ${roleName}`);
+  return role.id;
 }
 
 async function main() {
@@ -157,14 +164,18 @@ async function main() {
     priority.toLowerCase()
   );
 
-  const taskStatusNames = schema.TASK_STATUS_ENUM.map((status) =>
-    status.toLowerCase()
-  );
-
   await db.transaction(async (tx) => {
     // Step 1: Reset the database
-    console.log("🧹 Resetting database...");
-    await reset(tx, schema);
+    console.log("\n🧹 Resetting Dummy Database...");
+    await tx.delete(schema.users);
+    await tx.delete(schema.teams);
+    await tx.delete(schema.projects);
+    await tx.delete(schema.tasks);
+    await tx.delete(schema.comments);
+    await tx.delete(schema.kanbanBoards);
+    await tx.delete(schema.kanbanColumns);
+    await tx.delete(schema.teamMembers);
+    await tx.delete(schema.projectTeams);
     console.log("✅ Database reset successfully");
 
     // Step 2: Seed main tables with configured counts
@@ -209,7 +220,6 @@ async function main() {
           }),
           title: f.valuesFromArray({ values: taskTitles }),
           description: f.loremIpsum({ sentencesCount: 4 }),
-          status: f.valuesFromArray({ values: taskStatusNames }),
           priority: f.valuesFromArray({ values: taskPriorityNames }),
           taskNumber: f.int({ isUnique: true, minValue: 1 }),
           order: f.int({ isUnique: true, minValue: 0 }),
@@ -251,10 +261,8 @@ async function main() {
       SELECT setval(pg_get_serial_sequence('tasks', 'id'), coalesce(max(id), 10000) + 1, false) FROM tasks
       `
     );
-    console.log("✅ Updated Sequence for tasks");
 
     // Step 3: Fetch generated IDs for relationships
-    console.log("🔍 Fetching data for junction tables...");
     const users = await tx.select().from(schema.users);
     const teams = await tx.select().from(schema.teams);
     const projects = await tx.select().from(schema.projects);
@@ -266,27 +274,31 @@ async function main() {
     // Step 4: Seed junction tables
     console.log("🌿 Seeding junction tables...");
 
+    const roles = await tx.select().from(schema.roles);
+
     const teamMembersData = teams.flatMap((team) => {
       const memberCount = faker.number.int(
         config.relationships.teamMembersPerTeam
       );
       const members = getRandomElements(users, memberCount);
 
-      return members.map((user, index) => ({
-        userId: user.id,
-        teamId: team.id,
-        role: index === 0 ? "owner" : getRandomRole(),
-        createdAt: faker.date.past(),
-      }));
+      return members.map((user, index) => {
+        const roleName = index === 0 ? "owner" : getRandomRole();
+        return {
+          userId: user.id,
+          teamId: team.id,
+          roleId: getRoleId(roleName as string, roles), // <-- use roleId here instead of string role
+          createdAt: faker.date.past(),
+        };
+      });
     });
 
     await tx.insert(schema.teamMembers).values(teamMembersData);
-    console.log(`✅ Seeded ${teamMembersData.length} team members`);
 
     // Update team leaders based on the owners we just created
     for (const team of teams) {
       const owner = teamMembersData.find(
-        (tm) => tm.teamId === team.id && tm.role === "owner"
+        (tm) => tm.teamId === team.id && tm.roleId === getRoleId("owner", roles)
       );
       if (owner) {
         await tx
@@ -295,7 +307,6 @@ async function main() {
           .where(sql`${schema.teams.id} = ${team.id}`);
       }
     }
-    console.log("✅ Updated team leaders");
 
     // Seed project teams (teams to projects)
     const projectTeamsData = projects.flatMap((project) => {
@@ -313,9 +324,6 @@ async function main() {
     });
 
     await tx.insert(schema.projectTeams).values(projectTeamsData);
-    console.log(
-      `✅ Seeded ${projectTeamsData.length} project-team relationships`
-    );
 
     for (const project of projects) {
       const creatorTeam = projectTeamsData.find(
@@ -338,7 +346,6 @@ async function main() {
         }
       }
     }
-    console.log("✅ Updated project creators");
   });
 
   console.log("🎉 Database seeding completed successfully");
