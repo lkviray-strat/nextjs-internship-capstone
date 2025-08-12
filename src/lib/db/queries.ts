@@ -27,6 +27,7 @@ import {
   kanbanColumns,
   projects,
   projectTeams,
+  roles,
   tasks,
   teamMembers,
   teams,
@@ -445,6 +446,26 @@ export const queries = {
         .from(projectTeams)
         .where(eq(projectTeams.projectId, projectId))
         .orderBy(asc(projectTeams.createdAt));
+    },
+  },
+  roles: {
+    getAllRoles: () => {
+      return db.select().from(roles);
+    },
+    getAllRolesByPriorityAsc: () => {
+      return db.select().from(roles).orderBy(asc(roles.priority));
+    },
+    getAllRolesByCanLead: (canLead: boolean) => {
+      return db.select().from(roles).where(eq(roles.canLead, canLead));
+    },
+    getRoleById: (id: string) => {
+      return db.select().from(roles).where(eq(roles.id, id));
+    },
+    getRoleByName: (name: string) => {
+      return db.select().from(roles).where(eq(roles.name, name));
+    },
+    getRoleByPriority: (priority: number) => {
+      return db.select().from(roles).where(eq(roles.priority, priority));
     },
   },
 };
