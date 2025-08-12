@@ -21,11 +21,12 @@ export async function createTeamAction(team: CreateTeamRequestInput) {
   try {
     const parsed = createTeamRequestSchema.parse(team);
     const result = await queries.teams.createTeam(parsed);
+    const role = await queries.roles.getRoleByPriority(0);
 
     const ownerTeamMember: CreateTeamMemberRequestInput = {
       userId: result[0].leaderId as string,
       teamId: result[0].id,
-      role: "owner",
+      roleId: role[0].id,
     };
 
     await createTeamMembersAction(ownerTeamMember);
