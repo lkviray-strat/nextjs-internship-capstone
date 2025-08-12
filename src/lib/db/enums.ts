@@ -20,14 +20,6 @@ export const KANBAN_COLUMN_TW_COLORS: Record<
   done: "bg-green-500",
 };
 
-export const TASK_STATUS_ENUM = [
-  "todo",
-  "in_progress",
-  "in_review",
-  "done",
-  "backlog",
-] as const;
-
 export const TASK_PRIORITY_ENUM = ["low", "medium", "high", "urgent"] as const;
 
 export const PROJECT_STATUS_ENUM = [
@@ -38,23 +30,21 @@ export const PROJECT_STATUS_ENUM = [
   "on_hold",
 ] as const;
 
-export const TEAM_MEMBER_ROLE_ENUM = [
-  "viewer",
-  "member",
-  "admin",
-  "owner",
-] as const;
+export const ROLE_ACTIONS = ["view", "create", "update", "delete"] as const;
 
-export const TEAM_MEMBER_ROLE_DESIGNATION_PRIORITY = [
-  "admin",
-  "member",
+export const ROLE_RESOURCES = [
+  "team",
+  "project",
+  "task",
+  "kanban_column",
+  "kanban_board",
+  "team_member",
+  "project_team",
+  "comment",
 ] as const;
 
 // pgEnums for drizzle schema
-export const taskStatusEnum = pgEnum("task_status", TASK_STATUS_ENUM);
 export const taskPriorityEnum = pgEnum("task_priority", TASK_PRIORITY_ENUM);
 export const projectStatusEnum = pgEnum("project_status", PROJECT_STATUS_ENUM);
-export const teamMemberRoleEnum = pgEnum(
-  "team_member_role",
-  TEAM_MEMBER_ROLE_ENUM
-);
+export const roleActionsEnum = pgEnum("role_actions", ROLE_ACTIONS);
+export const roleResourcesEnum = pgEnum("role_resources", ROLE_RESOURCES);
