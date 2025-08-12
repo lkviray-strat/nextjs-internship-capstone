@@ -1,5 +1,5 @@
-import { WithRelations } from "@/src/lib/utils";
-import {
+import type { WithRelations } from "@/src/lib/utils";
+import type {
   Comments,
   KanbanBoards,
   KanbanColumns,
