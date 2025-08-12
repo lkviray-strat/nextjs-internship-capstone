@@ -5,6 +5,8 @@ import type {
   KanbanBoardsUpdateRequest,
   KanbanColumnsInsertRequest,
   KanbanColumnsUpdateRequest,
+  PermissionActionsEnum,
+  PermissionResourcesEnum,
   ProjectsInsertRequest,
   ProjectStatusEnum,
   ProjectsUpdateRequest,
@@ -25,6 +27,7 @@ import {
   comments,
   kanbanBoards,
   kanbanColumns,
+  permissions,
   projects,
   projectTeams,
   roles,
@@ -466,6 +469,40 @@ export const queries = {
     },
     getRoleByPriority: (priority: number) => {
       return db.select().from(roles).where(eq(roles.priority, priority));
+    },
+  },
+  permissions: {
+    getAllPermissions: () => {
+      return db.select().from(permissions);
+    },
+    getPermissionById: (id: string) => {
+      return db.select().from(permissions).where(eq(permissions.id, id));
+    },
+    getPermissionsByAction: (action: PermissionActionsEnum) => {
+      return db
+        .select()
+        .from(permissions)
+        .where(eq(permissions.action, action));
+    },
+    getPermissionsByResource: (resource: PermissionResourcesEnum) => {
+      return db
+        .select()
+        .from(permissions)
+        .where(eq(permissions.resource, resource));
+    },
+    getPermissionsByActionAndResource: (
+      action: PermissionActionsEnum,
+      resource: PermissionResourcesEnum
+    ) => {
+      return db
+        .select()
+        .from(permissions)
+        .where(
+          and(
+            eq(permissions.action, action),
+            eq(permissions.resource, resource)
+          )
+        );
     },
   },
 };
