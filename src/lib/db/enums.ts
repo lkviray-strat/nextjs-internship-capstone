@@ -30,9 +30,14 @@ export const PROJECT_STATUS_ENUM = [
   "on_hold",
 ] as const;
 
-export const ROLE_ACTIONS = ["view", "create", "update", "delete"] as const;
+export const PERMISSION_ACTIONS = [
+  "view",
+  "create",
+  "update",
+  "delete",
+] as const;
 
-export const ROLE_RESOURCES = [
+export const PERMISSION_RESOURCES = [
   "team",
   "project",
   "task",
@@ -46,5 +51,11 @@ export const ROLE_RESOURCES = [
 // pgEnums for drizzle schema
 export const taskPriorityEnum = pgEnum("task_priority", TASK_PRIORITY_ENUM);
 export const projectStatusEnum = pgEnum("project_status", PROJECT_STATUS_ENUM);
-export const roleActionsEnum = pgEnum("role_actions", ROLE_ACTIONS);
-export const roleResourcesEnum = pgEnum("role_resources", ROLE_RESOURCES);
+export const permissionActionsEnum = pgEnum(
+  "permission_actions",
+  PERMISSION_ACTIONS
+);
+export const permissionResourcesEnum = pgEnum(
+  "permission_resources",
+  PERMISSION_RESOURCES
+);
