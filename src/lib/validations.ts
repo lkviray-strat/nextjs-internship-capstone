@@ -1,10 +1,5 @@
 import z from "zod";
-import {
-  PROJECT_STATUS_ENUM,
-  TASK_PRIORITY_ENUM,
-  TASK_STATUS_ENUM,
-  TEAM_MEMBER_ROLE_ENUM,
-} from "./db/enums";
+import { PROJECT_STATUS_ENUM, TASK_PRIORITY_ENUM } from "./db/enums";
 
 const errorMessages = {
   required: (field: string) => `${field} is required`,
@@ -73,7 +68,6 @@ export const taskSchema = z.object({
     .max(255, errorMessages.maxLength(255)),
   description: z.string().max(4000, errorMessages.maxLength(4000)).optional(),
   projectId: z.guid(),
-  status: z.enum(TASK_STATUS_ENUM),
   priority: z.enum(TASK_PRIORITY_ENUM).optional(),
   dueDate: z.date().optional(),
   estimatedHours: z
@@ -150,7 +144,7 @@ export const kanbanColumnsSchema = z.object({
 export const teamMembersSchema = z.object({
   userId: z.string(),
   teamId: z.guid(),
-  role: z.enum(TEAM_MEMBER_ROLE_ENUM).optional(),
+  roleId: z.guid(),
   createdAt: z.date().optional(),
 });
 

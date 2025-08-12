@@ -11,7 +11,6 @@ import type {
   ProjectTeamsInsertRequest,
   TaskPriorityEnum,
   TasksInsertRequest,
-  TaskStatusEnum,
   TasksUpdateRequest,
   TeamMembersInsertRequest,
   TeamMembersUpdateRequest,
@@ -22,7 +21,6 @@ import type {
 } from "@/src/types";
 import { and, asc, eq } from "drizzle-orm";
 import { db } from ".";
-import type { TeamMemberRoleEnum } from "../../types/enums";
 import {
   comments,
   kanbanBoards,
@@ -127,9 +125,6 @@ export const queries = {
     },
     getTasksByTitle: (title: string) => {
       return db.select().from(tasks).where(eq(tasks.title, title));
-    },
-    getTasksByStatus: (status: TaskStatusEnum) => {
-      return db.select().from(tasks).where(eq(tasks.status, status));
     },
     getTasksByPriority: (priority: TaskPriorityEnum) => {
       return db.select().from(tasks).where(eq(tasks.priority, priority));
@@ -306,17 +301,19 @@ export const queries = {
         .from(teamMembers)
         .where(eq(teamMembers.userId, userId));
     },
-    getTeamMembersByRole: (role: TeamMemberRoleEnum) => {
-      return db.select().from(teamMembers).where(eq(teamMembers.role, role));
-    },
-    getTeamMembersByTeamIdAndRoleAsc: (
-      teamId: string,
-      role: TeamMemberRoleEnum
-    ) => {
+    getTeamMembersByRole: (roleId: string) => {
       return db
         .select()
         .from(teamMembers)
-        .where(and(eq(teamMembers.teamId, teamId), eq(teamMembers.role, role)))
+        .where(eq(teamMembers.roleId, roleId));
+    },
+    getTeamMembersByTeamIdAndRoleAsc: (teamId: string, roleId: string) => {
+      return db
+        .select()
+        .from(teamMembers)
+        .where(
+          and(eq(teamMembers.teamId, teamId), eq(teamMembers.roleId, roleId))
+        )
         .orderBy(asc(teamMembers.createdAt));
     },
     createTeamMembers: (member: TeamMembersInsertRequest) => {
