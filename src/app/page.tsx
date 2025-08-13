@@ -2,44 +2,52 @@ import { ThemeToggle } from "@/src/components/theme-toggle";
 import { SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
 import { ArrowRight, CheckCircle, Kanban, Users } from "lucide-react";
 import Link from "next/link";
+import { buttonVariants } from "../components/ui/button";
 
 export default function HomePage() {
   return (
     <div className="min-h-screen bg-linear-to-br from-platinum-900 to-platinum-800 dark:from-outer_space-500 dark:to-payne's_gray-500">
       {/* Header */}
-      <header className="border-b border-french_gray-300 dark:border-payne's_gray-400 bg-white/80 dark:bg-outer_space-500/80 backdrop-blur-xs">
+      <header className="border-b backdrop-blur-xs">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="text-2xl font-bold text-blue_munsell-500">
-              ProjectFlow
+              eStratify
             </div>
-            <div className="flex items-center space-x-4">
-              <ThemeToggle />
+            <div className="flex items-center gap-3">
               <Link
                 href="/dashboard"
-                className="text-outer_space-500 dark:text-platinum-500 hover:text-blue_munsell-500"
+                className={`${buttonVariants({ variant: "ghost" })} !p-3 !text-[16px] !rounded-lg -mr-1`}
               >
                 Dashboard
               </Link>
               <Link
                 href="/projects"
-                className="text-outer_space-500 dark:text-platinum-500 hover:text-blue_munsell-500"
+                className={`${buttonVariants({ variant: "ghost" })} !p-3 !text-[16px] !rounded-lg`}
               >
                 Projects
               </Link>
 
               <SignedIn>
-                <UserButton />
+                <UserButton
+                  appearance={{
+                    elements: {
+                      userButtonAvatarBox: "size-8.5 border-black",
+                    },
+                  }}
+                />
               </SignedIn>
 
               <SignedOut>
                 <Link
                   href="/sign-in"
-                  className="text-outer_space-500 dark:text-platinum-500 hover:text-blue_munsell-500"
+                  className={`${buttonVariants({ variant: "default" })} !text-[16px] !rounded-2xl`}
                 >
                   Sign In
                 </Link>
               </SignedOut>
+
+              <ThemeToggle />
             </div>
           </div>
         </div>
