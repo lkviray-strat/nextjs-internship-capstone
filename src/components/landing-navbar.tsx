@@ -1,8 +1,9 @@
-import { SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
+import { SignedOut } from "@clerk/nextjs";
 import Link from "next/link";
 import { HoverUnderline } from "./hover-underline";
 import { ThemeToggle } from "./theme-toggle";
 import { buttonVariants } from "./ui/button";
+import { UserProfileButton } from "./user-profile-button";
 
 export function LandingNavbar() {
   return (
@@ -28,15 +29,7 @@ export function LandingNavbar() {
       </div>
 
       <div className="flex items-center justify-center gap-4">
-        <SignedIn>
-          <UserButton
-            appearance={{
-              elements: {
-                userButtonAvatarBox: "size-8.5 border-black",
-              },
-            }}
-          />
-        </SignedIn>
+        <UserProfileButton />
 
         <SignedOut>
           <Link
