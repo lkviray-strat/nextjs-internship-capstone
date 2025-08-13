@@ -1,44 +1,54 @@
 import { SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
 import Link from "next/link";
+import { HoverUnderline } from "./hover-underline";
 import { ThemeToggle } from "./theme-toggle";
 import { buttonVariants } from "./ui/button";
 
 export function LandingNavbar() {
   return (
-    <>
-      <Link
-        href="/dashboard"
-        className={`${buttonVariants({ variant: "ghost" })} !p-3 !text-[16px] !rounded-lg -mr-1`}
-      >
-        Dashboard
-      </Link>
-      <Link
-        href="/projects"
-        className={`${buttonVariants({ variant: "ghost" })} !p-3 !text-[16px] !rounded-lg`}
-      >
-        Projects
-      </Link>
+    <div className="hidden sm:flex justify-between items-center gap-10">
+      <div className="flex items-center justify-center gap-7">
+        <HoverUnderline>
+          <Link
+            href="/dashboard"
+            className={`text-[16px] rounded-lg`}
+          >
+            Dashboard
+          </Link>
+        </HoverUnderline>
 
-      <SignedIn>
-        <UserButton
-          appearance={{
-            elements: {
-              userButtonAvatarBox: "size-8.5 border-black",
-            },
-          }}
-        />
-      </SignedIn>
+        <HoverUnderline>
+          <Link
+            href="/projects"
+            className={`text-[16px] rounded-lg`}
+          >
+            Projects
+          </Link>
+        </HoverUnderline>
+      </div>
 
-      <SignedOut>
-        <Link
-          href="/sign-in"
-          className={`${buttonVariants({ variant: "default" })} !text-[16px] !rounded-2xl`}
-        >
-          Sign In
-        </Link>
-      </SignedOut>
+      <div className="flex items-center justify-center gap-4">
+        <SignedIn>
+          <UserButton
+            appearance={{
+              elements: {
+                userButtonAvatarBox: "size-8.5 border-black",
+              },
+            }}
+          />
+        </SignedIn>
 
-      <ThemeToggle />
-    </>
+        <SignedOut>
+          <Link
+            href="/sign-in"
+            className={`${buttonVariants({ variant: "default" })} !text-[16px] !rounded-2xl`}
+          >
+            Sign In
+          </Link>
+        </SignedOut>
+
+        <ThemeToggle />
+      </div>
+    </div>
   );
 }
