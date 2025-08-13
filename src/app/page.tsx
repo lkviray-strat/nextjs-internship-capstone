@@ -1,8 +1,7 @@
-import { ThemeToggle } from "@/src/components/theme-toggle";
-import { SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
 import { ArrowRight, CheckCircle, Kanban, Users } from "lucide-react";
 import Link from "next/link";
-import { buttonVariants } from "../components/ui/button";
+import { LandingNavbar } from "../components/landing-navbar";
+import { LandingNavbarMenu } from "../components/landing-navbar-menu";
 
 export default function HomePage() {
   return (
@@ -14,40 +13,11 @@ export default function HomePage() {
             <div className="text-2xl font-bold text-blue_munsell-500">
               eStratify
             </div>
-            <div className="flex items-center gap-3">
-              <Link
-                href="/dashboard"
-                className={`${buttonVariants({ variant: "ghost" })} !p-3 !text-[16px] !rounded-lg -mr-1`}
-              >
-                Dashboard
-              </Link>
-              <Link
-                href="/projects"
-                className={`${buttonVariants({ variant: "ghost" })} !p-3 !text-[16px] !rounded-lg`}
-              >
-                Projects
-              </Link>
-
-              <SignedIn>
-                <UserButton
-                  appearance={{
-                    elements: {
-                      userButtonAvatarBox: "size-8.5 border-black",
-                    },
-                  }}
-                />
-              </SignedIn>
-
-              <SignedOut>
-                <Link
-                  href="/sign-in"
-                  className={`${buttonVariants({ variant: "default" })} !text-[16px] !rounded-2xl`}
-                >
-                  Sign In
-                </Link>
-              </SignedOut>
-
-              <ThemeToggle />
+            <div className="hidden sm:flex items-center gap-3">
+              <LandingNavbar />
+            </div>
+            <div className="sm:hidden flex">
+              <LandingNavbarMenu />
             </div>
           </div>
         </div>
