@@ -195,6 +195,12 @@ body {
   @apply bg-card border-input focus-visible:ring-ring focus-visible:ring-1 focus-visible:ring-offset-0 focus-visible:ring-offset-background;
 }
 
+@media (max-width: 768px) {
+  .cl-internal-6kys4v {
+    height: auto !important;
+    margin-top: 50px;
+  }
+}
 /* 
 Past theme variables for reference
 These are commented out to avoid conflicts with the new theme variables.
