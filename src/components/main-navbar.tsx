@@ -1,14 +1,11 @@
 import { Bell, Search } from "lucide-react";
 import { ThemeToggle } from "./theme-toggle";
 import { Button } from "./ui/button";
-import { SidebarTrigger } from "./ui/sidebar";
 import { UserProfileButton } from "./user-profile-button";
 
 export function MainNavbar() {
   return (
     <nav className="sticky bg-background top-0 z-30 flex h-16 items-center gap-x-4 border-b px-4 shadow-xs sm:gap-x-6 sm:px-6 lg:px-8">
-      <SidebarTrigger />
-
       <div className="flex flex-1 gap-x-4 self-stretch lg:gap-x-6">
         {/* Search bar placeholder */}
         <div className="flex flex-1 items-center">
