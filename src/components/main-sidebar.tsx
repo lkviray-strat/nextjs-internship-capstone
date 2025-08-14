@@ -18,6 +18,7 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  SidebarTrigger,
   useSidebar,
 } from "@/src/components/ui/sidebar";
 import Link from "next/link";
@@ -55,9 +56,19 @@ export function MainSidebar() {
     >
       <SidebarContent>
         <SidebarGroup>
-          {isOpen && (
-            <SidebarHeader className="text-2xl pl-7 font-bold">
-              <Link href="/">eStratify</Link>
+          {isOpen ? (
+            <SidebarHeader className="flex flex-row justify-between pl-7">
+              <Link
+                href="/"
+                className="text-2xl font-bold"
+              >
+                eStratify
+              </Link>
+              <SidebarTrigger />
+            </SidebarHeader>
+          ) : (
+            <SidebarHeader>
+              <SidebarTrigger className="-ml-1" />
             </SidebarHeader>
           )}
           <SidebarGroupContent>
