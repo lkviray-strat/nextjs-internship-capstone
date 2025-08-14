@@ -1,5 +1,6 @@
 import { FlatCompat } from "@eslint/eslintrc";
 import ts from "@eslint/js";
+import query from "@tanstack/eslint-plugin-query";
 import prettier from "eslint-config-prettier";
 import pluginReact from "eslint-plugin-react";
 import globals from "globals";
@@ -32,8 +33,10 @@ const eslintConfig = [
     },
     plugins: {
       react: pluginReact,
+      "@tanstack/query": query,
     },
     rules: {
+      ...query.configs.recommended.rules,
       ...tseslint.configs.recommended[0].rules,
       ...pluginReact.configs.recommended.rules,
       "no-unused-vars": "off",
