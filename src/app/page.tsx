@@ -37,9 +37,7 @@ export default function HomePage() {
 
           <p className="text-xl mb-2 text-muted-foreground">
             Organize tasks, collaborate with teams, and track progress with our
-            intuitive drag-
-            <br />
-            and-drop project management platform.
+            intuitive drag-and-drop project management platform.
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-10">
