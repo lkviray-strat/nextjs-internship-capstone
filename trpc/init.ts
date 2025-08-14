@@ -1,4 +1,5 @@
 import { db } from "@/src/lib/db";
+import type { Context } from "@/src/types";
 import { auth } from "@clerk/nextjs/server";
 import { initTRPC, TRPCError } from "@trpc/server";
 import { cache } from "react";
@@ -7,8 +8,6 @@ export const createTRPCContext = cache(async () => {
   const clerkAuth = await auth();
   return { auth: clerkAuth, db };
 });
-
-type Context = Awaited<ReturnType<typeof createTRPCContext>>;
 
 const t = initTRPC.context<Context>().create({});
 
