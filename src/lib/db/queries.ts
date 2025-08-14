@@ -21,7 +21,7 @@ import type {
   UserInsertRequest,
   UserUpdateRequest,
 } from "@/src/types";
-import { and, asc, eq } from "drizzle-orm";
+import { and, asc, desc, eq } from "drizzle-orm";
 import { db } from ".";
 import {
   comments,
@@ -208,6 +208,13 @@ export const queries = {
     },
     deleteProject: (id: string) => {
       return db.delete(projects).where(eq(projects.id, id)).returning();
+    },
+    getRecentProjects: (limit: number) => {
+      return db
+        .select()
+        .from(projects)
+        .orderBy(desc(projects.createdAt))
+        .limit(limit);
     },
   },
   kanbanBoards: {
