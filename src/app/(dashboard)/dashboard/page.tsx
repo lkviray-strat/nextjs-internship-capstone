@@ -1,5 +1,8 @@
+import { DashboardRecentProjects } from "@/src/components/dashboard-recent-projects";
+import { RecentProjectsSkeleton } from "@/src/components/states/skeleton/recent-projects-skeleton";
 import { Button } from "@/src/components/ui/button";
 import { CheckCircle, Clock, Plus, TrendingUp, Users } from "lucide-react";
+import { Suspense } from "react";
 
 export default function DashboardPage() {
   return (
@@ -67,25 +70,9 @@ export default function DashboardPage() {
       {/* Recent Activity & Quick Actions */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Recent Projects */}
-        <div className="bg-card rounded-lg border p-6">
-          <h3 className="text-lg font-semibold mb-4">Recent Projects</h3>
-          <div className="space-y-3">
-            {[1, 2, 3].map((i) => (
-              <div
-                key={i}
-                className="flex items-center justify-between p-3 bg-muted rounded-lg"
-              >
-                <div>
-                  <div className="font-medium">Project {i}</div>
-                  <div className="text-sm">Last updated 2 hours ago</div>
-                </div>
-                <div className="w-12 h-2 bg-accent rounded-full">
-                  <div className="w-8 h-2 bg-muted-foreground rounded-full"></div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
+        <Suspense fallback={<RecentProjectsSkeleton />}>
+          <DashboardRecentProjects />
+        </Suspense>
 
         {/* Quick Actions */}
         <div className="rounded-lg border p-6">
