@@ -36,7 +36,7 @@ const navigation = [
 ];
 
 export function MainSidebar() {
-  const [isOpen, setIsOpen] = useState<boolean>();
+  const [isOpen, setIsOpen] = useState<boolean>(true);
   const pathname = usePathname();
   const { open } = useSidebar();
   const isMobile = useIsMobile();
