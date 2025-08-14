@@ -1,3 +1,4 @@
+import { Button } from "@/src/components/ui/button";
 import { CheckCircle, Clock, Plus, TrendingUp, Users } from "lucide-react";
 
 export default function DashboardPage() {
@@ -90,27 +91,27 @@ export default function DashboardPage() {
         <div className="rounded-lg border p-6">
           <h3 className="text-lg font-semibold mb-4">Quick Actions</h3>
           <div className="space-y-3">
-            <button className="w-full flex items-center justify-center px-4 py-3 bg-blue-500 rounded-lg">
-              <Plus
-                size={20}
-                className="mr-2"
-              />
+            <Button
+              variant="default"
+              className="w-full text-[16px] flex items-center justify-center !py-6"
+            >
+              <Plus className="mr-2 size-5" />
               Create New Project
-            </button>
-            <button className="w-full flex items-center justify-center px-4 py-3 border rounded-lg">
-              <Plus
-                size={20}
-                className="mr-2"
-              />
+            </Button>
+            <Button
+              variant="outline"
+              className="w-full text-[16px] flex items-center justify-center !py-6"
+            >
+              <Plus className="mr-2 size-5" />
               Add Team Member
-            </button>
-            <button className="w-full flex items-center justify-center px-4 py-3 border rounded-lg">
-              <Plus
-                size={20}
-                className="mr-2"
-              />
+            </Button>
+            <Button
+              variant="outline"
+              className="w-full text-[16px] flex items-center justify-center !py-6"
+            >
+              <Plus className="mr-2 size-5" />
               Create Task
-            </button>
+            </Button>
           </div>
         </div>
       </div>
