@@ -1,5 +1,6 @@
 import { ThemeProvider } from "@/src/components/theme-provider";
 import "@/src/styles/globals.css";
+import { TRPCReactProvider } from "@/trpc/client";
 import { ClerkProvider } from "@clerk/nextjs";
 import { shadcn } from "@clerk/themes";
 import type { Metadata } from "next";
@@ -32,15 +33,17 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <ClerkProvider {...clerkProviderProps}>
-      <html
-        lang="en"
-        suppressHydrationWarning
-      >
-        <body className={gi.className}>
-          <ThemeProvider>{children}</ThemeProvider>
-        </body>
-      </html>
-    </ClerkProvider>
+    <TRPCReactProvider>
+      <ClerkProvider {...clerkProviderProps}>
+        <html
+          lang="en"
+          suppressHydrationWarning
+        >
+          <body className={gi.className}>
+            <ThemeProvider>{children}</ThemeProvider>
+          </body>
+        </html>
+      </ClerkProvider>
+    </TRPCReactProvider>
   );
 }
