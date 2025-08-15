@@ -50,7 +50,7 @@ export async function updateTeamMembersAction(
       teamMember.roleId === highestRolePriority[0].id &&
       highestRoleCount > 1
     ) {
-      throw new Error("Each team can only have two highest ranking role");
+      throw new Error("Each team can only have one highest ranking role");
     }
 
     const { userId, teamId, ...parsedData } =
