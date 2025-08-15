@@ -1,15 +1,21 @@
 "use server";
 
 import { queries } from "@/src/lib/db/queries";
+import { sentenceCase } from "@/src/lib/utils";
 import { clerkUsersSchema } from "@/src/lib/validations";
 import type {
   ClerkUsersInput,
+  CreateTeamRequestInput,
   UpdateTeamMemberRequestInput,
   UpdateTeamRequestInput,
 } from "@/src/types";
 import type { UserJSON } from "@clerk/nextjs/server";
 import z, { ZodError } from "zod";
-import { deleteTeamAction, updateTeamAction } from "./team-actions";
+import {
+  createTeamAction,
+  deleteTeamAction,
+  updateTeamAction,
+} from "./team-actions";
 import { updateTeamMembersAction } from "./team-member-actions";
 
 export async function createUserAction(clerkUser: UserJSON) {
@@ -24,6 +30,17 @@ export async function createUserAction(clerkUser: UserJSON) {
 
     const parsed = await clerkUsersSchema.parseAsync(userRequest);
     const result = await queries.users.createUser(parsed);
+
+    const teamName = result[0].firstName
+      ? `${sentenceCase(result[0].firstName)}'s Team`
+      : "My Own Team";
+    const ownTeam: CreateTeamRequestInput = {
+      leaderId: result[0].id,
+      name: teamName,
+      description:
+        "This is your personal team. You can use this team to manage your own tasks, collaborate with others, or simply keep track of your progress.",
+    };
+    await createTeamAction(ownTeam);
 
     return { success: true, data: result };
   } catch (error) {

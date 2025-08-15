@@ -66,6 +66,14 @@ export async function deleteTeamAction(teamId: string) {
       throw new Error("Team with the given ID does not exist");
     }
 
+    if (existingTeam.leaderId) {
+      const allTeamsOfLeader = await queries.teams.getTeamsByLeaderId(
+        existingTeam.leaderId
+      );
+      if (allTeamsOfLeader.length === 1) {
+        throw new Error("Cannot delete your only team");
+      }
+    }
     for (const project of existingTeam.projects) {
       await reassignOrArchiveProject(project.projectId as string);
     }
