@@ -15,6 +15,7 @@ export const metadata: Metadata = {
 
 const gi = Geist({ subsets: ["latin"] });
 const clerkProviderProps = {
+  signInFallbackRedirectUrl: "/api/signed-in",
   signInUrl: "/sign-in",
   localization: {
     dividerText: "OR CONTINUE WITH",
