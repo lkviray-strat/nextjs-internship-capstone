@@ -3,6 +3,7 @@
 import {
   BarChart3,
   Calendar,
+  ChevronDown,
   FolderOpen,
   Home,
   Settings,
@@ -13,7 +14,6 @@ import {
   Sidebar,
   SidebarContent,
   SidebarGroup,
-  SidebarGroupContent,
   SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
@@ -21,21 +21,28 @@ import {
   SidebarTrigger,
   useSidebar,
 } from "@/src/components/ui/sidebar";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@radix-ui/react-dropdown-menu";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { useParams, usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useIsMobile } from "../hooks/use-mobile";
 
 const navigation = [
-  { name: "Dashboard", href: "/dashboard", icon: Home },
-  { name: "Projects", href: "/projects", icon: FolderOpen },
-  { name: "Team", href: "/team", icon: Users },
-  { name: "Analytics", href: "/analytics", icon: BarChart3 },
-  { name: "Calendar", href: "/calendar", icon: Calendar },
-  { name: "Settings", href: "/settings", icon: Settings },
+  { name: "Dashboard", href: "dashboard", icon: Home },
+  { name: "Projects", href: "projects", icon: FolderOpen },
+  { name: "Team", href: "team", icon: Users },
+  { name: "Analytics", href: "analytics", icon: BarChart3 },
+  { name: "Calendar", href: "calendar", icon: Calendar },
+  { name: "Settings", href: "settings", icon: Settings },
 ];
 
 export function MainSidebar() {
+  const { teamId } = useParams();
   const [isOpen, setIsOpen] = useState<boolean>(true);
   const pathname = usePathname();
   const { open } = useSidebar();
@@ -71,8 +78,26 @@ export function MainSidebar() {
               <SidebarTrigger className="-ml-1" />
             </SidebarHeader>
           )}
-          <SidebarGroupContent>
+          <SidebarContent>
             <SidebarMenu className={`mt-3 ${isOpen ? "px-3" : ""}`}>
+              <SidebarMenuItem>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <SidebarMenuButton>
+                      Select Team
+                      <ChevronDown className="ml-auto" />
+                    </SidebarMenuButton>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent className="w-full">
+                    <DropdownMenuItem>
+                      <span>Acme Inc</span>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem>
+                      <span>Acme Corp.</span>
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </SidebarMenuItem>
               <ul className={`${isOpen ? "space-y-1" : "space-y-3"}`}>
                 {navigation.map((item) => (
                   <SidebarMenuItem key={item.name}>
@@ -81,7 +106,7 @@ export function MainSidebar() {
                       isActive={pathname === item.href}
                     >
                       <Link
-                        href={item.href}
+                        href={`/${teamId}/${item.href}`}
                         className={`flex items-center !text-[16px] !h-full !w-full  
                           ${isOpen ? "!p-4 !py-1.5 justify-start" : "justify-center"}
                           `}
@@ -96,7 +121,7 @@ export function MainSidebar() {
                 ))}
               </ul>
             </SidebarMenu>
-          </SidebarGroupContent>
+          </SidebarContent>
         </SidebarGroup>
       </SidebarContent>
     </Sidebar>
