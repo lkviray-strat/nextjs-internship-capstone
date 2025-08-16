@@ -97,7 +97,11 @@ export const queries = {
       return db.select().from(teams).where(eq(teams.name, name));
     },
     getTeamsByLeaderId: (leaderId: string) => {
-      return db.select().from(teams).where(eq(teams.leaderId, leaderId));
+      return db
+        .select()
+        .from(teams)
+        .where(eq(teams.leaderId, leaderId))
+        .orderBy(asc(teams.createdAt));
     },
     createTeam: (team: TeamsInsertRequest) => {
       return db.insert(teams).values(team).returning();
