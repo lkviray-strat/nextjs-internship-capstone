@@ -1,11 +1,23 @@
+import { auth } from "@clerk/nextjs/server";
 import { ArrowRight, CheckCircle, Kanban, Users } from "lucide-react";
 import Link from "next/link";
 import { BackgroundGlow } from "../components/background-glow";
 import { LandingNavbar } from "../components/landing-navbar";
 import { LandingNavbarMenu } from "../components/landing-navbar-menu";
 import { buttonVariants } from "../components/ui/button";
+import { queries } from "../lib/db/queries";
 
-export default function HomePage() {
+export default async function HomePage() {
+  const user = await auth();
+  const id = user?.userId;
+
+  const isUserLoggedIn = user && id;
+
+  const existingTeam = await queries.teams.getTeamsByLeaderId(id as string);
+
+  const buttonHref = (path: string) =>
+    isUserLoggedIn ? `/${existingTeam[0]?.id}/${path}` : "/sign-in";
+
   return (
     <div className="relative min-h-screen">
       <BackgroundGlow />
@@ -17,9 +29,9 @@ export default function HomePage() {
             <div className="text-2xl font-bold text-blue_munsell-500">
               eStratify
             </div>
-            <LandingNavbar />
+            <LandingNavbar buttonHref={buttonHref} />
             <div className="sm:hidden flex">
-              <LandingNavbarMenu />
+              <LandingNavbarMenu buttonHref={buttonHref} />
             </div>
           </div>
         </div>
@@ -42,7 +54,7 @@ export default function HomePage() {
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-10">
             <Link
-              href="/dashboard"
+              href={buttonHref("dashboard")}
               className={`${buttonVariants({ variant: "default" })} !rounded-3xl text-[18px] !py-7 !px-7`}
             >
               Start Managing Projects
@@ -52,7 +64,7 @@ export default function HomePage() {
               />
             </Link>
             <Link
-              href="/projects"
+              href={buttonHref("projects")}
               className={`${buttonVariants({ variant: "outline" })} !rounded-3xl text-[18px] !py-7 !px-7`}
             >
               View Projects
