@@ -5,13 +5,17 @@ import { ThemeToggle } from "./theme-toggle";
 import { buttonVariants } from "./ui/button";
 import { UserProfileButton } from "./user-profile-button";
 
-export function LandingNavbar() {
+type LandingNavbar = {
+  buttonHref: (path: string) => string;
+};
+
+export function LandingNavbar({ buttonHref }: LandingNavbar) {
   return (
     <div className="hidden sm:flex justify-between items-center gap-10">
       <div className="flex items-center justify-center gap-7">
         <HoverUnderline>
           <Link
-            href="/dashboard"
+            href={buttonHref("dashboard")}
             className={`text-[16px] rounded-lg`}
           >
             Dashboard
@@ -20,7 +24,7 @@ export function LandingNavbar() {
 
         <HoverUnderline>
           <Link
-            href="/projects"
+            href={buttonHref("projects")}
             className={`text-[16px] rounded-lg`}
           >
             Projects
