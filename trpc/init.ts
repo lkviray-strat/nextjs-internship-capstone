@@ -5,13 +5,16 @@ import type { Context } from "@/src/types";
 import { auth } from "@clerk/nextjs/server";
 import { initTRPC, TRPCError } from "@trpc/server";
 import { cache } from "react";
+import superjson from "superjson";
 
 export const createTRPCContext = cache(async () => {
   const clerkAuth = await auth();
   return { auth: clerkAuth, db };
 });
 
-const t = initTRPC.context<Context>().create({});
+const t = initTRPC.context<Context>().create({
+  transformer: superjson,
+});
 
 export const createTRPCRouter = t.router;
 export const createCallerFactory = t.createCallerFactory;
