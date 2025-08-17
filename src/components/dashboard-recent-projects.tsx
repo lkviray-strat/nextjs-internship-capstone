@@ -1,30 +1,30 @@
 "use client";
 
-import { useTRPC } from "@/trpc/client";
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { useParams } from "next/navigation";
+import { useFetch } from "../use/hooks/use-fetch";
 
 export function DashboardRecentProjects() {
-  const trpc = useTRPC();
-  const { isError, data } = useSuspenseQuery(trpc.getProject.queryOptions());
+  const { teamId } = useParams<{ teamId: string }>();
+  const { data, isError } = useFetch().projects.useGetMyRecentProjects(teamId);
 
   if (isError) {
     return (
-      <div className="bg-card text-red-500 flex items-center justify-center rounded-lg border p-6">
-        <p>Error loading recent projects, please contact support.</p>
+      <div className="text-red-500 flex items-center justify-center h-full">
+        Error loading recent projects, please contact support.
       </div>
     );
   }
 
   if (data?.length === 0) {
     return (
-      <div className="bg-card text-gray-500 flex items-center justify-center rounded-lg border p-6">
-        <p>No recent projects found.</p>
+      <div className="text-gray-500 flex items-center justify-center h-full">
+        No recent projects found.
       </div>
     );
   }
 
   return (
-    <div className="bg-card rounded-lg border p-6">
+    <>
       <h3 className="text-lg font-semibold mb-4">Recent Projects</h3>
       <div className="space-y-3">
         {data?.map((project) => (
@@ -42,6 +42,6 @@ export function DashboardRecentProjects() {
           </div>
         ))}
       </div>
-    </div>
+    </>
   );
 }
