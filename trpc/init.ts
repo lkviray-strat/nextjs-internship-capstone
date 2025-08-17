@@ -1,3 +1,5 @@
+import "server-only";
+
 import { db } from "@/src/lib/db";
 import type { Context } from "@/src/types";
 import { auth } from "@clerk/nextjs/server";
@@ -18,13 +20,19 @@ export const publicProcedure = t.procedure;
 
 const enforceAuth = t.middleware(async ({ ctx, next }) => {
   const { auth } = ctx;
-  if (!auth) {
-    throw new TRPCError({ code: "UNAUTHORIZED" });
+  if (!auth || !auth.userId) {
+    throw new TRPCError({
+      code: "UNAUTHORIZED",
+      message: "User is not authenticated",
+    });
   }
 
   return next({
     ctx: {
-      auth: ctx.auth,
+      auth: {
+        ...auth,
+        userId: auth.userId as string,
+      },
       db: ctx.db,
     },
   });
