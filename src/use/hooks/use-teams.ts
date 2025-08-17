@@ -1,7 +1,10 @@
-import { trpc } from "@/trpc/server";
+import { useTRPC } from "@/trpc/client";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useState } from "react";
 
 export function useTeams() {
+  const [teamErrors, setTeamErrors] = useState<Record<string, string[]>>();
+  const trpc = useTRPC();
   const queryClient = useQueryClient();
 
   const createTeam = useMutation(
@@ -9,6 +12,17 @@ export function useTeams() {
       onSuccess: () => {
         const mutationKey = trpc.teams.createTeams.mutationKey();
         queryClient.invalidateQueries({ queryKey: mutationKey });
+        setTeamErrors({});
+      },
+      onError: (error) => {
+        try {
+          const parsed = JSON.parse(error.message) as {
+            fieldErrors?: Record<string, string[]>;
+          };
+          setTeamErrors(parsed.fieldErrors);
+        } catch {
+          setTeamErrors({ global: [error.message] });
+        }
       },
     })
   );
@@ -18,6 +32,17 @@ export function useTeams() {
       onSuccess: () => {
         const mutationKey = trpc.teams.updateTeams.mutationKey();
         queryClient.invalidateQueries({ queryKey: mutationKey });
+        setTeamErrors({});
+      },
+      onError: (error) => {
+        try {
+          const parsed = JSON.parse(error.message) as {
+            fieldErrors?: Record<string, string[]>;
+          };
+          setTeamErrors(parsed.fieldErrors);
+        } catch {
+          setTeamErrors({ global: [error.message] });
+        }
       },
     })
   );
@@ -28,15 +53,27 @@ export function useTeams() {
         const mutationKey = trpc.teams.deleteTeams.mutationKey();
         queryClient.invalidateQueries({ queryKey: mutationKey });
       },
+      onError: (error) => {
+        try {
+          const parsed = JSON.parse(error.message) as {
+            fieldErrors?: Record<string, string[]>;
+          };
+          setTeamErrors(parsed.fieldErrors);
+        } catch {
+          setTeamErrors({ global: [error.message] });
+        }
+      },
     })
   );
 
   return {
-    createTeam: createTeam.mutate,
-    isCreating: createTeam.isPending,
-    updateTeam: updateTeam.mutate,
-    isUpdating: updateTeam.isPending,
-    deleteTeam: deleteTeam.mutate,
-    isDeleting: deleteTeam.isPending,
+    createTeam: createTeam.mutateAsync,
+    isCreatingTeam: createTeam.isPending,
+    updateTeam: updateTeam.mutateAsync,
+    isUpdatingTeam: updateTeam.isPending,
+    deleteTeam: deleteTeam.mutateAsync,
+    isDeletingTeam: deleteTeam.isPending,
+    teamErrors,
+    clearTeamErrors: () => setTeamErrors({}),
   };
 }
