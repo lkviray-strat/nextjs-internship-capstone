@@ -2,13 +2,10 @@ import { queries } from "@/src/lib/db/queries";
 import { TRPCError } from "@trpc/server";
 import z from "zod";
 import { createTRPCRouter, protectedProcedure } from "../init";
+import { teamRouter } from "./team-routers";
 
 export const appRouter = createTRPCRouter({
-  teams: {
-    getMyTeams: protectedProcedure.query(async ({ ctx }) => {
-      return await queries.teams.getTeamsByLeaderId(ctx.auth.userId);
-    }),
-  },
+  teams: teamRouter,
   projects: {
     getMyRecentProjects: protectedProcedure
       .input(
