@@ -5,7 +5,9 @@ import { ClerkProvider } from "@clerk/nextjs";
 import { shadcn } from "@clerk/themes";
 import type { Metadata } from "next";
 import { Geist } from "next/font/google";
+import { headers } from "next/headers";
 import type React from "react";
+import { cloakSSROnlySecret } from "ssr-only-secrets";
 
 export const metadata: Metadata = {
   title: "Project Management Tool",
@@ -28,13 +30,19 @@ const clerkProviderProps = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const cookie = new Headers(await headers()).get("cookie");
+  const encryptedCookie = await cloakSSROnlySecret(
+    cookie ?? "",
+    "SECRET_CLIENT_COOKIE_VAR"
+  );
+
   return (
-    <TRPCReactProvider>
+    <TRPCReactProvider ssrOnlySecret={encryptedCookie}>
       <ClerkProvider {...clerkProviderProps}>
         <html
           lang="en"
