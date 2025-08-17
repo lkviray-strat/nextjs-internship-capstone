@@ -6,12 +6,13 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/src/components/ui/sheet";
-import { SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
+import { SignedIn, SignedOut } from "@clerk/nextjs";
 import { currentUser } from "@clerk/nextjs/server";
 import { FolderOpen, Home, LogIn, MenuIcon, X } from "lucide-react";
 import Link from "next/link";
 import { ThemeToggle } from "./theme-toggle";
 import { Button, buttonVariants } from "./ui/button";
+import { UserProfileButton } from "./user-profile-button";
 
 const navigation = [
   { name: "Dashboard", href: "/dashboard", icon: Home, current: true },
@@ -41,30 +42,10 @@ export async function LandingNavbarMenu() {
         <div className="flex flex-col justify-between p-5 px-5 h-full">
           <div className="flex flex-col gap-3">
             <SignedIn>
-              <div className="w-full flex mb-3 flex-col shadow-lg bg-muted/90 p-3 pl-6 rounded-lg">
-                <div className="relative line-clamp-1 items-center justify-center h-full -mb-2">
-                  <UserButton
-                    showName
-                    appearance={{
-                      variables: {
-                        colorRing: "transparent",
-                      },
-                      elements: {
-                        userButtonPopoverMain: "z-[10000] pointer-events-auto",
-                        button: "z-10 w-[500px] justify-start",
-                        userButtonBox: {
-                          flexDirection: "row-reverse",
-                        },
-                        avatarBox: "size-15",
-                        userButtonOuterIdentifier: "text-[18px] mb-5 ",
-                      },
-                    }}
-                  />
-                  <span className="absolute text-sm  z-0 min-w-0 bottom-2 overflow-ellipsis line-clamp-1 left-[75px] text-muted-foreground">
-                    {user?.emailAddresses[0].emailAddress}
-                  </span>
-                </div>
-              </div>
+              <UserProfileButton
+                user={JSON.parse(JSON.stringify(user))}
+                isMobile
+              />
             </SignedIn>
 
             <SignedOut>
