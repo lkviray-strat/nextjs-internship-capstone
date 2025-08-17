@@ -70,9 +70,11 @@ export default function DashboardPage() {
       {/* Recent Activity & Quick Actions */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Recent Projects */}
-        <Suspense fallback={<RecentProjectsSkeleton />}>
-          <DashboardRecentProjects />
-        </Suspense>
+        <div className="bg-card rounded-lg border p-6">
+          <Suspense fallback={<RecentProjectsSkeleton />}>
+            <DashboardRecentProjects />
+          </Suspense>
+        </div>
 
         {/* Quick Actions */}
         <div className="rounded-lg border p-6">
