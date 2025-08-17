@@ -7,6 +7,7 @@ import { createTRPCClient, httpBatchStreamLink } from "@trpc/client";
 import { createTRPCContext } from "@trpc/tanstack-react-query";
 import { useState } from "react";
 import { readSSROnlySecret } from "ssr-only-secrets";
+import superjson from "superjson";
 import { makeQueryClient } from "./query-client";
 
 export const { TRPCProvider, useTRPC } = createTRPCContext<AppRouter>();
@@ -42,6 +43,7 @@ export function TRPCReactProvider(
     createTRPCClient<AppRouter>({
       links: [
         httpBatchStreamLink({
+          transformer: superjson,
           url: getUrl(),
           async headers() {
             const headers = new Headers();
