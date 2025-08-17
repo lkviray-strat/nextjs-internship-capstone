@@ -200,6 +200,12 @@ export const queries = {
         .from(projects)
         .where(eq(projects.createdById, createdById));
     },
+    getProjectByCreatedByTeamId: (createdByTeamId: string) => {
+      return db
+        .select()
+        .from(projects)
+        .where(eq(projects.createdByTeamId, createdByTeamId));
+    },
     createProject: (project: ProjectsInsertRequest) => {
       return db.insert(projects).values(project).returning();
     },
@@ -213,11 +219,12 @@ export const queries = {
     deleteProject: (id: string) => {
       return db.delete(projects).where(eq(projects.id, id)).returning();
     },
-    getRecentProjects: (limit: number) => {
+    getProjectsByTeamIdLimitAsc: (limit: number, teamId: string) => {
       return db
         .select()
         .from(projects)
         .orderBy(desc(projects.createdAt))
+        .where(eq(projects.createdByTeamId, teamId))
         .limit(limit);
     },
   },
