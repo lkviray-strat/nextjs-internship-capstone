@@ -3,7 +3,6 @@
 import {
   BarChart3,
   Calendar,
-  ChevronDown,
   FolderOpen,
   Home,
   Settings,
@@ -18,19 +17,16 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  SidebarSeparator,
   SidebarTrigger,
   useSidebar,
 } from "@/src/components/ui/sidebar";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@radix-ui/react-dropdown-menu";
 import Link from "next/link";
 import { useParams, usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useIsMobile } from "../hooks/use-mobile";
+import { useFetch } from "../use/hooks/use-fetch";
+import { MainSidebarDropdown } from "./main-sidebar-dropdown";
 
 const navigation = [
   { name: "Dashboard", href: "dashboard", icon: Home },
@@ -43,10 +39,13 @@ const navigation = [
 
 export function MainSidebar() {
   const { teamId } = useParams();
-  const [isOpen, setIsOpen] = useState<boolean>(true);
-  const pathname = usePathname();
+  const { data } = useFetch().teams.useGetMyTeams();
   const { open } = useSidebar();
+  const [isOpen, setIsOpen] = useState<boolean>(true);
+
   const isMobile = useIsMobile();
+  const pathname = usePathname();
+  const secondSegment = pathname?.split("/").filter(Boolean)[1];
 
   useEffect(() => {
     if (isMobile) {
@@ -79,31 +78,20 @@ export function MainSidebar() {
             </SidebarHeader>
           )}
           <SidebarContent>
+            <SidebarSeparator className="my-2.5" />
             <SidebarMenu className={`mt-3 ${isOpen ? "px-3" : ""}`}>
-              <SidebarMenuItem>
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <SidebarMenuButton>
-                      Select Team
-                      <ChevronDown className="ml-auto" />
-                    </SidebarMenuButton>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent className="w-full">
-                    <DropdownMenuItem>
-                      <span>Acme Inc</span>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem>
-                      <span>Acme Corp.</span>
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
+              <SidebarMenuItem className="mb-3">
+                <MainSidebarDropdown
+                  teams={data}
+                  isOpen={isOpen}
+                />
               </SidebarMenuItem>
               <ul className={`${isOpen ? "space-y-1" : "space-y-3"}`}>
                 {navigation.map((item) => (
                   <SidebarMenuItem key={item.name}>
                     <SidebarMenuButton
                       asChild
-                      isActive={pathname === item.href}
+                      isActive={secondSegment === item.href}
                     >
                       <Link
                         href={`/${teamId}/${item.href}`}
