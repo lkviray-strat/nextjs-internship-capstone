@@ -2,7 +2,7 @@ import { Skeleton } from "../../ui/skeleton";
 
 export function RecentProjectsSkeleton() {
   return (
-    <div className="bg-card rounded-lg border p-6">
+    <>
       <h3 className="text-lg font-semibold mb-4">Recent Projects</h3>
       <div className="space-y-6">
         {Array.from({ length: 3 }).map((_, index) => (
@@ -15,6 +15,6 @@ export function RecentProjectsSkeleton() {
           </div>
         ))}
       </div>
-    </div>
+    </>
   );
 }
