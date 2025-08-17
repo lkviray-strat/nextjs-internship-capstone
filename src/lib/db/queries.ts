@@ -546,5 +546,18 @@ export const queries = {
         .from(rolePermissions)
         .where(eq(rolePermissions.permissionId, permissionId));
     },
+    getRolePermissionsByRoleIdWithPermissions: (roleId: string) => {
+      return db.query.rolePermissions.findMany({
+        where: eq(rolePermissions.roleId, roleId),
+        with: {
+          permission: {
+            columns: {
+              action: true,
+              resource: true,
+            },
+          },
+        },
+      });
+    },
   },
 };
