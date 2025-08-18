@@ -3,7 +3,7 @@ import { Loader2 } from "lucide-react";
 
 export default function SignInPage() {
   return (
-    <div className="flex bg-accent bg-gradient-to-br from-primary/20 via-primary/10 to-primary/0 dark:from-background dark:via-background/80 dark:to-background/30 items-center justify-center -mt-8 w-full min-h-screen">
+    <div className="flex bg-accent bg-gradient-to-br from-primary/20 via-primary/10 to-primary/0 dark:from-background dark:via-background/80 dark:to-background/30 items-center justify-center w-full min-h-screen">
       <ClerkLoaded>
         <SignIn
           appearance={{
