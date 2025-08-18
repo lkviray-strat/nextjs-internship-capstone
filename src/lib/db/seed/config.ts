@@ -10,6 +10,7 @@ export const authorizations = {
       "update:project",
       "delete:project",
       "create:team",
+      "create:team_member",
       "view:team",
       "update:team",
       "delete:team",
