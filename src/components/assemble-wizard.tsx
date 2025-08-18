@@ -4,6 +4,7 @@ import { Form } from "@/src/components/ui/form";
 import { useUser } from "@clerk/nextjs";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { fullWizardSchema } from "../lib/validations";
@@ -16,10 +17,12 @@ import { AssembleMembers } from "./assemble-members";
 
 export function AssembleWizard() {
   const { user } = useUser();
+  const route = useRouter();
   const teamHooks = useTeams();
   const teamMemberHooks = useTeamMembers();
   const [step, setStep] = useState(1);
   const [mounted, setMounted] = useState(false);
+
   const isSubmitting =
     teamHooks.isCreatingTeam || teamMemberHooks.isCreatingTeamMember;
 
@@ -61,19 +64,25 @@ export function AssembleWizard() {
       const teamData = { name, description, leaderId };
 
       const team = await teamHooks.createTeam(teamData);
-
       if (!team.data[0].id) throw new Error("Failed to create team");
+      const teamId = team.data[0].id;
 
       if (values.teamMembers.length > 0) {
-        const teamId = team.data[0].id;
-        for (const member of values.teamMembers) {
-          await teamMemberHooks.createTeamMember({
-            roleId: member.roleId,
-            userId: member.userId,
-            teamId,
-          });
+        try {
+          for (const member of values.teamMembers) {
+            await teamMemberHooks.createTeamMember({
+              roleId: member.roleId,
+              userId: member.userId,
+              teamId,
+            });
+          }
+        } catch (error) {
+          await teamHooks.deleteTeam(teamId);
+          throw error;
         }
       }
+
+      route.push(`${team.data[0].id}/dashboard`);
     } catch (error) {
       console.log(error);
     }
