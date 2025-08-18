@@ -8,18 +8,25 @@ import {
 } from "@/src/components/ui/sheet";
 import { SignedIn, SignedOut } from "@clerk/nextjs";
 import { currentUser } from "@clerk/nextjs/server";
-import { FolderOpen, Home, LogIn, MenuIcon, X } from "lucide-react";
+import { FolderOpen, Home, LogIn, MenuIcon, Users, X } from "lucide-react";
 import Link from "next/link";
 import { ThemeToggle } from "./theme-toggle";
 import { Button, buttonVariants } from "./ui/button";
 import { UserProfileButton } from "./user-profile-button";
 
 const navigation = [
-  { name: "Dashboard", href: "/dashboard", icon: Home, current: true },
-  { name: "Projects", href: "/projects", icon: FolderOpen, current: true },
+  { name: "Assemble", href: "assemble", icon: Users },
+  { name: "Dashboard", href: "dashboard", icon: Home },
+  { name: "Projects", href: "projects", icon: FolderOpen },
 ];
 
-export async function LandingNavbarMenu() {
+type LandingNavbarMenuProps = {
+  buttonHref: (path: string) => string;
+};
+
+export async function LandingNavbarMenu({
+  buttonHref,
+}: LandingNavbarMenuProps) {
   const user = await currentUser();
 
   return (
@@ -62,7 +69,7 @@ export async function LandingNavbarMenu() {
               {navigation.map((item) => (
                 <li key={item.name}>
                   <Link
-                    href={item.href}
+                    href={`${item.name === "Assemble" ? item.href : buttonHref(item.href)}`}
                     className={`flex items-center text-[18px] !p-4 !py-5.5 w-full justify-start
                     ${buttonVariants({ variant: "ghost" })}`}
                   >
