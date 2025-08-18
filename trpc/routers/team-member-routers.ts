@@ -17,10 +17,10 @@ export const teamMemberRouter = createTRPCRouter({
     .input(createTeamMemberRequestSchema)
     .mutation(async ({ input }) => {
       if (
-        !(await userHasPermission(input.userId, input.teamId, {
+        await userHasPermission(input.userId, input.teamId, {
           action: "create",
           resource: "team_member",
-        }))
+        })
       ) {
         throw new TRPCError({
           code: "FORBIDDEN",
@@ -39,10 +39,10 @@ export const teamMemberRouter = createTRPCRouter({
         });
       }
       if (
-        !(await userHasPermission(input.userId, input.teamId, {
+        await userHasPermission(input.userId, input.teamId, {
           action: "update",
           resource: "team_member",
-        }))
+        })
       ) {
         throw new TRPCError({
           code: "FORBIDDEN",
@@ -67,10 +67,10 @@ export const teamMemberRouter = createTRPCRouter({
         });
       }
       if (
-        !(await userHasPermission(ctx.auth.userId, input.teamId, {
+        await userHasPermission(ctx.auth.userId, input.teamId, {
           action: "delete",
           resource: "team_member",
-        }))
+        })
       ) {
         throw new TRPCError({
           code: "FORBIDDEN",
