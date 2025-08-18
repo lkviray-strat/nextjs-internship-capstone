@@ -40,7 +40,7 @@ const navigation = [
 export function MainSidebar() {
   const { teamId } = useParams();
   const { data } = useFetch().teams.useGetMyTeams();
-  const { open } = useSidebar();
+  const { open, setOpenMobile } = useSidebar();
   const [isOpen, setIsOpen] = useState<boolean>(true);
 
   const isMobile = useIsMobile();
@@ -50,10 +50,11 @@ export function MainSidebar() {
   useEffect(() => {
     if (isMobile) {
       setIsOpen(isMobile);
+      setOpenMobile(isMobile);
     } else {
       setIsOpen(open);
     }
-  }, [open, isMobile]);
+  }, [open, isMobile, setOpenMobile]);
 
   return (
     <Sidebar
@@ -114,8 +115,4 @@ export function MainSidebar() {
       </SidebarContent>
     </Sidebar>
   );
-}
-
-{
-  /*  */
 }
