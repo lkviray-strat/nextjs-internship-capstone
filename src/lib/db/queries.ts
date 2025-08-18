@@ -21,7 +21,7 @@ import type {
   UserInsertRequest,
   UserUpdateRequest,
 } from "@/src/types";
-import { and, asc, desc, eq } from "drizzle-orm";
+import { and, asc, desc, eq, ilike, or } from "drizzle-orm";
 import { db } from ".";
 import {
   comments,
@@ -84,6 +84,19 @@ export const queries = {
           },
         },
       });
+    },
+    getUsersBySearch: (query: string, limit = 10) => {
+      return db
+        .select()
+        .from(users)
+        .where(
+          or(
+            ilike(users.firstName, `%${query}%`),
+            ilike(users.lastName, `%${query}%`),
+            ilike(users.email, `%${query}%`)
+          )
+        )
+        .limit(limit);
     },
   },
   teams: {
@@ -494,6 +507,14 @@ export const queries = {
     },
     getRoleByPriority: (priority: number) => {
       return db.select().from(roles).where(eq(roles.priority, priority));
+    },
+    getRoleByDescLimitOffset: (limit = 1, offset = 0) => {
+      return db
+        .select()
+        .from(roles)
+        .orderBy(desc(roles.priority))
+        .limit(limit)
+        .offset(offset);
     },
   },
   permissions: {
