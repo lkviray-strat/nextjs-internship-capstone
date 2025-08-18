@@ -1,5 +1,7 @@
 "use client";
 
+import { useUser } from "@clerk/nextjs";
+import { notFound } from "next/navigation";
 import { useState } from "react";
 import type { UseControllerReturn } from "react-hook-form";
 import type { CreateFullWizardRequestInput, User } from "../types";
@@ -35,18 +37,27 @@ function SearchRender({ member }: { member: User }) {
 }
 
 export function AssembleSearch({ field }: AssembleSearchProps) {
+  const { user } = useUser();
   const [search, setSearch] = useState("");
+
+  const { data: role } = useFetch().roles.useGetRoleByDescLimitOffset(1, 1);
   const { data: searchResults, isLoading } =
     useFetch().users.useGetUsersBySearch(search, 8);
-  const { data: role } = useFetch().roles.useGetRoleByDescLimitOffset(1, 1);
+
+  if (!user || !role) return notFound();
+
+  const filteredUsers =
+    searchResults?.filter((member) => {
+      const isNotCurrentUser = user.id !== member.id;
+      const isNotAlreadyAdded = !field.value.some(
+        (m) => m.userId === member.id
+      );
+      return isNotCurrentUser && isNotAlreadyAdded;
+    }) || [];
 
   return (
     <CommandSearch
-      items={
-        searchResults?.filter(
-          (member) => !field.value.some((m) => m.userId === member.id)
-        ) || []
-      }
+      items={filteredUsers}
       isLoading={isLoading}
       fallback={<UserSearchSkeleton />}
       searchTerm={search}
@@ -54,7 +65,7 @@ export function AssembleSearch({ field }: AssembleSearchProps) {
       onItemSelect={(member) => {
         field.onChange([
           ...field.value,
-          { userId: member.id, roleId: role[0]?.id || "" },
+          { userId: member.id, roleId: role[0].id },
         ]);
       }}
       placeholder="Search for team members..."
