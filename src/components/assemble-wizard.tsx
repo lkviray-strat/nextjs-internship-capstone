@@ -7,7 +7,9 @@ import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { usePreventForm } from "../hooks/use-preventform";
 import { fullWizardSchema } from "../lib/validations";
+import { useUIStore } from "../stores/ui-store";
 import type { CreateFullWizardRequestInput } from "../types";
 import { useTeamMembers } from "../use/hooks/use-team-members";
 import { useTeams } from "../use/hooks/use-teams";
@@ -20,6 +22,7 @@ export function AssembleWizard() {
   const route = useRouter();
   const teamHooks = useTeams();
   const teamMemberHooks = useTeamMembers();
+  const { setIsCreateTeamDirty } = useUIStore();
   const [step, setStep] = useState(1);
   const [mounted, setMounted] = useState(false);
 
@@ -41,6 +44,7 @@ export function AssembleWizard() {
     teamHooks.clearTeamErrors();
     teamMemberHooks.clearTeamMemberErrors();
     form.clearErrors();
+    setIsCreateTeamDirty(false);
   }
 
   function onKeyDown(e: React.KeyboardEvent<HTMLFormElement>) {
@@ -120,6 +124,8 @@ export function AssembleWizard() {
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  usePreventForm(form);
 
   if (!mounted)
     return (
