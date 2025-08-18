@@ -336,3 +336,8 @@ export const projectTeamsResponseSchema = projectTeamsSchema.extend({
   project: projectsSchema.optional().nullable(),
   team: teamsSchema.optional().nullable(),
 });
+
+// Wizard schema
+export const fullWizardSchema = createTeamRequestSchema.extend({
+  teamMembers: z.array(createTeamMemberRequestSchema.omit({ teamId: true })),
+});

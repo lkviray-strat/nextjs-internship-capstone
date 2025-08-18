@@ -1,0 +1,48 @@
+import { AssembleWizard } from "@/src/components/assemble-wizard";
+import { BackButton } from "@/src/components/back-button";
+import { BackgroundGlow } from "@/src/components/background-glow";
+import { LandingNavbar } from "@/src/components/landing-navbar";
+import { LandingNavbarMenu } from "@/src/components/landing-navbar-menu";
+import { queries } from "@/src/lib/db/queries";
+import { auth } from "@clerk/nextjs/server";
+import { ChevronLeft } from "lucide-react";
+
+export default async function AssemblePage() {
+  const user = await auth();
+  const id = user?.userId;
+
+  const isUserLoggedIn = user && id;
+
+  const existingTeam = await queries.teams.getTeamsByLeaderId(id as string);
+
+  const buttonHref = (path: string) =>
+    isUserLoggedIn ? `/${existingTeam[0]?.id}/${path}` : "/sign-in";
+
+  return (
+    <div className="relative min-h-screen">
+      <BackgroundGlow />
+      <header className="border-b backdrop-blur-xs">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-16">
+            <BackButton>
+              <ChevronLeft className="size-8" />
+            </BackButton>
+            <LandingNavbar
+              buttonHref={buttonHref}
+              showNavs={false}
+            />
+            <div className="sm:hidden flex">
+              <LandingNavbarMenu buttonHref={buttonHref} />
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <section className="flex mt-4">
+        <div className="container mx-auto p-10 w-full max-w-[700px] flex flex-col items-start justify-baseline gap-7">
+          <AssembleWizard />
+        </div>
+      </section>
+    </div>
+  );
+}
