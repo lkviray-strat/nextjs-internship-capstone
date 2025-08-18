@@ -1,6 +1,9 @@
 "use client";
 
 import { X } from "lucide-react";
+import { notFound } from "next/navigation";
+import { useEffect } from "react";
+import { useUIStore } from "../stores/ui-store";
 import { useFetch } from "../use/hooks/use-fetch";
 import { ImageHandler } from "./Image-handler";
 import { Button } from "./ui/button";
@@ -11,11 +14,16 @@ type AssembleUserCard = {
 };
 
 export function AssembleUserCard({ userId, removeHandler }: AssembleUserCard) {
-  const { data } = useFetch().users.useGetUserById(userId);
+  const { data, isFetching } = useFetch().users.useGetUserById(userId);
+  const { setIsTeamMembersLoading } = useUIStore();
   const user = data[0];
 
+  useEffect(() => {
+    setIsTeamMembersLoading(isFetching);
+  }, [isFetching, setIsTeamMembersLoading]);
+
   if (!user) {
-    return <div className="text-muted-foreground">Unknown User</div>;
+    return notFound();
   }
 
   return (
