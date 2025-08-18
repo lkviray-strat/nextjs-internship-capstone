@@ -1,6 +1,7 @@
 "use client";
 
 import { Loader2 } from "lucide-react";
+import { useUIStore } from "../stores/ui-store";
 import { Button } from "./ui/button";
 
 type AssembleButtonsProps = {
@@ -24,6 +25,8 @@ export function AssembleButtons({
   backLabel = "Back",
   submitLabel = "Submit",
 }: AssembleButtonsProps) {
+  const { isTeamMembersLoading } = useUIStore();
+
   return (
     <div className="flex flex-col w-full gap-3 mt-10">
       {currentStep < totalSteps && (
@@ -39,7 +42,7 @@ export function AssembleButtons({
       {currentStep === totalSteps && (
         <Button
           type="submit"
-          disabled={isSubmitting}
+          disabled={isSubmitting || isTeamMembersLoading}
         >
           {isSubmitting ? (
             <>
@@ -56,7 +59,7 @@ export function AssembleButtons({
           type="button"
           variant="secondary"
           onClick={onBack}
-          disabled={isSubmitting}
+          disabled={isSubmitting || isTeamMembersLoading}
         >
           {backLabel}
         </Button>
