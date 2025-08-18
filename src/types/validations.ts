@@ -68,3 +68,7 @@ export type KanbanColumnsResponse = z.infer<
 export type TeamMemberResponse = z.infer<
   typeof validations.teamMembersResponseSchema
 >;
+
+export type CreateFullWizardRequestInput = z.infer<
+  typeof validations.fullWizardSchema
+>;
