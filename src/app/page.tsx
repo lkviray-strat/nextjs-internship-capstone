@@ -38,7 +38,7 @@ export default async function HomePage() {
       </header>
 
       {/* Hero Section */}
-      <section className=" flex items-center justify-center min-h-screen -mt-16.5">
+      <section className="flex items-center justify-center min-h-screen -mt-16.5">
         <div className="container text-center -mt-6 flex flex-col items-center justify-center gap-7">
           <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold">
             Stratify Your Projects <br /> with{" "}
