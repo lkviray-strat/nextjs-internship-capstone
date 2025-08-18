@@ -15,14 +15,7 @@ import { createTRPCRouter, protectedProcedure } from "../init";
 export const teamMemberRouter = createTRPCRouter({
   createTeamMembers: protectedProcedure
     .input(createTeamMemberRequestSchema)
-    .mutation(async ({ ctx, input }) => {
-      const user = ctx.auth.userId !== input.userId;
-      if (user) {
-        throw new TRPCError({
-          code: "FORBIDDEN",
-          message: "You are not allowed to create a team for this user.",
-        });
-      }
+    .mutation(async ({ input }) => {
       if (
         !(await userHasPermission(input.userId, input.teamId, {
           action: "create",
@@ -31,8 +24,7 @@ export const teamMemberRouter = createTRPCRouter({
       ) {
         throw new TRPCError({
           code: "FORBIDDEN",
-          message:
-            "You do not have permission to create a team member for this user.",
+          message: "You do not have permission to create a team member",
         });
       }
       return await createTeamMembersAction(input);
