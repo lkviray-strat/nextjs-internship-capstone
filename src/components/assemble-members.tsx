@@ -1,5 +1,3 @@
-"use client";
-
 import {
   FormControl,
   FormField,
@@ -22,8 +20,10 @@ export function AssembleMembers({ control }: AssembleMembersProps) {
   return (
     <>
       <div className="flex flex-col gap-5">
-        <h1 className="text-5xl font-semibold">Assemble the team</h1>
-        <p className="text-lg text-muted-foreground -mt-3 mb-5">
+        <h1 className="text-4xl md:text-5xl font-semibold">
+          Assemble the team
+        </h1>
+        <p className="text-md md:text-lg text-muted-foreground -mt-3 mb-5">
           Invite your teammates by entering their email addresses. Assign roles
           to each member to define their responsibilities.
         </p>
@@ -36,7 +36,12 @@ export function AssembleMembers({ control }: AssembleMembersProps) {
           render={({ field }) => (
             <FormItem className="relative flex-col gap-2 space-y-0 items-start">
               <FormLabel className="flex text-[20px] shrink-0">
-                Team Members
+                Team Members{" "}
+                <span
+                  className={`${field.value.length === 0 ? "hidden" : "inline"}`}
+                >
+                  ( {field.value.length} )
+                </span>
               </FormLabel>
 
               <FormControl>
@@ -45,7 +50,7 @@ export function AssembleMembers({ control }: AssembleMembersProps) {
               <FormMessage />
 
               {field.value.length > 0 && (
-                <div className="flex flex-col my-1 gap-1 w-full max-h-[280px] overflow-auto">
+                <div className="flex flex-col my-1 gap-1 w-full max-h-[210px] overflow-auto">
                   {field.value.map((member, index) => (
                     <Suspense
                       key={member.userId}
