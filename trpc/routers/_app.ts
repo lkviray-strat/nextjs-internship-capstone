@@ -2,12 +2,16 @@ import { queries } from "@/src/lib/db/queries";
 import { TRPCError } from "@trpc/server";
 import z from "zod";
 import { createTRPCRouter, protectedProcedure } from "../init";
+import { roleRouter } from "./role-routers";
 import { teamMemberRouter } from "./team-member-routers";
 import { teamRouter } from "./team-routers";
+import { userRouter } from "./user-routers";
 
 export const appRouter = createTRPCRouter({
+  users: userRouter,
   teams: teamRouter,
   teamMembers: teamMemberRouter,
+  roles: roleRouter,
   projects: {
     getMyRecentProjects: protectedProcedure
       .input(
