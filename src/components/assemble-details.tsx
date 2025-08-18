@@ -20,8 +20,10 @@ export function AssembleDetails({ control }: AssembleDetailsProps) {
   return (
     <>
       <div className="flex flex-col gap-5">
-        <h1 className="text-5xl font-semibold">Setup team details</h1>
-        <p className="text-lg text-muted-foreground -mt-3 mb-5">
+        <h1 className="text-4xl md:text-5xl font-semibold">
+          Setup team details
+        </h1>
+        <p className="text-md md:text-lg text-muted-foreground -mt-3 mb-5">
           Enter your team name and description to help members understand your
           team&apos;s purpose. You can update these details later.
         </p>

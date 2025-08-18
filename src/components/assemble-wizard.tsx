@@ -43,6 +43,11 @@ export function AssembleWizard() {
     form.clearErrors();
   }
 
+  function onKeyDown(e: React.KeyboardEvent<HTMLFormElement>) {
+    if (e.key === "Enter") {
+      e.preventDefault();
+    }
+  }
   function onBackStep() {
     setStep((prev) => prev - 1);
   }
@@ -128,6 +133,7 @@ export function AssembleWizard() {
       <form
         onSubmit={form.handleSubmit(onSubmit, onError)}
         onReset={onReset}
+        onKeyDown={onKeyDown}
         className="space-y-8 w-full"
       >
         <div className="flex flex-col gap-5">

@@ -38,8 +38,8 @@ export default async function AssemblePage() {
         </div>
       </header>
 
-      <section className="flex mt-4">
-        <div className="container mx-auto p-10 w-full max-w-[700px] flex flex-col items-start justify-baseline gap-7">
+      <section className="flex items-start justify-center min-h-screen -mt-16.5">
+        <div className="container mx-auto p-10 md:max-w-[700px] flex flex-col mt-30 items-start justify-baseline gap-7">
           <AssembleWizard />
         </div>
       </section>
