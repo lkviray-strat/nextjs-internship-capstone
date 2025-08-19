@@ -1,21 +1,23 @@
 import { useEffect } from "react";
 import type { FieldValues, UseFormReturn } from "react-hook-form";
-import { useUIStore } from "../stores/ui-store";
 
-export function usePreventForm<T extends FieldValues>(form: UseFormReturn<T>) {
-  const { setIsCreateTeamDirty } = useUIStore();
+type IsDirtyOption = (dirty: boolean) => void;
 
+export function usePreventForm<T extends FieldValues>(
+  form: UseFormReturn<T>,
+  setIsDirty: IsDirtyOption
+) {
   useEffect(() => {
     const subscription = form.watch(() => {
-      setIsCreateTeamDirty(form.formState.isDirty);
+      setIsDirty(form.formState.isDirty);
     });
     return () => subscription.unsubscribe();
-  }, [form, setIsCreateTeamDirty]);
+  }, [form, setIsDirty]);
 
   useEffect(() => {
     const handleBeforeUnload = (e: BeforeUnloadEvent) => {
       if (form.formState.isDirty) {
-        setIsCreateTeamDirty(true);
+        setIsDirty(true);
         console.log("Form is dirty, preventing unload");
         e.preventDefault();
         e.returnValue = "";
@@ -38,5 +40,5 @@ export function usePreventForm<T extends FieldValues>(form: UseFormReturn<T>) {
       window.removeEventListener("beforeunload", handleBeforeUnload);
       document.removeEventListener("click", handleLinkClick);
     };
-  }, [form.formState.isDirty, setIsCreateTeamDirty]);
+  }, [form.formState.isDirty, setIsDirty]);
 }

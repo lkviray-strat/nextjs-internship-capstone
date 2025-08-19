@@ -122,7 +122,7 @@ export function AssembleWizard() {
     }
   }, [user, form]);
 
-  usePreventForm(form);
+  usePreventForm(form, setIsCreateTeamDirty);
 
   return (
     <ClientOnly fallback={<Loader />}>
