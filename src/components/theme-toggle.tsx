@@ -1,7 +1,8 @@
 "use client";
 
 import { Moon, Sun } from "lucide-react";
-import { useTheme } from "./theme-provider";
+import { useTheme } from "next-themes";
+import { ClientOnly } from "./client-only";
 import { Button } from "./ui/button";
 
 type ThemeToggleProps = {
@@ -12,7 +13,7 @@ export function ThemeToggle({ showFull = false }: ThemeToggleProps) {
   const { theme, setTheme } = useTheme();
 
   return (
-    <>
+    <ClientOnly>
       {showFull ? (
         <Button
           variant="ghost"
@@ -64,6 +65,6 @@ export function ThemeToggle({ showFull = false }: ThemeToggleProps) {
           )}
         </Button>
       )}
-    </>
+    </ClientOnly>
   );
 }

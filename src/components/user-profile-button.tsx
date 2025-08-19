@@ -2,19 +2,12 @@
 
 import { SignedIn, UserButton } from "@clerk/nextjs";
 import type { User } from "@clerk/nextjs/server";
-import { useEffect, useState } from "react";
+import { ClientOnly } from "./client-only";
 
 type UserProfileButtonProps = {
   user?: User | null;
   isMobile?: boolean;
 };
-
-function ClientOnly({ children }: { children: React.ReactNode }) {
-  const [mounted, setMounted] = useState(false);
-  useEffect(() => setMounted(true), []);
-  if (!mounted) return null;
-  return <>{children}</>;
-}
 
 export function UserProfileButton({ user, isMobile }: UserProfileButtonProps) {
   return (

@@ -9,10 +9,9 @@ import { ChevronLeft } from "lucide-react";
 
 export default async function AssemblePage() {
   const user = await auth();
+
   const id = user?.userId;
-
   const isUserLoggedIn = user && id;
-
   const existingTeam = await queries.teams.getTeamsByLeaderId(id as string);
 
   const buttonHref = (path: string) =>
