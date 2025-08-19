@@ -7,6 +7,7 @@ import type {
   KanbanColumnsUpdateRequest,
   PermissionActionsEnum,
   PermissionResourcesEnum,
+  ProjectFilters,
   ProjectsInsertRequest,
   ProjectStatusEnum,
   ProjectsUpdateRequest,
@@ -21,7 +22,7 @@ import type {
   UserInsertRequest,
   UserUpdateRequest,
 } from "@/src/types";
-import { and, asc, desc, eq, ilike, or } from "drizzle-orm";
+import { and, asc, desc, eq, gte, ilike, lte, or } from "drizzle-orm";
 import { db } from ".";
 import {
   comments,
@@ -239,6 +240,46 @@ export const queries = {
         .orderBy(desc(projects.createdAt))
         .where(eq(projects.createdByTeamId, teamId))
         .limit(limit);
+    },
+    async getProjectsBySearchAndPageAndFiltersAndOrder(
+      projectFilters: ProjectFilters
+    ) {
+      const { teamId, search, page, status, start, end, order } =
+        projectFilters;
+      const PROJECTS_PER_PAGE = 6;
+      const filters = [];
+
+      if (status) filters.push(eq(projects.status, status));
+      if (start) filters.push(gte(projects.startDate, start));
+      if (end) filters.push(lte(projects.startDate, end));
+      if (search) filters.push(ilike(projects.name, `%${search}%`));
+      const orderBy =
+        order === "asc" ? asc(projects.createdAt) : desc(projects.createdAt);
+
+      const condition =
+        filters.length > 0
+          ? and(...filters, eq(projects.createdByTeamId, teamId))
+          : eq(projects.createdByTeamId, teamId);
+
+      const offset = (page - 1) * PROJECTS_PER_PAGE;
+
+      const results = await db.query.projects.findMany({
+        where: condition,
+        limit: PROJECTS_PER_PAGE,
+        offset,
+        orderBy,
+      });
+
+      const total = await db.$count(projects, condition);
+      return {
+        results,
+        pagination: {
+          total,
+          pagesCount: Math.ceil(total / PROJECTS_PER_PAGE),
+          currentPage: page,
+          perPage: PROJECTS_PER_PAGE,
+        },
+      };
     },
   },
   kanbanBoards: {

@@ -1,6 +1,7 @@
 "use client";
 
 import { useDebounce } from "@/src/hooks/use-debounce";
+import type { ProjectFiltersInput } from "@/src/types";
 import { useTRPC } from "@/trpc/client";
 import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
 
@@ -33,6 +34,15 @@ export function useFetch() {
       useGetMyRecentProjects: (teamId: string) => {
         return useSuspenseQuery(
           trpc.projects.getMyRecentProjects.queryOptions({ teamId })
+        );
+      },
+      useGetProjectsBySearchAndPageAndFiltersAndOrder: (
+        projectFilters: ProjectFiltersInput
+      ) => {
+        return useQuery(
+          trpc.projects.getProjectsBySearchAndPageAndFiltersAndOrder.queryOptions(
+            projectFilters
+          )
         );
       },
     },
