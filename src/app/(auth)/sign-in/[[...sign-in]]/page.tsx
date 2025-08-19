@@ -1,5 +1,5 @@
+import { Loader } from "@/src/components/loader";
 import { ClerkLoaded, ClerkLoading, SignIn } from "@clerk/nextjs";
-import { Loader2 } from "lucide-react";
 
 export default function SignInPage() {
   return (
@@ -26,7 +26,7 @@ export default function SignInPage() {
         />
       </ClerkLoaded>
       <ClerkLoading>
-        <Loader2 className="animate-spin size-20 text-muted-foreground" />
+        <Loader />
       </ClerkLoading>
     </div>
   );
