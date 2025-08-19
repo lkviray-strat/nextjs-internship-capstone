@@ -3,10 +3,10 @@
 import { Form } from "@/src/components/ui/form";
 import { useUser } from "@clerk/nextjs";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import { usePreventForm } from "../hooks/use-preventform";
 import { fullWizardSchema } from "../lib/validations";
 import { useUIStore } from "../stores/ui-store";
@@ -16,6 +16,8 @@ import { useTeams } from "../use/hooks/use-teams";
 import { AssembleButtons } from "./assemble-buttons";
 import { AssembleDetails } from "./assemble-details";
 import { AssembleMembers } from "./assemble-members";
+import { ClientOnly } from "./client-only";
+import { Loader } from "./loader";
 
 export function AssembleWizard() {
   const { user } = useUser();
@@ -24,7 +26,6 @@ export function AssembleWizard() {
   const teamMemberHooks = useTeamMembers();
   const { setIsCreateTeamDirty } = useUIStore();
   const [step, setStep] = useState(1);
-  const [mounted, setMounted] = useState(false);
 
   const isSubmitting =
     teamHooks.isCreatingTeam || teamMemberHooks.isCreatingTeamMember;
@@ -90,16 +91,17 @@ export function AssembleWizard() {
           throw error;
         }
       }
-
+      toast.success("Team created successfully!");
       route.push(`${team.data[0].id}/dashboard`);
     } catch (error) {
-      console.log(error);
+      toast.error("Unknown Error. Failed to create team");
+      console.log("Submission error:", error);
     }
   }
 
   function onError(error: unknown) {
+    toast.error("Unknown Error. Failed to create team");
     console.log("Submission error:", error);
-    // Create Toast
   }
 
   useEffect(() => {
@@ -121,47 +123,42 @@ export function AssembleWizard() {
     }
   }, [user, form]);
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
   usePreventForm(form);
 
-  if (!mounted)
-    return (
-      <div className="flex items-center justify-center min-h-[calc(100vh-11rem)] -mt-16 w-full">
-        <Loader2 className="animate-spin size-20 text-muted-foreground" />
-      </div>
-    );
-
   return (
-    <Form {...form}>
-      <form
-        onSubmit={form.handleSubmit(onSubmit, onError)}
-        onReset={onReset}
-        onKeyDown={onKeyDown}
-        className="space-y-8 w-full"
-      >
-        <div className="flex flex-col gap-5">
-          {step === 1 && <AssembleDetails control={form.control} />}
-          {step === 2 && <AssembleMembers control={form.control} />}
-        </div>
+    <ClientOnly fallback={<Loader />}>
+      <Form {...form}>
+        <form
+          onSubmit={form.handleSubmit(onSubmit, onError)}
+          onReset={onReset}
+          onKeyDown={onKeyDown}
+          className="space-y-8 w-full"
+        >
+          <div className="flex flex-col gap-5">
+            <div className={`${step === 1 ? "block" : "hidden"}`}>
+              <AssembleDetails control={form.control} />
+            </div>
+            <div className={`${step === 2 ? "block" : "hidden"}`}>
+              <AssembleMembers control={form.control} />
+            </div>
+          </div>
 
-        <AssembleButtons
-          currentStep={step}
-          totalSteps={2}
-          isSubmitting={isSubmitting}
-          onNext={onNextStep}
-          onBack={onBackStep}
-          submitLabel={
-            isSubmitting
-              ? "Creating..."
-              : form.watch("teamMembers").length === 0
-                ? "Skip"
-                : "Create Team"
-          }
-        />
-      </form>
-    </Form>
+          <AssembleButtons
+            currentStep={step}
+            totalSteps={2}
+            isSubmitting={isSubmitting}
+            onNext={onNextStep}
+            onBack={onBackStep}
+            submitLabel={
+              isSubmitting
+                ? "Creating..."
+                : form.watch("teamMembers").length === 0
+                  ? "Skip"
+                  : "Create Team"
+            }
+          />
+        </form>
+      </Form>
+    </ClientOnly>
   );
 }
