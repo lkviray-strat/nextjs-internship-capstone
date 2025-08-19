@@ -42,9 +42,9 @@ export function AssembleWizard() {
 
   function onReset() {
     form.reset();
+    form.clearErrors();
     teamHooks.clearTeamErrors();
     teamMemberHooks.clearTeamMemberErrors();
-    form.clearErrors();
     setIsCreateTeamDirty(false);
   }
 
@@ -66,9 +66,8 @@ export function AssembleWizard() {
   }
 
   async function onSubmit(values: CreateFullWizardRequestInput) {
-    if (isSubmitting) {
-      return;
-    }
+    if (isSubmitting) return;
+
     try {
       const { name, description, leaderId } = values;
       const teamData = { name, description, leaderId };
