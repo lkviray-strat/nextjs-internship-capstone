@@ -1,4 +1,5 @@
 import { ThemeProvider } from "@/src/components/theme-provider";
+import { Toaster } from "@/src/components/ui/sonner";
 import "@/src/styles/globals.css";
 import { TRPCReactProvider } from "@/trpc/client";
 import { ClerkProvider } from "@clerk/nextjs";
@@ -49,7 +50,14 @@ export default async function RootLayout({
           suppressHydrationWarning
         >
           <body className={gi.className}>
-            <ThemeProvider>{children}</ThemeProvider>
+            <ThemeProvider
+              defaultTheme="system"
+              attribute="class"
+              storageKey="theme"
+            >
+              {children}
+              <Toaster richColors />
+            </ThemeProvider>
           </body>
         </html>
       </ClerkProvider>
