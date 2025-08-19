@@ -1,4 +1,4 @@
-import { userHasPermission } from "@/src/lib/permissions";
+import { hasPermission } from "@/src/lib/permissions";
 import {
   createTeamMemberRequestSchema,
   updateTeamMemberRequestSchema,
@@ -13,46 +13,51 @@ import z from "zod";
 import { createTRPCRouter, protectedProcedure } from "../init";
 
 export const teamMemberRouter = createTRPCRouter({
-  createTeamMembers: protectedProcedure
+  createTeamMember: protectedProcedure
     .input(createTeamMemberRequestSchema)
     .mutation(async ({ input }) => {
-      if (
-        await userHasPermission(input.userId, input.teamId, {
-          action: "create",
-          resource: "team_member",
-        })
-      ) {
+      const perm = await hasPermission(input.userId, input.teamId, {
+        action: "create",
+        resource: "team_member",
+      });
+
+      if (perm) {
         throw new TRPCError({
           code: "FORBIDDEN",
           message: "You do not have permission to create a team member",
         });
       }
+
       return await createTeamMembersAction(input);
     }),
-  updateTeamMembers: protectedProcedure
+  updateTeamMember: protectedProcedure
     .input(updateTeamMemberRequestSchema)
     .mutation(async ({ ctx, input }) => {
-      if (input.userId !== ctx.auth.userId) {
+      const user = ctx.auth.userId === input.userId;
+
+      if (!user) {
         throw new TRPCError({
           code: "FORBIDDEN",
           message: "You are not allowed to update a team member for this user.",
         });
       }
-      if (
-        await userHasPermission(input.userId, input.teamId, {
-          action: "update",
-          resource: "team_member",
-        })
-      ) {
+
+      const perm = await hasPermission(ctx.auth.userId, input.teamId, {
+        action: "update",
+        resource: "team_member",
+      });
+
+      if (perm) {
         throw new TRPCError({
           code: "FORBIDDEN",
           message:
             "You do not have permission to update a team member for this user.",
         });
       }
+
       return await updateTeamMembersAction(input);
     }),
-  deleteTeamMembers: protectedProcedure
+  deleteTeamMember: protectedProcedure
     .input(
       z.object({
         userId: z.string(),
@@ -60,23 +65,27 @@ export const teamMemberRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ ctx, input }) => {
-      if (input.userId !== ctx.auth.userId) {
+      const user = ctx.auth.userId === input.userId;
+
+      if (!user) {
         throw new TRPCError({
           code: "FORBIDDEN",
           message: "You are not allowed to delete a team member for this user.",
         });
       }
-      if (
-        await userHasPermission(ctx.auth.userId, input.teamId, {
-          action: "delete",
-          resource: "team_member",
-        })
-      ) {
+
+      const perm = await hasPermission(ctx.auth.userId, input.teamId, {
+        action: "delete",
+        resource: "team_member",
+      });
+
+      if (perm) {
         throw new TRPCError({
           code: "FORBIDDEN",
           message: "You do not have permission to delete this team member.",
         });
       }
+
       return await deleteTeamMembersAction(input.userId, input.teamId);
     }),
 });

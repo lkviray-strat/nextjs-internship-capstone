@@ -1,7 +1,7 @@
 import type { PermissionInsertRequest } from "../types";
 import { queries } from "./db/queries";
 
-export async function userHasPermission(
+export async function hasPermission(
   userId: string,
   teamId: string,
   { action, resource }: PermissionInsertRequest
