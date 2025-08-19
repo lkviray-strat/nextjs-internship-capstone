@@ -38,16 +38,16 @@ export default async function HomePage() {
       </header>
 
       {/* Hero Section */}
-      <section className="flex items-center justify-center min-h-screen -mt-16.5">
-        <div className="container text-center -mt-6 flex flex-col items-center justify-center gap-7">
-          <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold">
+      <section className="flex items-center justify-center mt-30 md:min-h-screen md:-mt-16.5">
+        <div className="container text-center -mt-6 flex flex-col items-center justify-center gap-7 px-8">
+          <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold">
             Stratify Your Projects <br /> with{" "}
             <span className="font-extrabold italic bg-gradient-to-r from-primary via-primary to-blue-400 bg-clip-text text-transparent">
               Kanban Boards
             </span>
           </h1>
 
-          <p className="text-xl mb-2 text-muted-foreground">
+          <p className="text-xl  mb-2 text-muted-foreground max-w-[800px]">
             Organize tasks, collaborate with teams, and track progress with our
             intuitive drag-and-drop project management platform.
           </p>
