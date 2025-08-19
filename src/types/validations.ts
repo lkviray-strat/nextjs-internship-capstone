@@ -72,3 +72,7 @@ export type TeamMemberResponse = z.infer<
 export type CreateFullWizardRequestInput = z.infer<
   typeof validations.fullWizardSchema
 >;
+
+export type ProjectFiltersInput = z.infer<
+  typeof validations.projectFiltersSchema
+>;

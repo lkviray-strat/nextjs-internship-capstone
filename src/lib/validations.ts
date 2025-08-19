@@ -341,3 +341,14 @@ export const projectTeamsResponseSchema = projectTeamsSchema.extend({
 export const fullWizardSchema = createTeamRequestSchema.extend({
   teamMembers: z.array(createTeamMemberRequestSchema.omit({ teamId: true })),
 });
+
+// Filters validation
+export const projectFiltersSchema = z.object({
+  teamId: z.guid(),
+  search: z.string().max(100, errorMessages.maxLength(100)),
+  page: z.number().min(1).default(1),
+  status: z.enum(PROJECT_STATUS_ENUM).optional(),
+  start: z.date().optional(),
+  end: z.date().optional(),
+  order: z.enum(["asc", "desc"]).default("desc").optional(),
+});
