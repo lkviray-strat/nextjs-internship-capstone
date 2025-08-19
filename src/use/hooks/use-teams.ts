@@ -8,9 +8,9 @@ export function useTeams() {
   const queryClient = useQueryClient();
 
   const createTeam = useMutation(
-    trpc.teams.createTeams.mutationOptions({
+    trpc.teams.createTeam.mutationOptions({
       onSuccess: () => {
-        const mutationKey = trpc.teams.createTeams.mutationKey();
+        const mutationKey = trpc.teams.createTeam.mutationKey();
         queryClient.invalidateQueries({ queryKey: mutationKey });
         setTeamErrors({});
       },
@@ -28,9 +28,9 @@ export function useTeams() {
   );
 
   const updateTeam = useMutation(
-    trpc.teams.updateTeams.mutationOptions({
+    trpc.teams.updateTeam.mutationOptions({
       onSuccess: () => {
-        const mutationKey = trpc.teams.updateTeams.mutationKey();
+        const mutationKey = trpc.teams.updateTeam.mutationKey();
         queryClient.invalidateQueries({ queryKey: mutationKey });
         setTeamErrors({});
       },
@@ -48,9 +48,9 @@ export function useTeams() {
   );
 
   const deleteTeam = useMutation(
-    trpc.teams.deleteTeams.mutationOptions({
+    trpc.teams.deleteTeam.mutationOptions({
       onSuccess: () => {
-        const mutationKey = trpc.teams.deleteTeams.mutationKey();
+        const mutationKey = trpc.teams.deleteTeam.mutationKey();
         queryClient.invalidateQueries({ queryKey: mutationKey });
       },
       onError: (error) => {
