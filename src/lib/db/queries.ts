@@ -22,7 +22,7 @@ import type {
   UserInsertRequest,
   UserUpdateRequest,
 } from "@/src/types";
-import { and, asc, desc, eq, gte, ilike, lte, or } from "drizzle-orm";
+import { and, asc, desc, eq, gte, ilike, inArray, lte, or } from "drizzle-orm";
 import { db } from ".";
 import {
   comments,
@@ -241,6 +241,18 @@ export const queries = {
         .where(eq(projects.createdByTeamId, teamId))
         .limit(limit);
     },
+    getProjectsByIdWithTeamIds: (id: string) => {
+      return db.query.projects.findMany({
+        where: eq(projects.id, id),
+        with: {
+          teams: {
+            columns: {
+              teamId: true,
+            },
+          },
+        },
+      });
+    },
     async getProjectsBySearchAndPageAndFiltersAndOrder(
       projectFilters: ProjectFilters
     ) {
@@ -364,6 +376,17 @@ export const queries = {
         .from(teamMembers)
         .where(
           and(eq(teamMembers.userId, userId), eq(teamMembers.teamId, teamId))
+        );
+    },
+    getTeamMembersByIdsArray: (userId: string, teamIds: string[]) => {
+      return db
+        .select()
+        .from(teamMembers)
+        .where(
+          and(
+            eq(teamMembers.userId, userId),
+            inArray(teamMembers.teamId, teamIds)
+          )
         );
     },
     getTeamMembersByTeamId: (teamId: string) => {
