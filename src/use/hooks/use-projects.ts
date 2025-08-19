@@ -1,69 +1,80 @@
-// TODO: Task 4.1 - Implement project CRUD operations
-// TODO: Task 4.2 - Create project listing and dashboard interface
-
-/*
-TODO: Implementation Notes for Interns:
-
-Custom hook for project data management:
-- Fetch projects list
-- Create new project
-- Update project
-- Delete project
-- Search/filter projects
-- Pagination
-
-Features:
-- React Query/SWR for caching
-- Optimistic updates
-- Error handling
-- Loading states
-- Infinite scrolling (optional)
-
-Example structure:
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import { useTRPC } from "@/trpc/client";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useState } from "react";
 
 export function useProjects() {
-  const queryClient = useQueryClient()
-  
-  const {
-    data: projects,
-    isLoading,
-    error
-  } = useQuery({
-    queryKey: ['projects'],
-    queryFn: () => queries.projects.getAll()
-  })
-  
-  const createProject = useMutation({
-    mutationFn: queries.projects.create,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['projects'] })
-    }
-  })
-  
-  return {
-    projects,
-    isLoading,
-    error,
-    createProject: createProject.mutate,
-    isCreating: createProject.isPending
-  }
-}
+  const [projectErrors, setProjectErrors] =
+    useState<Record<string, string[]>>();
+  const trpc = useTRPC();
+  const queryClient = useQueryClient();
 
-Dependencies to install:
-- @tanstack/react-query (recommended)
-- OR swr (alternative)
-*/
+  const createProject = useMutation(
+    trpc.projects.createProject.mutationOptions({
+      onSuccess: () => {
+        const mutationKey = trpc.projects.createProject.mutationKey();
+        queryClient.invalidateQueries({ queryKey: mutationKey });
+        setProjectErrors({});
+      },
+      onError: (error) => {
+        try {
+          const parsed = JSON.parse(error.message) as {
+            fieldErrors?: Record<string, string[]>;
+          };
+          setProjectErrors(parsed.fieldErrors);
+        } catch {
+          setProjectErrors({ global: [error.message] });
+        }
+      },
+    })
+  );
 
-// Placeholder to prevent import errors
-export function useProjects() {
-  console.log("TODO: Implement useProjects hook")
+  const updateProject = useMutation(
+    trpc.projects.updateProject.mutationOptions({
+      onSuccess: () => {
+        const mutationKey = trpc.projects.updateProject.mutationKey();
+        queryClient.invalidateQueries({ queryKey: mutationKey });
+        setProjectErrors({});
+      },
+      onError: (error) => {
+        try {
+          const parsed = JSON.parse(error.message) as {
+            fieldErrors?: Record<string, string[]>;
+          };
+          setProjectErrors(parsed.fieldErrors);
+        } catch {
+          setProjectErrors({ global: [error.message] });
+        }
+      },
+    })
+  );
+
+  const deleteProject = useMutation(
+    trpc.projects.deleteProject.mutationOptions({
+      onSuccess: () => {
+        const mutationKey = trpc.projects.deleteProject.mutationKey();
+        queryClient.invalidateQueries({ queryKey: mutationKey });
+      },
+      onError: (error) => {
+        try {
+          const parsed = JSON.parse(error.message) as {
+            fieldErrors?: Record<string, string[]>;
+          };
+          setProjectErrors(parsed.fieldErrors);
+        } catch {
+          setProjectErrors({ global: [error.message] });
+        }
+      },
+    })
+  );
+
   return {
-    projects: [],
-    isLoading: false,
-    error: null,
-    createProject: (data: any) => console.log("TODO: Create project", data),
-    updateProject: (id: string, data: any) => console.log(`TODO: Update project ${id}`, data),
-    deleteProject: (id: string) => console.log(`TODO: Delete project ${id}`),
-  }
+    createProject: createProject.mutateAsync,
+    isCreatingProject: createProject.isPending,
+    updateProject: updateProject.mutateAsync,
+    isUpdatingProject: updateProject.isPending,
+    deleteProject: deleteProject.mutateAsync,
+    isDeletingProject: deleteProject.isPending,
+    projectErrors,
+    clearProjectErrors: () => setProjectErrors({}),
+  };
 }
