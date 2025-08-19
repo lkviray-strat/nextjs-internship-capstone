@@ -8,7 +8,7 @@ import type { CreateFullWizardRequestInput, User } from "../types";
 import { useFetch } from "../use/hooks/use-fetch";
 import { ImageHandler } from "./Image-handler";
 import { CommandSearch } from "./search-command";
-import { UserSearchSkeleton } from "./states/skeleton/user-search-skeleton";
+import { UserSearchSkeleton } from "./states/skeleton-states";
 
 type AssembleSearchProps = {
   field: UseControllerReturn<

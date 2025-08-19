@@ -10,7 +10,7 @@ import { useForm } from "react-hook-form";
 import type { CreateFullWizardRequestInput } from "../types";
 import { AssembleSearch } from "./assemble-search";
 import { AssembleUserCard } from "./assemble-user-card";
-import { UserSearchSkeleton } from "./states/skeleton/user-search-skeleton";
+import { UserSearchSkeleton } from "./states/skeleton-states";
 
 type AssembleMembersProps = {
   control: ReturnType<typeof useForm<CreateFullWizardRequestInput>>["control"];

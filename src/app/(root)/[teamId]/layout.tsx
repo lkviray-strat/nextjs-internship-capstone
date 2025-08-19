@@ -41,7 +41,7 @@ export default async function MainLayout({
             <SidebarInset>
               <MainNavbar />
               {/* Add min-h-[calc(100vh-4rem)] if use inset variant */}
-              <main className="py-8 px-4 sm:px-6 lg:px-8 ">
+              <main className="py-8 px-4 sm:px-6 lg:px-8 min-h-[calc(100vh-6rem)] ">
                 <Suspense>{children}</Suspense>
               </main>
             </SidebarInset>

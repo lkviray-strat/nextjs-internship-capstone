@@ -2,26 +2,15 @@
 
 import { useParams } from "next/navigation";
 import { useFetch } from "../use/hooks/use-fetch";
+import { DashboardRecentProjectsEmpty } from "./states/empty-states";
+import { DashboardRecentProjectsError } from "./states/error-states";
 
 export function DashboardRecentProjects() {
   const { teamId } = useParams<{ teamId: string }>();
   const { data, isError } = useFetch().projects.useGetMyRecentProjects(teamId);
 
-  if (isError) {
-    return (
-      <div className="text-red-500 flex items-center justify-center h-full">
-        Error loading recent projects, please contact support.
-      </div>
-    );
-  }
-
-  if (data?.length === 0) {
-    return (
-      <div className="text-gray-500 flex items-center justify-center h-full">
-        No recent projects found.
-      </div>
-    );
-  }
+  if (isError) return <DashboardRecentProjectsError />;
+  if (data?.length === 0) return <DashboardRecentProjectsEmpty />;
 
   return (
     <>
