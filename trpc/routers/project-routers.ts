@@ -76,7 +76,7 @@ export const projectRouter = createTRPCRouter({
         resource: "project",
       });
 
-      if (perm) {
+      if (!perm) {
         throw new TRPCError({
           code: "FORBIDDEN",
           message:
@@ -106,7 +106,7 @@ export const projectRouter = createTRPCRouter({
         resource: "project",
       });
 
-      if (perm) {
+      if (!perm) {
         throw new TRPCError({
           code: "FORBIDDEN",
           message:
@@ -137,7 +137,7 @@ export const projectRouter = createTRPCRouter({
         resource: "project",
       });
 
-      if (team[0].leaderId !== ctx.auth.userId && perm) {
+      if (team[0].leaderId !== ctx.auth.userId && !perm) {
         throw new TRPCError({
           code: "FORBIDDEN",
           message: "You are not allowed to delete a project for this team.",

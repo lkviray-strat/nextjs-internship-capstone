@@ -15,13 +15,13 @@ import { createTRPCRouter, protectedProcedure } from "../init";
 export const teamMemberRouter = createTRPCRouter({
   createTeamMember: protectedProcedure
     .input(createTeamMemberRequestSchema)
-    .mutation(async ({ input }) => {
-      const perm = await hasPermission(input.userId, input.teamId, {
+    .mutation(async ({ ctx, input }) => {
+      const perm = await hasPermission(ctx.auth.userId, input.teamId, {
         action: "create",
         resource: "team_member",
       });
 
-      if (perm) {
+      if (!perm) {
         throw new TRPCError({
           code: "FORBIDDEN",
           message: "You do not have permission to create a team member",
@@ -47,7 +47,7 @@ export const teamMemberRouter = createTRPCRouter({
         resource: "team_member",
       });
 
-      if (perm) {
+      if (!perm) {
         throw new TRPCError({
           code: "FORBIDDEN",
           message:
@@ -79,7 +79,7 @@ export const teamMemberRouter = createTRPCRouter({
         resource: "team_member",
       });
 
-      if (perm) {
+      if (!perm) {
         throw new TRPCError({
           code: "FORBIDDEN",
           message: "You do not have permission to delete this team member.",
