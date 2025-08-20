@@ -1,5 +1,9 @@
 import z from "zod";
-import { PROJECT_STATUS_ENUM, TASK_PRIORITY_ENUM } from "./db/enums";
+import {
+  PROJECT_STATUS_CREATE_ENUM,
+  PROJECT_STATUS_ENUM,
+  TASK_PRIORITY_ENUM,
+} from "./db/enums";
 
 const errorMessages = {
   required: (field: string) => `${field} is required`,
@@ -189,11 +193,15 @@ export const createCommentRequestSchema = commentsSchema.omit({
   updatedAt: true,
 });
 
-export const createProjectRequestSchema = projectsSchema.omit({
-  id: true,
-  createdAt: true,
-  updatedAt: true,
-});
+export const createProjectRequestSchema = projectsSchema
+  .omit({
+    id: true,
+    createdAt: true,
+    updatedAt: true,
+  })
+  .extend({
+    status: z.enum(PROJECT_STATUS_CREATE_ENUM),
+  });
 
 export const createKanbanBoardsRequestSchema = kanbanBoardsSchema.omit({
   id: true,
