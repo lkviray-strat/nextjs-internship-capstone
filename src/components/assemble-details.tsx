@@ -11,6 +11,7 @@ import { Input } from "@/src/components/ui/input";
 import { Textarea } from "@/src/components/ui/textarea";
 import { useForm } from "react-hook-form";
 import type { CreateFullWizardRequestInput } from "../types";
+import { RequiredLabel } from "./required-label";
 
 type AssembleDetailsProps = {
   control: ReturnType<typeof useForm<CreateFullWizardRequestInput>>["control"];
@@ -36,7 +37,7 @@ export function AssembleDetails({ control }: AssembleDetailsProps) {
           render={({ field }) => (
             <FormItem className="flex-col gap-2 space-y-0 items-start">
               <FormLabel className="flex text-[20px] shrink-0">
-                Team Name<span className="-ml-1 text-red-500">*</span>
+                <RequiredLabel>Team Name</RequiredLabel>
               </FormLabel>
 
               <FormControl>

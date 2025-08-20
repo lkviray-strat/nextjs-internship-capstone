@@ -30,6 +30,8 @@ export const PROJECT_STATUS_ENUM = [
   "on_hold",
 ] as const;
 
+export const PROJECT_STATUS_CREATE_ENUM = ["planning", "active"] as const;
+
 export const PERMISSION_ACTIONS = [
   "view",
   "create",
