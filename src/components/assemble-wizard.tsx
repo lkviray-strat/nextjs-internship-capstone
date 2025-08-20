@@ -3,6 +3,7 @@
 import { Form } from "@/src/components/ui/form";
 import { useUser } from "@clerk/nextjs";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { TRPCClientError } from "@trpc/client";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -93,28 +94,19 @@ export function AssembleWizard() {
       toast.success("Team created successfully!");
       route.push(`${team.data[0].id}/dashboard`);
     } catch (error) {
-      toast.error("Unknown Error. Failed to create team");
-      console.log("Submission error:", error);
+      if (error instanceof TRPCClientError) {
+        toast.error(error.message);
+        console.log("Submission error:", error);
+      } else {
+        toast.error("Unknown Error. Failed to create project");
+        console.log("Submission error:", error);
+      }
     }
   }
 
   function onError(error: unknown) {
-    toast.error("Unknown Error. Failed to create team");
     console.log("Submission error:", error);
   }
-
-  useEffect(() => {
-    const combinedErrors = {
-      ...(teamHooks.teamErrors ?? {}),
-      ...(teamMemberHooks.teamMemberErrors ?? {}),
-    };
-
-    Object.entries(combinedErrors).forEach(([field, messages]) => {
-      messages.forEach((message) => {
-        form.setError(field as keyof CreateFullWizardRequestInput, { message });
-      });
-    });
-  }, [teamHooks.teamErrors, teamMemberHooks.teamMemberErrors, form]);
 
   useEffect(() => {
     if (user?.id) {
