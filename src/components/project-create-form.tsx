@@ -2,17 +2,22 @@
 
 import { useUser } from "@clerk/nextjs";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { TRPCClientError } from "@trpc/client";
 import { format } from "date-fns";
 import { useParams, usePathname, useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { usePreventForm } from "../hooks/use-preventform";
+import { PROJECT_STATUS_CREATE_ENUM } from "../lib/db/enums";
+import { snakeToTitleCase } from "../lib/utils";
 import { createProjectRequestSchema } from "../lib/validations";
 import { useUIStore } from "../stores/ui-store";
 import { type CreateProjectRequestInput } from "../types";
 import { useProjects } from "../use/hooks/use-projects";
 import { CalendarPicker } from "./calendar-picker";
+import { RequiredLabel } from "./required-label";
+import { Button } from "./ui/button";
 import { Calendar } from "./ui/calendar";
 import {
   Form,
@@ -23,6 +28,13 @@ import {
   FormMessage,
 } from "./ui/form";
 import { Input } from "./ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "./ui/select";
 import { Textarea } from "./ui/textarea";
 
 export function ProjectCreateForm() {
@@ -39,7 +51,7 @@ export function ProjectCreateForm() {
     defaultValues: {
       name: "",
       description: "",
-      status: "planning",
+      status: undefined,
       startDate: undefined,
       endDate: undefined,
       createdById: "",
@@ -47,6 +59,10 @@ export function ProjectCreateForm() {
       defaultBoardId: null,
     },
   });
+
+  const startDate = form.watch("startDate");
+  const endDate = form.watch("endDate");
+  const isSubmitting = form.formState.isSubmitting;
 
   function onReset() {
     form.reset();
@@ -62,11 +78,8 @@ export function ProjectCreateForm() {
   }
 
   function onError(error: unknown) {
-    toast.error("Unknown Error. Failed to create project");
     console.log("Submission error:", error);
   }
-
-  const isSubmitting = true;
 
   async function onSubmit(values: CreateProjectRequestInput) {
     if (isSubmitting) return;
@@ -74,10 +87,15 @@ export function ProjectCreateForm() {
     try {
       const project = await projectHooks.createProject(values);
       toast.success("Project created successfully!");
-      route.push(`${pathName}/projects/${project.data[0].id}`);
+      route.push(`${pathName}/${project.data[0].id}`);
     } catch (error) {
-      toast.error("Unknown Error. Failed to create project");
-      console.log("Submission error:", error);
+      if (error instanceof TRPCClientError) {
+        toast.error(error.message);
+        console.log("Submission error:", error);
+      } else {
+        toast.error("Unknown Error. Failed to create project");
+        console.log("Submission error:", error);
+      }
     }
   }
 
@@ -89,9 +107,6 @@ export function ProjectCreateForm() {
   }, [user, teamId, form]);
 
   usePreventForm(form, setIsCreateProjectDirty);
-
-  const startDate = form.watch("startDate");
-  const endDate = form.watch("endDate");
 
   return (
     <Form {...form}>
@@ -108,7 +123,7 @@ export function ProjectCreateForm() {
             render={({ field }) => (
               <FormItem className="space-y-0">
                 <FormLabel>
-                  Project Name <span className="-ml-1 text-red-500">*</span>
+                  <RequiredLabel>Project Name</RequiredLabel>
                 </FormLabel>
                 <FormControl>
                   <Input
@@ -137,13 +152,15 @@ export function ProjectCreateForm() {
               </FormItem>
             )}
           />
-          <div className="flex flex-row gap-5">
+          <div className="flex flex-col lphone:flex-row gap-5">
             <FormField
               control={form.control}
               name="startDate"
               render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Start Date</FormLabel>
+                <FormItem className="flex-1">
+                  <FormLabel>
+                    <RequiredLabel>Start Date</RequiredLabel>
+                  </FormLabel>
                   <FormControl>
                     <CalendarPicker
                       disabled={(date) =>
@@ -156,6 +173,7 @@ export function ProjectCreateForm() {
                       <Input
                         {...field}
                         maxLength={10}
+                        autoComplete="off"
                         placeholder="DD/MM/YYYY"
                         value={
                           field.value ? format(field.value, "MM/dd/yyyy") : ""
@@ -172,8 +190,10 @@ export function ProjectCreateForm() {
               control={form.control}
               name="endDate"
               render={({ field }) => (
-                <FormItem>
-                  <FormLabel>End Date</FormLabel>
+                <FormItem className="flex-1">
+                  <FormLabel>
+                    <RequiredLabel>End Date</RequiredLabel>
+                  </FormLabel>
                   <FormControl>
                     <CalendarPicker
                       disabled={(date) =>
@@ -186,6 +206,7 @@ export function ProjectCreateForm() {
                       <Input
                         {...field}
                         maxLength={10}
+                        autoComplete="off"
                         placeholder="DD/MM/YYYY"
                         value={
                           field.value ? format(field.value, "MM/dd/yyyy") : ""
@@ -199,6 +220,46 @@ export function ProjectCreateForm() {
               )}
             />
           </div>
+          <FormField
+            control={form.control}
+            name="status"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>
+                  <RequiredLabel>Initial Status</RequiredLabel>
+                </FormLabel>
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={undefined}
+                >
+                  <FormControl>
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Select project status" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent className="w-full">
+                    {PROJECT_STATUS_CREATE_ENUM.map((status) => (
+                      <SelectItem
+                        key={status}
+                        value={status}
+                      >
+                        {snakeToTitleCase(status)}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <Button
+            type="submit"
+            disabled={isSubmitting}
+            className="mt-5"
+          >
+            Create Project
+          </Button>
         </div>
       </form>
     </Form>
