@@ -19,7 +19,7 @@ export function CreateProjectModal() {
           New Project
         </Button>
       </DialogTrigger>
-      <DialogContent className="md:max-w-[630px]">
+      <DialogContent className="md:max-w-[630px] pb-10">
         <DialogHeader>
           <DialogTitle className="text-[24px] font-semibold">
             Create New Project
