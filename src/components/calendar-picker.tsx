@@ -1,13 +1,7 @@
 import { format, parse } from "date-fns";
 import { CalendarIcon } from "lucide-react";
-import {
-  type ChangeEvent,
-  cloneElement,
-  isValidElement,
-  type ReactNode,
-  useState,
-} from "react";
-import { DayPicker, type PropsSingle } from "react-day-picker";
+import { cloneElement, isValidElement, type ReactNode, useState } from "react";
+import { type PropsSingle } from "react-day-picker";
 import { Button } from "./ui/button";
 import { Calendar } from "./ui/calendar";
 import { Input } from "./ui/input";
@@ -16,83 +10,87 @@ import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 type CalendarPickerProps = {
   formatStr: string;
   children: React.ReactNode;
+  disabled?: (date: Date) => boolean;
   ref?: React.Ref<HTMLInputElement>;
 };
 
 export function CalendarPicker({
   formatStr,
   children,
-  ref,
-}: CalendarPickerProps) {
-  const [date, setDate] = useState<Date>();
-  const [inputValue, setInputValue] = useState<string>("");
-  const [selectorOpen, setSelectorOpen] = useState<boolean>(false);
+  disabled,
+  value,
+  onChange,
+}: CalendarPickerProps & { value?: Date; onChange?: (date: Date) => void }) {
+  const [inputValue, setInputValue] = useState(
+    value ? format(value, formatStr) : ""
+  );
+  const [selectorOpen, setSelectorOpen] = useState(false);
 
-  const handleDateEntry = (e: ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(e.target.value);
-    setDate(parse(e.target.value, formatStr, new Date()));
-    setSelectorOpen(false);
+    const parsed = parse(e.target.value, formatStr, new Date());
+    if (!isNaN(parsed.getTime()) && onChange) {
+      onChange(parsed);
+    }
   };
 
-  const handleDateSelection: PropsSingle["onSelect"] = (date) => {
-    if (date) {
-      setDate(date);
-      setInputValue(format(date, formatStr));
-    }
+  const handleSelect = (selectedDate?: Date) => {
+    if (!selectedDate) return;
+
+    setInputValue(format(selectedDate, formatStr));
+    if (onChange) onChange(selectedDate);
     setSelectorOpen(false);
   };
 
   const cloneChildWithProps = (child: ReactNode, index: number) => {
-    if (isValidElement(child)) {
-      if (child.type === Input) {
-        return cloneElement(child, {
+    if (!isValidElement(child)) return child;
+
+    if (child.type === Input) {
+      return cloneElement(
+        child as React.ReactElement<React.ComponentProps<typeof Input>>,
+        {
           key: index,
           value: inputValue,
-          onChange: handleDateEntry,
-          className: "rounded-r-none",
-          ref: ref,
-        } as React.ComponentProps<"input">);
-      }
-
-      if (child.type === Calendar) {
-        return (
-          <Popover
-            key={index}
-            open={selectorOpen}
-            onOpenChange={setSelectorOpen}
-          >
-            <PopoverTrigger asChild>
-              <Button
-                variant="outline"
-                className="rounded-l-none border border-l-0"
-              >
-                <CalendarIcon className="w-5 h-5" />
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent
-              className="w-auto p-0"
-              align="end"
-            >
-              {cloneElement(child, {
-                mode: "single",
-                selected: date,
-                onSelect: handleDateSelection,
-                defaultMonth: date,
-              } as React.ComponentProps<typeof DayPicker>)}
-            </PopoverContent>
-          </Popover>
-        );
-      }
-
-      return cloneElement(child, { key: index });
+          onChange: handleInputChange,
+        }
+      );
     }
-    return child;
+
+    if (child.type === Calendar) {
+      return (
+        <Popover
+          key={index}
+          open={selectorOpen}
+          onOpenChange={setSelectorOpen}
+          modal
+        >
+          <PopoverTrigger asChild>
+            <Button variant="outline">
+              <CalendarIcon className="w-5 h-5" />
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent
+            className="w-auto p-0"
+            align="end"
+          >
+            {cloneElement(child, {
+              mode: "single",
+              selected: value,
+              onSelect: handleSelect,
+              disabled,
+            } as PropsSingle)}
+          </PopoverContent>
+        </Popover>
+      );
+    }
+
+    return cloneElement(child, { key: index });
   };
 
   return (
     <div className="flex items-center">
       {Array.isArray(children)
-        ? children.map((child, index) => cloneChildWithProps(child, index))
+        ? children.map(cloneChildWithProps)
         : cloneChildWithProps(children, 0)}
     </div>
   );

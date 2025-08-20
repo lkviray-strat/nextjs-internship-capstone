@@ -40,8 +40,8 @@ export function ProjectCreateForm() {
       name: "",
       description: "",
       status: "planning",
-      startDate: new Date(),
-      endDate: new Date(),
+      startDate: undefined,
+      endDate: undefined,
       createdById: "",
       createdByTeamId: "",
       defaultBoardId: null,
@@ -89,6 +89,9 @@ export function ProjectCreateForm() {
   }, [user, teamId, form]);
 
   usePreventForm(form, setIsCreateProjectDirty);
+
+  const startDate = form.watch("startDate");
+  const endDate = form.watch("endDate");
 
   return (
     <Form {...form}>
@@ -142,18 +145,23 @@ export function ProjectCreateForm() {
                 <FormItem>
                   <FormLabel>Start Date</FormLabel>
                   <FormControl>
-                    <CalendarPicker formatStr="MM-dd-yyyy">
+                    <CalendarPicker
+                      disabled={(date) =>
+                        date < new Date("2010-01-01") || date > endDate
+                      }
+                      value={field.value}
+                      onChange={field.onChange}
+                      formatStr="MM/dd/yyyy"
+                    >
                       <Input
                         {...field}
+                        maxLength={10}
+                        placeholder="DD/MM/YYYY"
                         value={
                           field.value ? format(field.value, "MM/dd/yyyy") : ""
                         }
-                        placeholder="DD/MM/YYYY"
                       />
-                      <Calendar
-                        disabled={(date) => date < new Date("2010-01-01")}
-                        autoFocus
-                      />
+                      <Calendar autoFocus />
                     </CalendarPicker>
                   </FormControl>
                   <FormMessage />
@@ -167,18 +175,23 @@ export function ProjectCreateForm() {
                 <FormItem>
                   <FormLabel>End Date</FormLabel>
                   <FormControl>
-                    <CalendarPicker formatStr="MM-dd-yyyy">
+                    <CalendarPicker
+                      disabled={(date) =>
+                        date < new Date("2010-01-01") || date < startDate
+                      }
+                      value={field.value}
+                      onChange={field.onChange}
+                      formatStr="MM/dd/yyyy"
+                    >
                       <Input
                         {...field}
+                        maxLength={10}
+                        placeholder="DD/MM/YYYY"
                         value={
                           field.value ? format(field.value, "MM/dd/yyyy") : ""
                         }
-                        placeholder="DD/MM/YYYY"
                       />
-                      <Calendar
-                        disabled={(date) => date < new Date("2010-01-01")}
-                        autoFocus
-                      />
+                      <Calendar autoFocus />
                     </CalendarPicker>
                   </FormControl>
                   <FormMessage />

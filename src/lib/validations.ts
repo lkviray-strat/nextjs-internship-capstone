@@ -100,22 +100,37 @@ export const commentsSchema = z.object({
   updatedAt: z.date().optional(),
 });
 
-export const projectsSchema = z.object({
-  id: z.guid(),
-  name: z
-    .string()
-    .min(1, errorMessages.required("Project name"))
-    .max(100, errorMessages.maxLength(100)),
-  description: z.string().max(500, errorMessages.maxLength(500)).optional(),
-  status: z.enum(PROJECT_STATUS_ENUM),
-  startDate: z.date(),
-  endDate: z.date(),
-  defaultBoardId: z.guid().nullable(),
-  createdByTeamId: z.guid(),
-  createdById: z.string(),
-  createdAt: z.date().optional(),
-  updatedAt: z.date().optional(),
-});
+export const projectsSchema = z
+  .object({
+    id: z.guid(),
+    name: z
+      .string()
+      .min(1, errorMessages.required("Project name"))
+      .max(100, errorMessages.maxLength(100)),
+    description: z.string().max(500, errorMessages.maxLength(500)).optional(),
+    status: z.enum(PROJECT_STATUS_ENUM),
+    startDate: z.date(),
+    endDate: z.date(),
+    defaultBoardId: z.guid().nullable(),
+    createdByTeamId: z.guid(),
+    createdById: z.string(),
+    createdAt: z.date().optional(),
+    updatedAt: z.date().optional(),
+  })
+  .superRefine((data, ctx) => {
+    if (data.startDate > data.endDate) {
+      ctx.addIssue({
+        path: ["startDate"],
+        message: "Start date cannot be after end date",
+        code: "custom",
+      });
+      ctx.addIssue({
+        path: ["endDate"],
+        message: "End date cannot be before start date",
+        code: "custom",
+      });
+    }
+  });
 
 export const kanbanBoardsSchema = z.object({
   id: z.guid(),
