@@ -113,8 +113,22 @@ export const projectsSchema = z
       .max(100, errorMessages.maxLength(100)),
     description: z.string().max(500, errorMessages.maxLength(500)).optional(),
     status: z.enum(PROJECT_STATUS_ENUM),
-    startDate: z.date(),
-    endDate: z.date(),
+    startDate: z.date({
+      error: (date) => {
+        if (date.input === undefined) {
+          return "Start date is required.";
+        }
+        return "Invalid date format.";
+      },
+    }),
+    endDate: z.date({
+      error: (date) => {
+        if (date.input === undefined) {
+          return "End date is required.";
+        }
+        return "Invalid date format.";
+      },
+    }),
     defaultBoardId: z.guid().nullable(),
     createdByTeamId: z.guid(),
     createdById: z.string(),
@@ -200,7 +214,14 @@ export const createProjectRequestSchema = projectsSchema
     updatedAt: true,
   })
   .extend({
-    status: z.enum(PROJECT_STATUS_CREATE_ENUM),
+    status: z.enum(PROJECT_STATUS_CREATE_ENUM, {
+      error: (status) => {
+        if (status.input === undefined) {
+          return "Project status is required.";
+        }
+        return "Invalid project status.";
+      },
+    }),
   });
 
 export const createKanbanBoardsRequestSchema = kanbanBoardsSchema.omit({
