@@ -48,7 +48,7 @@ export const teamRouter = createTRPCRouter({
         resource: "team",
       });
 
-      if (perm) {
+      if (!perm) {
         throw new TRPCError({
           code: "FORBIDDEN",
           message: "You do not have permission to update this team.",
@@ -74,7 +74,7 @@ export const teamRouter = createTRPCRouter({
         resource: "team",
       });
 
-      if (perm) {
+      if (!perm) {
         throw new TRPCError({
           code: "FORBIDDEN",
           message: "You do not have permission to delete this team.",
