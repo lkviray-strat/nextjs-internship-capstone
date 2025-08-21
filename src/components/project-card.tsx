@@ -2,14 +2,16 @@
 
 import { MoreHorizontal } from "lucide-react";
 import { PROJECT_STATUS_TW_COLORS } from "../lib/db/enums";
-import { getTimeLeft, snakeToTitleCase } from "../lib/utils";
+import { getTimeLeft } from "../lib/utils";
 import type { Projects } from "../types";
+import { ProjectStatus } from "./project-status";
 import { Button } from "./ui/button";
 
 type ProjectCardProps = {
   project: Projects;
   progress: number;
 };
+
 export function ProjectCard({ project, progress }: ProjectCardProps) {
   const barColor =
     progress >= 100
@@ -21,15 +23,12 @@ export function ProjectCard({ project, progress }: ProjectCardProps) {
           : "bg-blue-500";
 
   return (
-    <div className="bg-card flex flex-col gap-3 rounded-lg border p-6 hover:shadow-lg transition-shadow">
+    <div className="bg-card flex flex-col gap-3 rounded-lg border p-6 hover:shadow-lg hover:scale-98 transition-transform">
       <div className="flex items-center justify-between">
-        <div
-          className={`py-1 px-3 rounded-lg ${PROJECT_STATUS_TW_COLORS[project.status]}`}
-        >
-          <span className="text-[16px] font-medium text-white line-clamp-1">
-            {snakeToTitleCase(project.status)}
-          </span>
-        </div>
+        <ProjectStatus
+          color={PROJECT_STATUS_TW_COLORS[project.status]}
+          status={project.status}
+        />
         <Button
           variant="ghost"
           size="icon"
@@ -39,15 +38,17 @@ export function ProjectCard({ project, progress }: ProjectCardProps) {
         </Button>
       </div>
       <div className="flex flex-col gap-2 py-4">
-        <h3 className="text-[24px] font-semibold">{project.name}</h3>
-        <p className="text-[15px] line-clamp-3 h-full max-h-[5rem]">
+        <h3 className="text-[24px] font-semibold line-clamp-1">
+          {project.name}
+        </h3>
+        <p className="text-[15px] line-clamp-3 h-[4rem]">
           {project.description
             ? project.description
-            : "Project has no description available Project has no description availableProject has no description availableProject has no description available"}
+            : "This project has no description available."}
         </p>
       </div>
 
-      <div className="">
+      <div className="flex flex-col">
         <div className="flex text-[16px] items-center justify-between mb-2">
           <span className="">Progress</span>
           <span className="font-medium">{progress}%</span>
@@ -59,7 +60,7 @@ export function ProjectCard({ project, progress }: ProjectCardProps) {
           />
         </div>
       </div>
-      <div className="flex items-center justify-end flex text-[16px]">
+      <div className="flex items-center justify-end text-[16px]">
         <span className="text-muted-foreground">
           {getTimeLeft(project.endDate as Date)}
         </span>
