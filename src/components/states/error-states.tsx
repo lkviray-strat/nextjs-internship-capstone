@@ -1,3 +1,5 @@
+import type { AppRouter } from "@/src/types";
+import type { TRPCClientErrorLike } from "@trpc/client";
 import { FolderX } from "lucide-react";
 
 export function DashboardRecentProjectsError() {
@@ -11,9 +13,11 @@ export function DashboardRecentProjectsError() {
   );
 }
 
-export function ProjectGridError() {
+export function ProjectGridError(e: TRPCClientErrorLike<AppRouter>) {
+  console.log(e.shape?.message);
+
   return (
-    <div className="flex text-center text-muted-foreground  flex-col items-center justify-center mt-20 sm:mt-0 sm:min-h-[calc(100vh-28rem)] py-3 gap-1">
+    <div className="col-span-3 flex text-center text-red-500 flex-col items-center justify-center mt-30 sm:mt-0 sm:min-h-[calc(100vh-26rem)] py-3 gap-1">
       <div className="w-[300px] sm:w-[350px] flex flex-col h-full justify-center items-center">
         <FolderX
           strokeWidth={1}

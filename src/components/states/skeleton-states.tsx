@@ -42,3 +42,34 @@ export function UserSearchSkeleton({ count = 3 }: UserSearchSkeletonProps) {
     </>
   );
 }
+
+export function ProjectGridSkeleton() {
+  return (
+    <>
+      {Array.from({ length: 6 }).map((_, index) => (
+        <div
+          key={index}
+          className="bg-card flex flex-col gap-3 rounded-lg border p-6 hover:shadow-lg hover:scale-98 transition-transform"
+        >
+          <Skeleton className="w-1/3 h-5" />
+          <div className="flex flex-col gap-5 py-6">
+            <Skeleton className="w-6/8 h-5" />
+            <div className="flex flex-col gap-2 h-[4rem]">
+              <Skeleton className="w-full h-3" />
+              <Skeleton className="w-full h-3" />
+              <Skeleton className="w-3/4 h-3" />
+            </div>
+          </div>
+
+          <div className="flex flex-col gap-3">
+            <Skeleton className="w-1/4 h-3" />
+            <Skeleton className="w-full h-3" />
+          </div>
+          <div className="flex items-center justify-end text-[16px]">
+            <Skeleton className="w-2/5 h-3" />
+          </div>
+        </div>
+      ))}
+    </>
+  );
+}
