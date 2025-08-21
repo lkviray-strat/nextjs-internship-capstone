@@ -19,8 +19,7 @@ function getQueryClient() {
     return makeQueryClient();
   }
 
-  if (!browserQueryClient) browserQueryClient = makeQueryClient();
-  return browserQueryClient;
+  return (browserQueryClient ??= makeQueryClient());
 }
 
 function getUrl() {
