@@ -280,11 +280,36 @@ export const queries = {
         limit: PROJECTS_PER_PAGE,
         offset,
         orderBy,
+        with: {
+          tasks: true,
+          kanbanBoards: {
+            with: {
+              columns: {
+                orderBy: desc(kanbanColumns.order),
+                limit: 1,
+                with: {
+                  tasks: true,
+                },
+              },
+            },
+            columns: {
+              id: true,
+            },
+          },
+        },
+      });
+
+      const withProgress = results.map((project) => {
+        const total = project.tasks.length;
+        const done = project.kanbanBoards[0]?.columns[0]?.tasks.length ?? 0;
+        const progress = total > 0 ? Math.round((done / total) * 100) : 0;
+
+        return { ...project, progress };
       });
 
       const total = await db.$count(projects, condition);
       return {
-        results,
+        results: withProgress,
         pagination: {
           total,
           pagesCount: Math.ceil(total / PROJECTS_PER_PAGE),

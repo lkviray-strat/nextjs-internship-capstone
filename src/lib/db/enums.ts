@@ -30,6 +30,17 @@ export const PROJECT_STATUS_ENUM = [
   "on_hold",
 ] as const;
 
+export const PROJECT_STATUS_TW_COLORS: Record<
+  (typeof PROJECT_STATUS_ENUM)[number],
+  string
+> = {
+  planning: "bg-indigo-400",
+  active: "bg-green-500",
+  archived: "bg-gray-400",
+  completed: "bg-green-600",
+  on_hold: "bg-yellow-500",
+};
+
 export const PROJECT_STATUS_CREATE_ENUM = ["planning", "active"] as const;
 
 export const PERMISSION_ACTIONS = [
