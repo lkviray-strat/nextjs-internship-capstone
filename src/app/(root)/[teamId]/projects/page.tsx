@@ -1,6 +1,7 @@
 import { CreateProjectModal } from "@/src/components/modals/create-project-modal";
 import { ProjectGrid } from "@/src/components/project-grid";
 import { Filter, Search } from "lucide-react";
+import { Suspense } from "react";
 
 export default function ProjectsPage() {
   return (
@@ -36,7 +37,9 @@ export default function ProjectsPage() {
       </div>
 
       {/* Projects Grid Placeholder */}
-      <ProjectGrid />
+      <Suspense>
+        <ProjectGrid />
+      </Suspense>
     </div>
   );
 }
