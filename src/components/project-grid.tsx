@@ -2,6 +2,7 @@
 
 import { notFound, useParams, useSearchParams } from "next/navigation";
 import { useFetch } from "../use/hooks/use-fetch";
+import { ProjectCard } from "./project-card";
 import { ProjectGridEmpty } from "./states/empty-states";
 
 export function ProjectGrid() {
@@ -25,7 +26,11 @@ export function ProjectGrid() {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {data.results.map((project) => (
-        <pre key={project.id}>{project.name}</pre>
+        <ProjectCard
+          key={project.id}
+          project={project}
+          progress={project.progress}
+        />
       ))}
     </div>
   );
