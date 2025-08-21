@@ -1,30 +1,34 @@
 "use client";
 
 import { notFound, useParams, useSearchParams } from "next/navigation";
+import { searchParamsToProjectFilters } from "../lib/utils";
 import { useFetch } from "../use/hooks/use-fetch";
 import { ProjectCard } from "./project-card";
+import { ProjectPagination } from "./project-pagination";
 import { ProjectGridEmpty } from "./states/empty-states";
+import { ProjectGridError } from "./states/error-states";
+import { ProjectGridSkeleton } from "./states/skeleton-states";
 
 export function ProjectGrid() {
   const { teamId } = useParams();
 
   const searchParams = useSearchParams();
-  const search = searchParams.get("search") || "";
-  const page = searchParams.get("page") || "1";
+  const projectFilters = searchParamsToProjectFilters(searchParams);
 
-  const { data, isError } =
+  const { data, error, isError, isLoading } =
     useFetch().projects.useGetProjectsBySearchAndPageAndFiltersAndOrder({
-      search,
       teamId: teamId as string,
-      page: Number(page),
+      ...projectFilters,
     });
 
   if (!teamId) return notFound();
-  if (isError) return <div>Error loading projects</div>;
+  if (isLoading) return <ProjectGridSkeleton />;
+  if (isError) return <ProjectGridError {...error} />;
   if (!data || data.results.length === 0) return <ProjectGridEmpty />;
 
+  const { pagesCount = 0, perPage } = data.pagination;
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <>
       {data.results.map((project) => (
         <ProjectCard
           key={project.id}
@@ -32,6 +36,13 @@ export function ProjectGrid() {
           progress={project.progress}
         />
       ))}
-    </div>
+
+      <div className="col-span-full">
+        <ProjectPagination
+          filters={projectFilters}
+          totalPages={Math.ceil(pagesCount / perPage)}
+        />
+      </div>
+    </>
   );
 }
