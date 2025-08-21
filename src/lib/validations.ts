@@ -389,7 +389,7 @@ export const fullWizardSchema = createTeamRequestSchema.extend({
 // Filters validation
 export const projectFiltersSchema = z.object({
   teamId: z.guid(),
-  search: z.string().max(100, errorMessages.maxLength(100)),
+  search: z.string().max(100, errorMessages.maxLength(100)).default(""),
   page: z.number().min(1).default(1),
   status: z.enum(PROJECT_STATUS_ENUM).optional(),
   start: z.date().optional(),

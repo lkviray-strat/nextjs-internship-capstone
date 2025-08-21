@@ -1,7 +1,6 @@
 import { CreateProjectModal } from "@/src/components/modals/create-project-modal";
 import { ProjectGrid } from "@/src/components/project-grid";
-import { Filter, Search } from "lucide-react";
-import { Suspense } from "react";
+import { ProjectSearchFilter } from "@/src/components/project-search-filter";
 
 export default function ProjectsPage() {
   return (
@@ -14,32 +13,11 @@ export default function ProjectsPage() {
         <CreateProjectModal />
       </div>
 
-      {/* Search and Filter Bar */}
-      <div className="flex flex-col sm:flex-row gap-4">
-        <div className="relative flex-1">
-          <Search
-            className="absolute left-3 top-1/2 transform -translate-y-1/2"
-            size={16}
-          />
-          <input
-            type="text"
-            placeholder="Search projects..."
-            className="w-full pl-10 pr-4 py-2 border rounded-lg focus:outline-hidden focus:ring-2 "
-          />
-        </div>
-        <button className="inline-flex items-center px-4 py-2 border rounded-lg">
-          <Filter
-            size={16}
-            className="mr-2"
-          />
-          Filter
-        </button>
-      </div>
+      <ProjectSearchFilter />
 
-      {/* Projects Grid Placeholder */}
-      <Suspense>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         <ProjectGrid />
-      </Suspense>
+      </div>
     </div>
   );
 }
