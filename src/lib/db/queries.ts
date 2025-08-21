@@ -307,13 +307,12 @@ export const queries = {
         return { ...project, progress };
       });
 
-      const total = await db.$count(projects, condition);
+      const pagesCount = await db.$count(projects, condition);
+
       return {
         results: withProgress,
         pagination: {
-          total,
-          pagesCount: Math.ceil(total / PROJECTS_PER_PAGE),
-          currentPage: page,
+          pagesCount,
           perPage: PROJECTS_PER_PAGE,
         },
       };
