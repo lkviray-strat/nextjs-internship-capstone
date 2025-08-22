@@ -24,8 +24,8 @@ import {
 import Link from "next/link";
 import { useParams, usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-import { useIsMobile } from "../hooks/use-mobile";
-import { useFetch } from "../use/hooks/use-fetch";
+import { useIsMobile } from "../../../hooks/use-mobile";
+import { useFetch } from "../../../use/hooks/use-fetch";
 import { MainSidebarDropdown } from "./main-sidebar-dropdown";
 
 const navigation = [

@@ -7,11 +7,17 @@ import { FormProvider, useForm } from "react-hook-form";
 import {
   projectFiltersToSearchParams,
   searchParamsToProjectFilters,
-} from "../lib/utils";
-import type { ProjectFilters } from "../types";
+} from "../../../lib/utils";
+import type { ProjectFilters } from "../../../types";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormMessage,
+} from "../../ui/form";
+import { Input } from "../../ui/input";
 import { ProjectFilterDropdown } from "./project-filter-dropdown";
-import { Form, FormControl, FormField, FormItem, FormMessage } from "./ui/form";
-import { Input } from "./ui/input";
 
 export function ProjectSearchFilter() {
   const router = useRouter();

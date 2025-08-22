@@ -1,6 +1,12 @@
 "use client";
 
 import { Form } from "@/src/components/ui/form";
+import { usePreventForm } from "@/src/hooks/use-preventform";
+import { fullWizardSchema } from "@/src/lib/validations";
+import { useUIStore } from "@/src/stores/ui-store";
+import type { CreateFullWizardRequestInput } from "@/src/types";
+import { useTeamMembers } from "@/src/use/hooks/use-team-members";
+import { useTeams } from "@/src/use/hooks/use-teams";
 import { useUser } from "@clerk/nextjs";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { TRPCClientError } from "@trpc/client";
@@ -8,17 +14,11 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { usePreventForm } from "../hooks/use-preventform";
-import { fullWizardSchema } from "../lib/validations";
-import { useUIStore } from "../stores/ui-store";
-import type { CreateFullWizardRequestInput } from "../types";
-import { useTeamMembers } from "../use/hooks/use-team-members";
-import { useTeams } from "../use/hooks/use-teams";
+import { ClientOnly } from "../../client-only";
+import { Loader } from "../../loader";
 import { AssembleButtons } from "./assemble-buttons";
 import { AssembleDetails } from "./assemble-details";
 import { AssembleMembers } from "./assemble-members";
-import { ClientOnly } from "./client-only";
-import { Loader } from "./loader";
 
 export function AssembleWizard() {
   const { user } = useUser();

@@ -1,6 +1,6 @@
-import { CreateProjectModal } from "@/src/components/modals/create-project-modal";
-import { ProjectGrid } from "@/src/components/project-grid";
-import { ProjectSearchFilter } from "@/src/components/project-search-filter";
+import { CreateProjectModal } from "@/src/components/pages/modals/create-project-modal";
+import { ProjectGrid } from "@/src/components/pages/project/project-grid";
+import { ProjectSearchFilter } from "@/src/components/pages/project/project-search-filter";
 
 export default function ProjectsPage() {
   return (

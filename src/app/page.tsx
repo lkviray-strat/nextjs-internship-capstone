@@ -2,8 +2,8 @@ import { auth } from "@clerk/nextjs/server";
 import { ArrowRight, CheckCircle, Kanban, Users } from "lucide-react";
 import Link from "next/link";
 import { BackgroundGlow } from "../components/background-glow";
-import { LandingNavbar } from "../components/landing-navbar";
-import { LandingNavbarMenu } from "../components/landing-navbar-menu";
+import { LandingNavbar } from "../components/pages/landing-layout/landing-navbar";
+import { LandingNavbarMenu } from "../components/pages/landing-layout/landing-navbar-menu";
 import { buttonVariants } from "../components/ui/button";
 import { queries } from "../lib/db/queries";
 

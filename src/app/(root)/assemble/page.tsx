@@ -1,8 +1,8 @@
-import { AssembleWizard } from "@/src/components/assemble-wizard";
 import { BackButton } from "@/src/components/back-button";
 import { BackgroundGlow } from "@/src/components/background-glow";
-import { LandingNavbar } from "@/src/components/landing-navbar";
-import { LandingNavbarMenu } from "@/src/components/landing-navbar-menu";
+import { AssembleWizard } from "@/src/components/pages/assemble/assemble-wizard";
+import { LandingNavbar } from "@/src/components/pages/landing-layout/landing-navbar";
+import { LandingNavbarMenu } from "@/src/components/pages/landing-layout/landing-navbar-menu";
 import { queries } from "@/src/lib/db/queries";
 import { auth } from "@clerk/nextjs/server";
 import { ChevronLeft } from "lucide-react";

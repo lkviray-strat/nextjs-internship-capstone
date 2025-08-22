@@ -1,6 +1,5 @@
 import { Plus } from "lucide-react";
-import { ProjectCreateForm } from "../project-create-form";
-import { Button } from "../ui/button";
+import { Button } from "../../ui/button";
 import {
   Dialog,
   DialogContent,
@@ -8,7 +7,8 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "../ui/dialog";
+} from "../../ui/dialog";
+import { ProjectCreateForm } from "../project/project-create-form";
 
 export function CreateProjectModal() {
   return (
