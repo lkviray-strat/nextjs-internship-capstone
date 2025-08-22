@@ -6,7 +6,7 @@ import { MainNavbarTrigger } from "./main-navbar-trigger";
 
 export function MainNavbar() {
   return (
-    <nav className="sticky bg-background top-0 z-30 flex h-16 items-center gap-x-4 border-b px-4 shadow-xs sm:gap-x-6 sm:px-6 lg:px-8">
+    <nav className="sticky shrink-0 bg-background top-0 z-30 flex h-16 items-center gap-x-4 border-b px-4 shadow-xs sm:gap-x-6 sm:px-6 lg:px-8">
       <MainNavbarTrigger />
       <div className="flex flex-1 gap-x-4 self-stretch lg:gap-x-6">
         {/* Search bar placeholder */}
