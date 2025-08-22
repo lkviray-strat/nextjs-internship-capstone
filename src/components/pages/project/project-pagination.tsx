@@ -1,5 +1,5 @@
-import { projectFiltersToSearchParams } from "../lib/utils";
-import type { ProjectFilters } from "../types";
+import { projectFiltersToSearchParams } from "../../../lib/utils";
+import type { ProjectFilters } from "../../../types";
 import {
   Pagination,
   PaginationContent,
@@ -8,7 +8,7 @@ import {
   PaginationLink,
   PaginationNext,
   PaginationPrevious,
-} from "./ui/pagination";
+} from "../../ui/pagination";
 
 type ProjectPaginationProps = {
   filters: Omit<ProjectFilters, "teamId">;

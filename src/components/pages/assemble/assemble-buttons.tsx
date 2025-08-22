@@ -1,8 +1,8 @@
 "use client";
 
+import { Button } from "@/src/components/ui/button";
+import { useUIStore } from "@/src/stores/ui-store";
 import { Loader2 } from "lucide-react";
-import { useUIStore } from "../stores/ui-store";
-import { Button } from "./ui/button";
 
 type AssembleButtonsProps = {
   currentStep: number;

@@ -1,8 +1,8 @@
 import { Bell, Search } from "lucide-react";
+import { ThemeToggle } from "../../theme-toggle";
+import { Button } from "../../ui/button";
+import { UserProfileButton } from "../../user-profile-button";
 import { MainNavbarTrigger } from "./main-navbar-trigger";
-import { ThemeToggle } from "./theme-toggle";
-import { Button } from "./ui/button";
-import { UserProfileButton } from "./user-profile-button";
 
 export function MainNavbar() {
   return (

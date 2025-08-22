@@ -1,12 +1,12 @@
 "use client";
 
 import { useParams } from "next/navigation";
-import { PROJECT_STATUS_TW_COLORS } from "../lib/db/enums";
-import { getTimeLastUpdated } from "../lib/utils";
-import { useFetch } from "../use/hooks/use-fetch";
-import { ProjectStatus } from "./project-status";
-import { DashboardRecentProjectsEmpty } from "./states/empty-states";
-import { DashboardRecentProjectsError } from "./states/error-states";
+import { PROJECT_STATUS_TW_COLORS } from "../../../lib/db/enums";
+import { getTimeLastUpdated } from "../../../lib/utils";
+import { useFetch } from "../../../use/hooks/use-fetch";
+import { DashboardRecentProjectsEmpty } from "../../states/empty-states";
+import { DashboardRecentProjectsError } from "../../states/error-states";
+import { ProjectStatus } from "../project/project-status";
 
 export function DashboardRecentProjects() {
   const { teamId } = useParams<{ teamId: string }>();

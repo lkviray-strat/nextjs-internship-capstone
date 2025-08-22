@@ -1,15 +1,15 @@
 import type { useForm } from "react-hook-form";
-import type { CreateProjectRequestInput } from "../types";
-import { RequiredLabel } from "./required-label";
+import type { CreateProjectRequestInput } from "../../../types";
+import { RequiredLabel } from "../../required-label";
 import {
   FormControl,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
-} from "./ui/form";
-import { Input } from "./ui/input";
-import { Textarea } from "./ui/textarea";
+} from "../../ui/form";
+import { Input } from "../../ui/input";
+import { Textarea } from "../../ui/textarea";
 
 type ProjectFormDetailsProps = {
   control: ReturnType<typeof useForm<CreateProjectRequestInput>>["control"];

@@ -1,20 +1,20 @@
 import type { useForm } from "react-hook-form";
-import { snakeToTitleCase } from "../lib/utils";
-import type { ProjectFilters } from "../types";
+import { snakeToTitleCase } from "../../../lib/utils";
+import type { ProjectFilters } from "../../../types";
 import {
   FormControl,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
-} from "./ui/form";
+} from "../../ui/form";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "./ui/select";
+} from "../../ui/select";
 
 type ProjectFilterSelectsProps = {
   items: readonly string[] | string[];

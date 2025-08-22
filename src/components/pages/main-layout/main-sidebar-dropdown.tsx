@@ -13,9 +13,9 @@ import {
 } from "@radix-ui/react-dropdown-menu";
 import { ChevronDown, Plus, Users } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
-import type { Teams } from "../types";
-import { buttonVariants } from "./ui/button";
-import { SidebarMenuButton } from "./ui/sidebar";
+import type { Teams } from "../../../types";
+import { buttonVariants } from "../../ui/button";
+import { SidebarMenuButton } from "../../ui/sidebar";
 
 type MainSidebarDropdownProps = {
   teams: Teams[];

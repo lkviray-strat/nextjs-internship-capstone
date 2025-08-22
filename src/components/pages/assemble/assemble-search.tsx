@@ -1,14 +1,14 @@
 "use client";
 
+import type { CreateFullWizardRequestInput, User } from "@/src/types";
+import { useFetch } from "@/src/use/hooks/use-fetch";
 import { useUser } from "@clerk/nextjs";
 import { notFound } from "next/navigation";
 import { useState } from "react";
 import type { UseControllerReturn } from "react-hook-form";
-import type { CreateFullWizardRequestInput, User } from "../types";
-import { useFetch } from "../use/hooks/use-fetch";
-import { ImageHandler } from "./Image-handler";
-import { CommandSearch } from "./search-command";
-import { UserSearchSkeleton } from "./states/skeleton-states";
+import { ImageHandler } from "../../Image-handler";
+import { CommandSearch } from "../../search-command";
+import { UserSearchSkeleton } from "../../states/skeleton-states";
 
 type AssembleSearchProps = {
   field: UseControllerReturn<

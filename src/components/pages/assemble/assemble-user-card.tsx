@@ -1,12 +1,12 @@
 "use client";
 
+import { Button } from "@/src/components/ui/button";
+import { useUIStore } from "@/src/stores/ui-store";
+import { useFetch } from "@/src/use/hooks/use-fetch";
 import { X } from "lucide-react";
 import { notFound } from "next/navigation";
 import { useEffect } from "react";
-import { useUIStore } from "../stores/ui-store";
-import { useFetch } from "../use/hooks/use-fetch";
-import { ImageHandler } from "./Image-handler";
-import { Button } from "./ui/button";
+import { ImageHandler } from "../../Image-handler";
 
 type AssembleUserCard = {
   userId: string;

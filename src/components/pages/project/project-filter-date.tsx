@@ -1,39 +1,38 @@
 import { format } from "date-fns";
 import type { useForm } from "react-hook-form";
-import type { CreateProjectRequestInput } from "../types";
-import { CalendarPicker } from "./calendar-picker";
-import { RequiredLabel } from "./required-label";
-import { Calendar } from "./ui/calendar";
+import type { ProjectFilters } from "../../../types";
+import { CalendarPicker } from "../../calendar-picker";
+import { Calendar } from "../../ui/calendar";
 import {
   FormControl,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
-} from "./ui/form";
-import { Input } from "./ui/input";
+} from "../../ui/form";
+import { Input } from "../../ui/input";
 
-type ProjectFormDateProps = {
+type ProjectFilterDateProps = {
   startDate: Date;
   endDate: Date;
-  control: ReturnType<typeof useForm<CreateProjectRequestInput>>["control"];
+  control: ReturnType<
+    typeof useForm<Omit<ProjectFilters, "teamId">>
+  >["control"];
 };
 
-export function ProjectFormDate({
+export function ProjectFilterDate({
   control,
   startDate,
   endDate,
-}: ProjectFormDateProps) {
+}: ProjectFilterDateProps) {
   return (
-    <div className="flex flex-col lphone:flex-row gap-5">
+    <div className="flex flex-row gap-3">
       <FormField
         control={control}
-        name="startDate"
+        name="start"
         render={({ field }) => (
           <FormItem className="flex-1">
-            <FormLabel>
-              <RequiredLabel>Start Date</RequiredLabel>
-            </FormLabel>
+            <FormLabel>From:</FormLabel>
             <FormControl>
               <CalendarPicker
                 disabled={(date) =>
@@ -59,12 +58,10 @@ export function ProjectFormDate({
       />
       <FormField
         control={control}
-        name="endDate"
+        name="end"
         render={({ field }) => (
           <FormItem className="flex-1">
-            <FormLabel>
-              <RequiredLabel>End Date</RequiredLabel>
-            </FormLabel>
+            <FormLabel>Until:</FormLabel>
             <FormControl>
               <CalendarPicker
                 disabled={(date) =>

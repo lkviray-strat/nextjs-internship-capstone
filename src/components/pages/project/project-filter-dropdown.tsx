@@ -3,11 +3,9 @@
 import { Filter } from "lucide-react";
 import { useState } from "react";
 import { useFormContext } from "react-hook-form";
-import { PROJECT_STATUS_ENUM } from "../lib/db/enums";
-import type { ProjectFilters } from "../types";
-import { ProjectFilterDate } from "./project-filter-date";
-import { ProjectFilterSelects } from "./project-filter-selects";
-import { Button } from "./ui/button";
+import { PROJECT_STATUS_ENUM } from "../../../lib/db/enums";
+import type { ProjectFilters } from "../../../types";
+import { Button } from "../../ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -15,7 +13,9 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "./ui/dropdown-menu";
+} from "../../ui/dropdown-menu";
+import { ProjectFilterDate } from "./project-filter-date";
+import { ProjectFilterSelects } from "./project-filter-selects";
 
 export function ProjectFilterDropdown() {
   const form = useFormContext<Omit<ProjectFilters, "teamId">>();

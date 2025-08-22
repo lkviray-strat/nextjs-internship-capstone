@@ -1,5 +1,6 @@
 "use client";
 
+import { RequiredLabel } from "@/src/components/required-label";
 import {
   FormControl,
   FormField,
@@ -9,9 +10,8 @@ import {
 } from "@/src/components/ui/form";
 import { Input } from "@/src/components/ui/input";
 import { Textarea } from "@/src/components/ui/textarea";
+import type { CreateFullWizardRequestInput } from "@/src/types";
 import { useForm } from "react-hook-form";
-import type { CreateFullWizardRequestInput } from "../types";
-import { RequiredLabel } from "./required-label";
 
 type AssembleDetailsProps = {
   control: ReturnType<typeof useForm<CreateFullWizardRequestInput>>["control"];
