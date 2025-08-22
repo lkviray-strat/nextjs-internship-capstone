@@ -1,7 +1,7 @@
 import { MainNavbar } from "@/src/components/pages/main-layout/main-navbar";
 import { MainSidebar } from "@/src/components/pages/main-layout/main-sidebar";
 import { ResetProvider } from "@/src/components/reset-provider";
-import { SidebarInset, SidebarProvider } from "@/src/components/ui/sidebar";
+import { SidebarProvider } from "@/src/components/ui/sidebar";
 import { queries } from "@/src/lib/db/queries";
 import { auth } from "@clerk/nextjs/server";
 import { notFound } from "next/navigation";
@@ -34,17 +34,15 @@ export default async function MainLayout({
   return (
     <ResetProvider initialTeamId={teamId}>
       <SidebarProvider>
-        <div className="flex min-h-screen w-full">
+        <div className="flex h-screen w-full">
           <MainSidebar />
           {/* py-3 pr-3 if use inset variant */}
-          <div className="flex-1 py-3">
-            <SidebarInset>
-              <MainNavbar />
-              {/* Add min-h-[calc(100vh-4rem)] if use inset variant */}
-              <main className="py-8 px-4 sm:px-6 lg:px-8 min-h-[calc(100vh-6rem)] ">
-                <Suspense>{children}</Suspense>
-              </main>
-            </SidebarInset>
+          <div className="flex-1 flex flex-col min-w-0 h-full overflow-y-auto">
+            <MainNavbar />
+            {/* Add min-h-[calc(100vh-4rem)] if use inset variant */}
+            <main className="flex-1 pt-8 px-4 sm:px-6 lg:px-8 overflow-y-auto">
+              <Suspense>{children}</Suspense>
+            </main>
           </div>
         </div>
       </SidebarProvider>
