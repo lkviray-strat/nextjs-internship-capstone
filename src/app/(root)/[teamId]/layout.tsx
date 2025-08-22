@@ -1,5 +1,5 @@
-import { MainNavbar } from "@/src/components/main-navbar";
-import { MainSidebar } from "@/src/components/main-sidebar";
+import { MainNavbar } from "@/src/components/pages/main-layout/main-navbar";
+import { MainSidebar } from "@/src/components/pages/main-layout/main-sidebar";
 import { ResetProvider } from "@/src/components/reset-provider";
 import { SidebarInset, SidebarProvider } from "@/src/components/ui/sidebar";
 import { queries } from "@/src/lib/db/queries";

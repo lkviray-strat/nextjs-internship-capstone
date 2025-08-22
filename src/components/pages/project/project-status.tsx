@@ -1,4 +1,4 @@
-import { snakeToTitleCase } from "../lib/utils";
+import { snakeToTitleCase } from "../../../lib/utils";
 
 type ProjectStatusProps = {
   status: string;

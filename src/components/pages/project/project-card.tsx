@@ -1,11 +1,9 @@
-// TODO: Task 4.5 - Design and implement project cards and layouts
-
 import { MoreHorizontal } from "lucide-react";
-import { PROJECT_STATUS_TW_COLORS } from "../lib/db/enums";
-import { getTimeLeft } from "../lib/utils";
-import type { Projects } from "../types";
+import { PROJECT_STATUS_TW_COLORS } from "../../../lib/db/enums";
+import { getTimeLeft } from "../../../lib/utils";
+import type { Projects } from "../../../types";
+import { Button } from "../../ui/button";
 import { ProjectStatus } from "./project-status";
-import { Button } from "./ui/button";
 
 type ProjectCardProps = {
   project: Projects;

@@ -1,3 +1,4 @@
+import { UserSearchSkeleton } from "@/src/components/states/skeleton-states";
 import {
   FormControl,
   FormField,
@@ -5,12 +6,11 @@ import {
   FormLabel,
   FormMessage,
 } from "@/src/components/ui/form";
+import type { CreateFullWizardRequestInput } from "@/src/types";
 import { Suspense } from "react";
 import { useForm } from "react-hook-form";
-import type { CreateFullWizardRequestInput } from "../types";
 import { AssembleSearch } from "./assemble-search";
 import { AssembleUserCard } from "./assemble-user-card";
-import { UserSearchSkeleton } from "./states/skeleton-states";
 
 type AssembleMembersProps = {
   control: ReturnType<typeof useForm<CreateFullWizardRequestInput>>["control"];

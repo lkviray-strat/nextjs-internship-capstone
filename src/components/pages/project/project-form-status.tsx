@@ -1,22 +1,22 @@
 import type { useForm } from "react-hook-form";
-import { PROJECT_STATUS_CREATE_ENUM } from "../lib/db/enums";
-import { snakeToTitleCase } from "../lib/utils";
-import type { CreateProjectRequestInput } from "../types";
-import { RequiredLabel } from "./required-label";
+import { PROJECT_STATUS_CREATE_ENUM } from "../../../lib/db/enums";
+import { snakeToTitleCase } from "../../../lib/utils";
+import type { CreateProjectRequestInput } from "../../../types";
+import { RequiredLabel } from "../../required-label";
 import {
   FormControl,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
-} from "./ui/form";
+} from "../../ui/form";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "./ui/select";
+} from "../../ui/select";
 
 type ProjectFormStatusProps = {
   control: ReturnType<typeof useForm<CreateProjectRequestInput>>["control"];

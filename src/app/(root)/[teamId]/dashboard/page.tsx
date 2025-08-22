@@ -1,4 +1,4 @@
-import { DashboardRecentProjects } from "@/src/components/dashboard-recent-projects";
+import { DashboardRecentProjects } from "@/src/components/pages/dashboard/dashboard-recent-projects";
 import { RecentProjectsSkeleton } from "@/src/components/states/skeleton-states";
 import { Button } from "@/src/components/ui/button";
 import { CheckCircle, Clock, Plus, TrendingUp, Users } from "lucide-react";

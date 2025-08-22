@@ -10,9 +10,9 @@ import { SignedIn, SignedOut } from "@clerk/nextjs";
 import { currentUser } from "@clerk/nextjs/server";
 import { FolderOpen, Home, LogIn, MenuIcon, Users, X } from "lucide-react";
 import Link from "next/link";
-import { ThemeToggle } from "./theme-toggle";
-import { Button, buttonVariants } from "./ui/button";
-import { UserProfileButton } from "./user-profile-button";
+import { ThemeToggle } from "../../theme-toggle";
+import { Button, buttonVariants } from "../../ui/button";
+import { UserProfileButton } from "../../user-profile-button";
 
 const navigation = [
   { name: "Assemble", href: "assemble", icon: Users },

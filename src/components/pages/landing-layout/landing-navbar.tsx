@@ -1,9 +1,9 @@
 import { SignedOut } from "@clerk/nextjs";
 import Link from "next/link";
-import { HoverUnderline } from "./hover-underline";
-import { ThemeToggle } from "./theme-toggle";
-import { buttonVariants } from "./ui/button";
-import { UserProfileButton } from "./user-profile-button";
+import { HoverUnderline } from "../../hover-underline";
+import { ThemeToggle } from "../../theme-toggle";
+import { buttonVariants } from "../../ui/button";
+import { UserProfileButton } from "../../user-profile-button";
 
 type LandingNavbar = {
   showNavs?: boolean;
