@@ -1,8 +1,8 @@
-import { MoreHorizontal } from "lucide-react";
+import Link from "next/link";
 import { PROJECT_STATUS_TW_COLORS } from "../../../lib/db/enums";
 import { getTimeLeft } from "../../../lib/utils";
 import type { Projects } from "../../../types";
-import { Button } from "../../ui/button";
+import { ProjectCardDropdown } from "./project-card-dropdown";
 import { ProjectStatus } from "./project-status";
 
 type ProjectCardProps = {
@@ -21,19 +21,16 @@ export function ProjectCard({ project, progress }: ProjectCardProps) {
           : "bg-blue-500";
 
   return (
-    <div className="bg-card flex flex-col gap-3 rounded-lg border p-6 hover:shadow-lg hover:scale-98 transition-transform">
+    <Link
+      href={`projects/${project.id}`}
+      className="bg-card flex flex-col gap-3 rounded-lg border p-6 hover:shadow-lg hover:scale-98 transition-transform"
+    >
       <div className="flex items-center justify-between">
         <ProjectStatus
           color={PROJECT_STATUS_TW_COLORS[project.status]}
           status={project.status}
         />
-        <Button
-          variant="ghost"
-          size="icon"
-          className="rounded-full"
-        >
-          <MoreHorizontal size={16} />
-        </Button>
+        <ProjectCardDropdown />
       </div>
       <div className="flex flex-col gap-2 py-4">
         <h3 className="text-[24px] font-semibold line-clamp-1">
@@ -63,6 +60,6 @@ export function ProjectCard({ project, progress }: ProjectCardProps) {
           {getTimeLeft(project.endDate as Date)}
         </span>
       </div>
-    </div>
+    </Link>
   );
 }
