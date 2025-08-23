@@ -11,8 +11,9 @@ export function useTeamMembers() {
   const createTeamMember = useMutation(
     trpc.teamMembers.createTeamMember.mutationOptions({
       onSuccess: () => {
-        const mutationKey = trpc.teamMembers.createTeamMember.mutationKey();
-        queryClient.invalidateQueries({ queryKey: mutationKey });
+        queryClient.invalidateQueries({
+          queryKey: trpc.teamMembers.pathKey(),
+        });
         setTeamMemberErrors({});
       },
       onError: (error) => {
@@ -31,8 +32,9 @@ export function useTeamMembers() {
   const updateTeamMember = useMutation(
     trpc.teamMembers.updateTeamMember.mutationOptions({
       onSuccess: () => {
-        const mutationKey = trpc.teamMembers.updateTeamMember.mutationKey();
-        queryClient.invalidateQueries({ queryKey: mutationKey });
+        queryClient.invalidateQueries({
+          queryKey: trpc.teamMembers.pathKey(),
+        });
         setTeamMemberErrors({});
       },
       onError: (error) => {
@@ -51,8 +53,10 @@ export function useTeamMembers() {
   const deleteTeamMember = useMutation(
     trpc.teamMembers.deleteTeamMember.mutationOptions({
       onSuccess: () => {
-        const mutationKey = trpc.teamMembers.deleteTeamMember.mutationKey();
-        queryClient.invalidateQueries({ queryKey: mutationKey });
+        queryClient.invalidateQueries({
+          queryKey: trpc.teamMembers.pathKey(),
+        });
+        setTeamMemberErrors({});
       },
       onError: (error) => {
         try {
