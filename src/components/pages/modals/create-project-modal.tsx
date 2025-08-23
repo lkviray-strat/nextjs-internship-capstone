@@ -14,7 +14,7 @@ export function CreateProjectModal() {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button className="w-full sm:w-fit">
+        <Button className="w-full !py-[21px] text-[15px] sm:w-fit">
           <Plus className="size-4" />
           New Project
         </Button>

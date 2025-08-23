@@ -1,5 +1,9 @@
 import { queries } from "@/src/lib/db/queries";
-import { Calendar, MoreHorizontal, Settings, Users } from "lucide-react";
+import { extractNonNullableFrom } from "@/src/lib/utils";
+import { MoreHorizontal, Settings } from "lucide-react";
+import Link from "next/link";
+import { AvatarGroup } from "../../avatar-group";
+import { Button, buttonVariants } from "../../ui/button";
 
 type ProjectHeaderProps = {
   params: Promise<{
@@ -10,33 +14,38 @@ type ProjectHeaderProps = {
 export async function ProjectHeader({ params }: ProjectHeaderProps) {
   const { projectId } = await params;
   const project = (await queries.projects.getProjectsById(projectId)).at(0);
+  const projectTeams =
+    await queries.projectTeams.getProjectTeamsByProjectIdWithTeamMembers(
+      projectId
+    );
+  const everyMember =
+    projectTeams[0].team?.members.flatMap((teamMembers) => teamMembers.user) ??
+    [];
+  const filteredMembers = extractNonNullableFrom(everyMember);
 
   return (
-    <div className="flex items-center justify-between">
-      <div className="flex items-center space-x-4">
-        <div>
-          <h1 className="text-3xl font-bold text-outer_space-500 dark:text-platinum-500">
-            Project {project?.name}
-          </h1>
-          <p className="text-payne's_gray-500 dark:text-french_gray-500 mt-1">
-            {project?.description || "No description available."}
-          </p>
-        </div>
+    <div className="flex flex-col sm:flex-row justify-center items-center sm:justify-between gap-3">
+      <div className="flex flex-col space-x-4">
+        <h1 className="text-[25px] sm:text-3xl font-bold text-outer_space-500 dark:text-platinum-500">
+          Project {project?.name}
+        </h1>
       </div>
 
-      <div className="flex items-center space-x-2">
-        <button className="p-2 hover:bg-platinum-500 dark:hover:bg-payne's_gray-400 rounded-lg transition-colors">
-          <Users size={20} />
-        </button>
-        <button className="p-2 hover:bg-platinum-500 dark:hover:bg-payne's_gray-400 rounded-lg transition-colors">
-          <Calendar size={20} />
-        </button>
-        <button className="p-2 hover:bg-platinum-500 dark:hover:bg-payne's_gray-400 rounded-lg transition-colors">
-          <Settings size={20} />
-        </button>
-        <button className="p-2 hover:bg-platinum-500 dark:hover:bg-payne's_gray-400 rounded-lg transition-colors">
-          <MoreHorizontal size={20} />
-        </button>
+      <div className="flex items-center gap-3 shrink-0 sm:pl-10">
+        <AvatarGroup users={filteredMembers} />
+        <Link
+          href={`${projectId}/settings`}
+          className={`${buttonVariants({ variant: "secondary" })} >`}
+        >
+          <Settings className="size-5" />
+          Settings
+        </Link>
+        <Button
+          variant="secondary"
+          size="icon"
+        >
+          <MoreHorizontal className="size-5" />
+        </Button>
       </div>
     </div>
   );
