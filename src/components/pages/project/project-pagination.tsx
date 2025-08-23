@@ -30,8 +30,8 @@ export function ProjectPagination({
   };
 
   return (
-    <Pagination>
-      <PaginationContent className="mt-10">
+    <Pagination className="my-10">
+      <PaginationContent>
         {page > 1 && (
           <>
             <PaginationItem>
