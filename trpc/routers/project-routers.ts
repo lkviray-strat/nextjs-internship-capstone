@@ -8,8 +8,8 @@ import {
 import {
   createProjectAction,
   deleteProjectAction,
+  updateProjectAction,
 } from "@/src/use/actions/project-actions";
-import { updateTeamAction } from "@/src/use/actions/team-actions";
 import { TRPCError } from "@trpc/server";
 import z from "zod";
 import { createTRPCRouter, protectedProcedure } from "../init";
@@ -114,7 +114,7 @@ export const projectRouter = createTRPCRouter({
         });
       }
 
-      return await updateTeamAction(input);
+      return await updateProjectAction(input);
     }),
   deleteProject: protectedProcedure
     .input(z.object({ id: z.guid(), teamId: z.guid() }))

@@ -133,6 +133,10 @@ export const projectTeamsRelations = relations(projectTeams, ({ one }) => ({
     fields: [projectTeams.teamId],
     references: [teams.id],
   }),
+  teamMembers: one(teamMembers, {
+    fields: [projectTeams.teamId],
+    references: [teamMembers.teamId],
+  }),
 }));
 
 export const rolesRelations = relations(roles, ({ many }) => ({
