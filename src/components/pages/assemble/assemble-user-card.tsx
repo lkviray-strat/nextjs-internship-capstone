@@ -1,12 +1,13 @@
 "use client";
 
 import { Button } from "@/src/components/ui/button";
+import { getUserInitials } from "@/src/lib/utils";
 import { useUIStore } from "@/src/stores/ui-store";
 import { useFetch } from "@/src/use/hooks/use-fetch";
 import { X } from "lucide-react";
 import { notFound } from "next/navigation";
 import { useEffect } from "react";
-import { ImageHandler } from "../../Image-handler";
+import { Avatar, AvatarFallback, AvatarImage } from "../../ui/avatar";
 
 type AssembleUserCard = {
   userId: string;
@@ -22,7 +23,7 @@ export function AssembleUserCard({ userId, removeHandler }: AssembleUserCard) {
     setIsTeamMembersLoading(isFetching);
   }, [isFetching, setIsTeamMembersLoading]);
 
-  if (!user) {
+  if (!user || !user.firstName || !user.lastName) {
     return notFound();
   }
 
@@ -30,11 +31,15 @@ export function AssembleUserCard({ userId, removeHandler }: AssembleUserCard) {
     <div className="flex flex-row justify-between items-center w-full hover:bg-secondary py-2 px-4 rounded-md">
       <div className="flex flex-row gap-4">
         <div className="relative size-10 rounded-full overflow-clip shrink-0">
-          <ImageHandler
-            imageUrl={user.profileImageUrl as string}
-            title="Profile Picture"
-            fallbackUrl="/images/user-fallback.png"
-          />
+          <Avatar className="size-full">
+            <AvatarImage
+              src={user.profileImageUrl as string}
+              alt={`${user.firstName}'s Profile Picture`}
+            />
+            <AvatarFallback>
+              {getUserInitials(user.firstName, user.lastName)}
+            </AvatarFallback>
+          </Avatar>
         </div>
 
         <div className="overflow-ellipsis flex flex-col">
