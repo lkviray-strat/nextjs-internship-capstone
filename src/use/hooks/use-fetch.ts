@@ -53,6 +53,18 @@ export function useFetch() {
         );
       },
     },
+    projectTeams: {
+      useGetProjectTeamsByProjectIdWithTeamMembers: (
+        projectId: string,
+        teamId: string
+      ) => {
+        return useSuspenseQuery(
+          trpc.projectTeams.getProjectTeamsByProjectIdWithTeamMembers.queryOptions(
+            { projectId, teamId }
+          )
+        );
+      },
+    },
   };
 
   return useFetch;

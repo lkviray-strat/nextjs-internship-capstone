@@ -282,6 +282,15 @@ export const queries = {
         orderBy,
         with: {
           tasks: true,
+          teams: {
+            with: {
+              teamMembers: {
+                with: {
+                  user: true,
+                },
+              },
+            },
+          },
           kanbanBoards: {
             with: {
               columns: {
@@ -575,6 +584,22 @@ export const queries = {
         .from(projectTeams)
         .where(eq(projectTeams.projectId, projectId))
         .orderBy(asc(projectTeams.createdAt));
+    },
+    getProjectTeamsByProjectIdWithTeamMembers: (projectId: string) => {
+      return db.query.projectTeams.findMany({
+        where: eq(projectTeams.projectId, projectId),
+        with: {
+          team: {
+            with: {
+              members: {
+                with: {
+                  user: true,
+                },
+              },
+            },
+          },
+        },
+      });
     },
   },
   roles: {
