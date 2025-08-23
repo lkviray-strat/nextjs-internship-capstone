@@ -1,9 +1,8 @@
 "use client";
 
 import { Form } from "@/src/components/ui/form";
-import { usePreventForm } from "@/src/hooks/use-preventform";
+import { hasTrueValue } from "@/src/lib/utils";
 import { fullWizardSchema } from "@/src/lib/validations";
-import { useUIStore } from "@/src/stores/ui-store";
 import type { CreateFullWizardRequestInput } from "@/src/types";
 import { useTeamMembers } from "@/src/use/hooks/use-team-members";
 import { useTeams } from "@/src/use/hooks/use-teams";
@@ -16,6 +15,7 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { ClientOnly } from "../../client-only";
 import { Loader } from "../../loader";
+import { NavigationBlocker } from "../../navigation-blocker";
 import { AssembleButtons } from "./assemble-buttons";
 import { AssembleDetails } from "./assemble-details";
 import { AssembleMembers } from "./assemble-members";
@@ -25,7 +25,6 @@ export function AssembleWizard() {
   const route = useRouter();
   const teamHooks = useTeams();
   const teamMemberHooks = useTeamMembers();
-  const { setIsCreateTeamDirty } = useUIStore();
   const [step, setStep] = useState(1);
 
   const isSubmitting =
@@ -46,7 +45,6 @@ export function AssembleWizard() {
     form.clearErrors();
     teamHooks.clearTeamErrors();
     teamMemberHooks.clearTeamMemberErrors();
-    setIsCreateTeamDirty(false);
   }
 
   function onKeyDown(e: React.KeyboardEvent<HTMLFormElement>) {
@@ -114,10 +112,9 @@ export function AssembleWizard() {
     }
   }, [user, form]);
 
-  usePreventForm(form, setIsCreateTeamDirty);
-
   return (
     <ClientOnly fallback={<Loader />}>
+      <NavigationBlocker block={hasTrueValue(form.formState.dirtyFields)} />
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit, onError)}
