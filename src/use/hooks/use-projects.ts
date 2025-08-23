@@ -11,8 +11,9 @@ export function useProjects() {
   const createProject = useMutation(
     trpc.projects.createProject.mutationOptions({
       onSuccess: () => {
-        const mutationKey = trpc.projects.createProject.mutationKey();
-        queryClient.invalidateQueries({ queryKey: mutationKey });
+        queryClient.invalidateQueries({
+          queryKey: trpc.projects.pathKey(),
+        });
         setProjectErrors({});
       },
       onError: (error) => {
@@ -30,9 +31,10 @@ export function useProjects() {
 
   const updateProject = useMutation(
     trpc.projects.updateProject.mutationOptions({
-      onSuccess: () => {
-        const mutationKey = trpc.projects.updateProject.mutationKey();
-        queryClient.invalidateQueries({ queryKey: mutationKey });
+      onSuccess: async () => {
+        queryClient.invalidateQueries({
+          queryKey: trpc.projects.pathKey(),
+        });
         setProjectErrors({});
       },
       onError: (error) => {
@@ -51,8 +53,10 @@ export function useProjects() {
   const deleteProject = useMutation(
     trpc.projects.deleteProject.mutationOptions({
       onSuccess: () => {
-        const mutationKey = trpc.projects.deleteProject.mutationKey();
-        queryClient.invalidateQueries({ queryKey: mutationKey });
+        queryClient.invalidateQueries({
+          queryKey: trpc.projects.pathKey(),
+        });
+        setProjectErrors({});
       },
       onError: (error) => {
         try {
