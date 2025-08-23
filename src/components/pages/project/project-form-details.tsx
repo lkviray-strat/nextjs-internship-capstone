@@ -1,5 +1,4 @@
-import type { useForm } from "react-hook-form";
-import type { CreateProjectRequestInput } from "../../../types";
+import type { Path, useForm } from "react-hook-form";
 import { RequiredLabel } from "../../required-label";
 import {
   FormControl,
@@ -11,20 +10,33 @@ import {
 import { Input } from "../../ui/input";
 import { Textarea } from "../../ui/textarea";
 
-type ProjectFormDetailsProps = {
-  control: ReturnType<typeof useForm<CreateProjectRequestInput>>["control"];
+type ProjectFields = {
+  name?: string;
+  description?: string;
 };
 
-export function ProjectFormDetails({ control }: ProjectFormDetailsProps) {
+type ProjectFormDetailsProps<T extends ProjectFields> = {
+  notRequired?: boolean;
+  nameWidth?: string;
+  descriptionWidth?: string;
+  control: ReturnType<typeof useForm<T>>["control"];
+};
+
+export function ProjectFormDetails<T extends ProjectFields>({
+  control,
+  nameWidth,
+  descriptionWidth,
+  notRequired,
+}: ProjectFormDetailsProps<T>) {
   return (
     <>
       <FormField
         control={control}
-        name="name"
+        name={"name" as Path<T>}
         render={({ field }) => (
-          <FormItem className="space-y-0">
+          <FormItem className={`${nameWidth}`}>
             <FormLabel>
-              <RequiredLabel>Project Name</RequiredLabel>
+              <RequiredLabel turnOff={notRequired}>Project Name</RequiredLabel>
             </FormLabel>
             <FormControl>
               <Input
@@ -38,9 +50,9 @@ export function ProjectFormDetails({ control }: ProjectFormDetailsProps) {
       />
       <FormField
         control={control}
-        name="description"
+        name={"description" as Path<T>}
         render={({ field }) => (
-          <FormItem>
+          <FormItem className={`${descriptionWidth}`}>
             <FormLabel>Description</FormLabel>
             <FormControl>
               <Textarea
