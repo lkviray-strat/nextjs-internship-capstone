@@ -1,7 +1,6 @@
-import type { useForm } from "react-hook-form";
+import type { Path, useForm } from "react-hook-form";
 import { PROJECT_STATUS_CREATE_ENUM } from "../../../lib/db/enums";
 import { snakeToTitleCase } from "../../../lib/utils";
-import type { CreateProjectRequestInput } from "../../../types";
 import { RequiredLabel } from "../../required-label";
 import {
   FormControl,
@@ -18,30 +17,40 @@ import {
   SelectValue,
 } from "../../ui/select";
 
-type ProjectFormStatusProps = {
-  control: ReturnType<typeof useForm<CreateProjectRequestInput>>["control"];
+type ProjectFormStatus = {
+  status?: string;
 };
 
-export function ProjectFormStatus({ control }: ProjectFormStatusProps) {
+type ProjectFormStatusProps<T extends ProjectFormStatus> = {
+  selectWidth?: string;
+  notRequired?: boolean;
+  control: ReturnType<typeof useForm<T>>["control"];
+};
+
+export function ProjectFormStatus<T extends ProjectFormStatus>({
+  control,
+  selectWidth,
+  notRequired,
+}: ProjectFormStatusProps<T>) {
   return (
     <FormField
       control={control}
-      name="status"
+      name={"status" as Path<T>} // ✅ ensures TS knows it's a valid field
       render={({ field }) => (
         <FormItem>
           <FormLabel>
-            <RequiredLabel>Initial Status</RequiredLabel>
+            <RequiredLabel turnOff={notRequired}>Initial Status</RequiredLabel>
           </FormLabel>
           <Select
             onValueChange={field.onChange}
-            defaultValue={undefined}
+            value={field.value}
           >
             <FormControl>
-              <SelectTrigger className="w-full">
+              <SelectTrigger className={`w-full ${selectWidth}`}>
                 <SelectValue placeholder="Select project status" />
               </SelectTrigger>
             </FormControl>
-            <SelectContent className="w-full">
+            <SelectContent className={`w-full ${selectWidth}`}>
               {PROJECT_STATUS_CREATE_ENUM.map((status) => (
                 <SelectItem
                   key={status}
