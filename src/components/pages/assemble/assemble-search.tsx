@@ -1,14 +1,15 @@
 "use client";
 
+import { getUserInitials } from "@/src/lib/utils";
 import type { CreateFullWizardRequestInput, User } from "@/src/types";
 import { useFetch } from "@/src/use/hooks/use-fetch";
 import { useUser } from "@clerk/nextjs";
 import { notFound } from "next/navigation";
 import { useState } from "react";
 import type { UseControllerReturn } from "react-hook-form";
-import { ImageHandler } from "../../Image-handler";
 import { CommandSearch } from "../../search-command";
 import { UserSearchSkeleton } from "../../states/skeleton-states";
+import { Avatar, AvatarFallback, AvatarImage } from "../../ui/avatar";
 
 type AssembleSearchProps = {
   field: UseControllerReturn<
@@ -21,11 +22,15 @@ function SearchRender({ member }: { member: User }) {
   return (
     <div className="flex flex-row gap-4">
       <div className="relative size-10 rounded-full overflow-clip shrink-0">
-        <ImageHandler
-          imageUrl={member.profileImageUrl as string}
-          title="Profile Picture"
-          fallbackUrl="/images/user-fallback.png"
-        />
+        <Avatar className="size-full">
+          <AvatarImage
+            src={member.profileImageUrl as string}
+            alt={`${member.firstName}'s Profile Picture`}
+          />
+          <AvatarFallback>
+            {getUserInitials(member.firstName!, member.lastName!)}
+          </AvatarFallback>
+        </Avatar>
       </div>
 
       <div className="overflow-ellipsis flex flex-col">
