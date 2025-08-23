@@ -1,13 +1,24 @@
 type RequiredLabelProps = {
   children: React.ReactNode;
   className?: string;
+  turnOff?: boolean;
 };
 
-export function RequiredLabel({ children, className }: RequiredLabelProps) {
+export function RequiredLabel({
+  children,
+  className,
+  turnOff = false,
+}: RequiredLabelProps) {
   return (
     <>
-      {children}
-      <span className={`-ml-1 text-red-500 ${className}`}>*</span>
+      {turnOff ? (
+        children
+      ) : (
+        <>
+          {children}
+          <span className={`-ml-1 text-red-500 ${className}`}>*</span>
+        </>
+      )}
     </>
   );
 }
