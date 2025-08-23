@@ -1,5 +1,6 @@
 "use client";
 
+import { hasTrueValue } from "@/src/lib/utils";
 import { useUser } from "@clerk/nextjs";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { TRPCClientError } from "@trpc/client";
@@ -7,11 +8,10 @@ import { useParams, usePathname, useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { usePreventForm } from "../../../hooks/use-preventform";
 import { createProjectRequestSchema } from "../../../lib/validations";
-import { useUIStore } from "../../../stores/ui-store";
 import { type CreateProjectRequestInput } from "../../../types";
 import { useProjects } from "../../../use/hooks/use-projects";
+import { NavigationBlocker } from "../../navigation-blocker";
 import { Button } from "../../ui/button";
 import { Form } from "../../ui/form";
 import { ProjectFormDate } from "./project-form-date";
@@ -24,8 +24,6 @@ export function ProjectCreateForm() {
   const pathName = usePathname();
   const { user } = useUser();
   const { teamId } = useParams();
-
-  const { setIsCreateProjectDirty } = useUIStore();
 
   const form = useForm<CreateProjectRequestInput>({
     resolver: zodResolver(createProjectRequestSchema),
@@ -49,7 +47,6 @@ export function ProjectCreateForm() {
     form.reset();
     form.clearErrors();
     projectHooks.clearProjectErrors();
-    setIsCreateProjectDirty(false);
   }
 
   function onKeyDown(e: React.KeyboardEvent<HTMLFormElement>) {
@@ -67,6 +64,9 @@ export function ProjectCreateForm() {
 
     try {
       const project = await projectHooks.createProject(values);
+
+      projectHooks.clearProjectErrors();
+
       toast.success("Project created successfully!");
       route.push(`${pathName}/${project.data[0].id}`);
     } catch (error) {
@@ -87,10 +87,9 @@ export function ProjectCreateForm() {
     }
   }, [user, teamId, form]);
 
-  usePreventForm(form, setIsCreateProjectDirty);
-
   return (
     <Form {...form}>
+      <NavigationBlocker block={hasTrueValue(form.formState.dirtyFields)} />
       <form
         onSubmit={form.handleSubmit(onSubmit, onError)}
         onReset={onReset}
