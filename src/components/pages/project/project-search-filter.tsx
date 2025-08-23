@@ -17,6 +17,7 @@ import {
   FormMessage,
 } from "../../ui/form";
 import { Input } from "../../ui/input";
+import { CreateProjectModal } from "../modals/create-project-modal";
 import { ProjectFilterDropdown } from "./project-filter-dropdown";
 
 export function ProjectSearchFilter() {
@@ -59,10 +60,14 @@ export function ProjectSearchFilter() {
   return (
     <Form {...form}>
       <form
-        className="flex flex-col sm:flex-row gap-2"
+        className="flex flex-col sm:flex-row gap-x-2 gap-y-3 mb-10 sm:mb-8"
         onSubmit={form.handleSubmit(onSubmit, onError)}
         onReset={onReset}
       >
+        <div className="sm:hidden">
+          <CreateProjectModal />
+        </div>
+
         <div className="relative flex-1">
           <FormField
             control={form.control}
@@ -72,7 +77,7 @@ export function ProjectSearchFilter() {
                 <FormControl>
                   <Input
                     placeholder="Search projects..."
-                    className="w-full pl-11 pr-4 !py-2 h-full"
+                    className="w-full pl-11 pr-4 !py-2.5 h-full"
                     {...field}
                   />
                 </FormControl>

@@ -35,7 +35,7 @@ export function MainSidebarDropdown({
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <SidebarMenuButton
-          variant="outline"
+          variant="default"
           className={`flex hover:bg-secondary hover:text-foreground items-center !text-[16px] !h-full !w-full -mt-1 border-2 
             ${isOpen ? "!p-4 !py-2 justify-start" : "justify-center"}
             `}

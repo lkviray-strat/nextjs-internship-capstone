@@ -60,9 +60,9 @@ export function ProjectFilterDropdown() {
         <Button
           type="button"
           variant="outline"
-          className="!px-4 !py-5 !inline-flex !items-center text-[16px]"
+          className="!px-4 !py-[20px] !inline-flex !items-center text-[15px]"
         >
-          <Filter className="size-5" />
+          <Filter className="size-4" />
           Filter
         </Button>
       </DropdownMenuTrigger>
