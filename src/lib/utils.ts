@@ -101,3 +101,21 @@ export function projectFiltersToSearchParams(
 
   return params;
 }
+
+export function getUserInitials(firstName?: string, lastName?: string): string {
+  const firstInitial = firstName?.charAt(0).toUpperCase() || "";
+  const lastInitial = lastName?.charAt(0).toUpperCase() || "";
+  return `${firstInitial}${lastInitial}`;
+}
+
+export function extractNonNullableFrom<T>(
+  array: (T | null | undefined)[]
+): T[] {
+  return array.filter((item): item is T => item !== null && item !== undefined);
+}
+
+export function hasTrueValue(obj: Record<string, unknown>): boolean {
+  return Object.values(obj).some(
+    (value) => typeof value === "boolean" && value === true
+  );
+}
