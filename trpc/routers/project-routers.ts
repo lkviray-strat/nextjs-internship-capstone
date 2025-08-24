@@ -11,10 +11,42 @@ import {
   updateProjectAction,
 } from "@/src/use/actions/project-actions";
 import { TRPCError } from "@trpc/server";
+import { revalidatePath } from "next/cache";
 import z from "zod";
 import { createTRPCRouter, protectedProcedure } from "../init";
 
 export const projectRouter = createTRPCRouter({
+  getMyCurrentProject: protectedProcedure
+    .input(
+      z.object({
+        projectId: z.guid(),
+        teamId: z.guid(),
+      })
+    )
+    .query(async ({ ctx, input }) => {
+      const member = await queries.teamMembers.getTeamMembersByIds(
+        ctx.auth.userId,
+        input.teamId
+      );
+
+      if (member.length === 0) {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "You are not a member of this team.",
+        });
+      }
+
+      const project = await queries.projects.getProjectsById(input.projectId);
+
+      if (!project) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Project not found.",
+        });
+      }
+
+      return project;
+    }),
   getMyRecentProjects: protectedProcedure
     .input(
       z.object({
@@ -26,6 +58,7 @@ export const projectRouter = createTRPCRouter({
         ctx.auth.userId,
         input.teamId
       );
+
       if (member.length === 0) {
         throw new TRPCError({
           code: "FORBIDDEN",
@@ -114,6 +147,8 @@ export const projectRouter = createTRPCRouter({
         });
       }
 
+      revalidatePath(`${input.teamId}/projects/${input.id}`);
+      revalidatePath(`${input.teamId}/projects`);
       return await updateProjectAction(input);
     }),
   deleteProject: protectedProcedure
@@ -143,6 +178,9 @@ export const projectRouter = createTRPCRouter({
           message: "You are not allowed to delete a project for this team.",
         });
       }
+
+      revalidatePath(`${input.teamId}/projects/${input.id}`);
+      revalidatePath(`${input.teamId}/projects`);
       return await deleteProjectAction(input.id);
     }),
 });

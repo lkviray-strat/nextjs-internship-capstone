@@ -1,6 +1,7 @@
 "use client";
 
 import { hasTrueValue } from "@/src/lib/utils";
+import { useFetch } from "@/src/use/hooks/use-fetch";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { TRPCClientError } from "@trpc/client";
 import { useParams } from "next/navigation";
@@ -8,7 +9,7 @@ import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { updateProjectRequestSchema } from "../../../lib/validations";
-import { type Projects, type UpdateProjectRequestInput } from "../../../types";
+import { type UpdateProjectRequestInput } from "../../../types";
 import { useProjects } from "../../../use/hooks/use-projects";
 import { ClientOnly } from "../../client-only";
 import { Loader } from "../../loader";
@@ -19,23 +20,28 @@ import { ProjectFormDate } from "./project-form-date";
 import { ProjectFormDetails } from "./project-form-details";
 import { ProjectFormStatus } from "./project-form-status";
 
-type ProjectUpdateFormProps = {
-  project: Projects;
-};
-
-export function ProjectUpdateForm({ project }: ProjectUpdateFormProps) {
+export function ProjectUpdateForm() {
   const projectHooks = useProjects();
-  const { teamId } = useParams();
+  const fetch = useFetch();
+  const params = useParams();
+
+  const teamId = params.teamId!.toString();
+  const projectId = params.projectId!.toString();
+
+  const { data: project } = fetch.projects.useGetMyCurrentProject(
+    projectId,
+    teamId
+  );
 
   const form = useForm<UpdateProjectRequestInput>({
     resolver: zodResolver(updateProjectRequestSchema),
     defaultValues: {
-      id: project.id,
-      name: project.name,
-      description: project.description ?? undefined,
-      status: project.status,
-      startDate: project.startDate!,
-      endDate: project.endDate!,
+      id: project[0].id,
+      name: project[0].name,
+      description: project[0].description ?? undefined,
+      status: project[0].status,
+      startDate: project[0].startDate!,
+      endDate: project[0].endDate!,
     },
   });
 
@@ -62,7 +68,7 @@ export function ProjectUpdateForm({ project }: ProjectUpdateFormProps) {
 
   async function onSubmit(values: UpdateProjectRequestInput) {
     if (isSubmitting) return;
-    const id = teamId as string;
+    const id = teamId;
 
     try {
       const newProject = await projectHooks.updateProject({
