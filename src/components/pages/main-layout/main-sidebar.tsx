@@ -64,7 +64,7 @@ export function MainSidebar() {
       <SidebarContent>
         <SidebarGroup>
           {isOpen ? (
-            <SidebarHeader className="flex flex-row justify-between pl-3">
+            <SidebarHeader className="flex flex-row justify-between pl-3 -my-1.5">
               <Link
                 href="/"
                 className="text-2xl font-bold"
@@ -75,12 +75,12 @@ export function MainSidebar() {
             </SidebarHeader>
           ) : (
             <SidebarHeader>
-              <SidebarTrigger className="-ml-1" />
+              <SidebarTrigger className="-ml-1 -my-1.5" />
             </SidebarHeader>
           )}
           <SidebarContent>
             <SidebarSeparator className="my-2.5" />
-            <SidebarMenu className="mt-3">
+            <SidebarMenu className="mt-1">
               <SidebarMenuItem className="mb-3">
                 <MainSidebarDropdown
                   teams={data}
