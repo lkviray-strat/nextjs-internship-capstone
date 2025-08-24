@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useParams } from "next/navigation";
 import { PROJECT_STATUS_TW_COLORS } from "../../../lib/db/enums";
 import { getTimeLastUpdated } from "../../../lib/utils";
@@ -20,9 +21,10 @@ export function DashboardRecentProjects() {
       <h3 className="text-lg font-semibold mb-4">Recent Projects</h3>
       <div className="space-y-3">
         {data?.map((project) => (
-          <div
+          <Link
             key={project.id}
-            className="flex items-center justify-between p-3 bg-muted rounded-lg"
+            href={`projects/${project.id}`}
+            className="flex items-center justify-between hover:scale-98 transition-transform p-3 bg-muted rounded-lg"
           >
             <div className="flex flex-col gap-0.5">
               <div className="font-medium">{project.name}</div>
@@ -34,7 +36,7 @@ export function DashboardRecentProjects() {
               color={PROJECT_STATUS_TW_COLORS[project.status]}
               status={project.status}
             />
-          </div>
+          </Link>
         ))}
       </div>
     </>
