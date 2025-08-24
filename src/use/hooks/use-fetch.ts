@@ -31,6 +31,11 @@ export function useFetch() {
       },
     },
     projects: {
+      useGetMyCurrentProject: (projectId: string, teamId: string) => {
+        return useSuspenseQuery(
+          trpc.projects.getMyCurrentProject.queryOptions({ projectId, teamId })
+        );
+      },
       useGetMyRecentProjects: (teamId: string) => {
         return useSuspenseQuery(
           trpc.projects.getMyRecentProjects.queryOptions({ teamId })
