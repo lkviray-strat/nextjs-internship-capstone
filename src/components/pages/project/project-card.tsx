@@ -43,7 +43,7 @@ export function ProjectCard({ project, members, progress }: ProjectCardProps) {
           color={PROJECT_STATUS_TW_COLORS[project.status]}
           status={project.status}
         />
-        <ProjectCardDropdown projectId={project.id} />
+        <ProjectCardDropdown project={project} />
       </div>
       <div className="flex flex-col gap-2 py-3">
         <h3 className="text-[24px] font-semibold line-clamp-1">
