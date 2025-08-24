@@ -1,7 +1,11 @@
 import { clsx, type ClassValue } from "clsx";
 import { formatDistanceToNow } from "date-fns";
 import { twMerge } from "tailwind-merge";
-import type { ProjectFilters, ProjectStatusEnum } from "../types";
+import type {
+  ProjectFilters,
+  ProjectStatusEnum,
+  ProjectTeamsWithTeamMembersResult,
+} from "../types";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -54,7 +58,10 @@ export function capitalizeWords(str: string) {
 
 export function getTimeLeft(endDate: string | Date) {
   const raw = formatDistanceToNow(new Date(endDate));
-  return capitalizeWords(raw) + " Left";
+  const now = new Date();
+
+  if (endDate > now) return capitalizeWords(raw) + " Left";
+  return capitalizeWords(raw) + " Behind";
 }
 
 export function getTimeLastUpdated(endDate: string | Date) {
@@ -118,4 +125,49 @@ export function hasTrueValue(obj: Record<string, unknown>): boolean {
   return Object.values(obj).some(
     (value) => typeof value === "boolean" && value === true
   );
+}
+
+export function extractEveryMember(
+  projectTeams: ProjectTeamsWithTeamMembersResult
+) {
+  return (
+    projectTeams
+      .flatMap((projectTeam) => projectTeam.team)
+      .flatMap((team) => team?.members)
+      .flatMap((member) => member?.user) ?? []
+  );
+}
+
+export function stringToHash(str: string): number {
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+    const char = str.charCodeAt(i);
+    hash = (hash << 5) - hash + char;
+    hash = hash & hash;
+  }
+  return Math.abs(hash);
+}
+
+// Generate subtle colors (lower saturation, controlled lightness)
+export function getColorFromHash(hash: number): string {
+  const hue = hash % 360;
+  // More subtle: lower saturation (20-40%), controlled lightness (30-50%)
+  const saturation = 30 + (hash % 15); // 30-45%
+  const lightness = 35 + (hash % 16); // 35-51%
+  return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
+}
+
+export function getContent(content: string): string {
+  const cleanContent = content.includes("@") ? content.split("@")[0] : content;
+
+  const parts = cleanContent.split(/[\s._-]+/);
+
+  if (parts.length === 1) {
+    return parts[0].slice(0, 2).toUpperCase();
+  }
+
+  return parts
+    .slice(0, 2)
+    .map((part) => part[0]?.toUpperCase() || "")
+    .join("");
 }

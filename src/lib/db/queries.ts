@@ -282,15 +282,6 @@ export const queries = {
         orderBy,
         with: {
           tasks: true,
-          teams: {
-            with: {
-              teamMembers: {
-                with: {
-                  user: true,
-                },
-              },
-            },
-          },
           kanbanBoards: {
             with: {
               columns: {
@@ -305,6 +296,19 @@ export const queries = {
               id: true,
             },
           },
+          teams: {
+            with: {
+              team: {
+                with: {
+                  members: {
+                    with: {
+                      user: true,
+                    },
+                  },
+                },
+              },
+            },
+          },
         },
       });
 
@@ -312,7 +316,6 @@ export const queries = {
         const total = project.tasks.length;
         const done = project.kanbanBoards[0]?.columns[0]?.tasks.length ?? 0;
         const progress = total > 0 ? Math.round((done / total) * 100) : 0;
-
         return { ...project, progress };
       });
 
