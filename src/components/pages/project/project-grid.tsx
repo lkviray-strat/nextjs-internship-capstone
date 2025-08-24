@@ -27,8 +27,6 @@ export function ProjectGrid() {
   if (!data || data.results.length === 0) return <ProjectGridEmpty />;
 
   const { pagesCount = 0, perPage } = data.pagination;
-
-  console.log(data.results);
   return (
     <>
       {data.results.map((project) => (
