@@ -66,7 +66,16 @@ export function ProjectCreateForm() {
       const project = await projectHooks.createProject(values);
 
       projectHooks.clearProjectErrors();
-
+      form.reset({
+        name: values.name,
+        description: values.description,
+        status: values.status,
+        startDate: values.startDate,
+        endDate: values.endDate,
+        createdById: values.createdById,
+        createdByTeamId: values.createdByTeamId,
+        defaultBoardId: values.defaultBoardId,
+      });
       toast.success("Project created successfully!");
       route.push(`${pathName}/${project.data[0].id}`);
     } catch (error) {
@@ -110,7 +119,7 @@ export function ProjectCreateForm() {
           <Button
             type="submit"
             disabled={isSubmitting}
-            className="mt-5"
+            className="mt-2"
           >
             Create Project
           </Button>
