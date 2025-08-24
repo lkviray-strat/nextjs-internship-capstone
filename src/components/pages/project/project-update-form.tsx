@@ -134,7 +134,7 @@ export function ProjectUpdateForm({ project }: ProjectUpdateFormProps) {
               <Button
                 type="submit"
                 disabled={isSubmitting}
-                className="mt-5"
+                className="mt-2"
               >
                 Update Project
               </Button>
