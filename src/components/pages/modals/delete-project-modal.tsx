@@ -87,6 +87,7 @@ export function DeleteProjectModal({ id }: DeleteProjectModalProps) {
             <Button
               className="order-2 sm:order-1"
               variant="outline"
+              disabled={projectHooks.isDeletingProject}
               onClick={handleClose}
             >
               Cancel
@@ -94,6 +95,7 @@ export function DeleteProjectModal({ id }: DeleteProjectModalProps) {
             <Button
               className="order-1 sm:order-2"
               variant="destructive"
+              disabled={projectHooks.isDeletingProject}
               onClick={handleSubmit}
             >
               Delete
