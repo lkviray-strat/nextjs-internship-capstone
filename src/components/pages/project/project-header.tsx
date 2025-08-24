@@ -1,5 +1,5 @@
 import { queries } from "@/src/lib/db/queries";
-import { extractNonNullableFrom } from "@/src/lib/utils";
+import { extractEveryMember, extractNonNullableFrom } from "@/src/lib/utils";
 import { MoreHorizontal, Settings } from "lucide-react";
 import Link from "next/link";
 import { AvatarGroup } from "../../avatar-group";
@@ -18,9 +18,7 @@ export async function ProjectHeader({ params }: ProjectHeaderProps) {
     await queries.projectTeams.getProjectTeamsByProjectIdWithTeamMembers(
       projectId
     );
-  const everyMember =
-    projectTeams[0].team?.members.flatMap((teamMembers) => teamMembers.user) ??
-    [];
+  const everyMember = extractEveryMember(projectTeams);
   const filteredMembers = extractNonNullableFrom(everyMember);
 
   return (

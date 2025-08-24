@@ -10,6 +10,7 @@ import type {
   Teams,
   User,
 } from ".";
+import type { queries } from "../lib/db/queries";
 
 // With Relations Types
 export type UserWithRelations = WithRelations<
@@ -82,4 +83,11 @@ export type CommentsWithRelations = WithRelations<
     task: Tasks;
     author: User;
   }
+>;
+
+export type ProjectTeamsWithTeamMembersQuery =
+  typeof queries.projectTeams.getProjectTeamsByProjectIdWithTeamMembers;
+
+export type ProjectTeamsWithTeamMembersResult = Awaited<
+  ReturnType<ProjectTeamsWithTeamMembersQuery>
 >;

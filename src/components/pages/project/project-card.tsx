@@ -1,18 +1,29 @@
 import Link from "next/link";
 import { PROJECT_STATUS_TW_COLORS } from "../../../lib/db/enums";
-import { getTimeLeft } from "../../../lib/utils";
-import type { Projects, User } from "../../../types";
+import {
+  extractEveryMember,
+  extractNonNullableFrom,
+  getTimeLeft,
+} from "../../../lib/utils";
+import type {
+  Projects,
+  ProjectTeamsWithTeamMembersResult,
+} from "../../../types";
 import { AvatarGroup } from "../../avatar-group";
 import { ProjectCardDropdown } from "./project-card-dropdown";
 import { ProjectStatus } from "./project-status";
 
 type ProjectCardProps = {
   project: Projects;
-  members: User[];
+  members: ProjectTeamsWithTeamMembersResult;
   progress: number;
 };
 
 export function ProjectCard({ project, members, progress }: ProjectCardProps) {
+  const isBehind = project.endDate && new Date(project.endDate) < new Date();
+  const everymember = extractEveryMember(members);
+  const filteredMembers = extractNonNullableFrom(everymember);
+
   const barColor =
     progress >= 100
       ? "bg-green-500"
@@ -50,7 +61,7 @@ export function ProjectCard({ project, members, progress }: ProjectCardProps) {
       </div>
 
       <div className="flex flex-row items-center justify-between">
-        <AvatarGroup users={members} />
+        <AvatarGroup users={filteredMembers} />
       </div>
 
       <div className="flex flex-col">
@@ -65,16 +76,16 @@ export function ProjectCard({ project, members, progress }: ProjectCardProps) {
           />
         </div>
       </div>
-      <div className="flex items-center justify-between gap-3">
-        <span className="text-muted-foreground text-[15px]">
+      <div
+        className={`${isBehind ? "text-red-500" : "text-muted-foreground"} text-[15px] flex items-center justify-between gap-3`}
+      >
+        <span>
           Due{" "}
           {project.endDate
             ? new Date(project.endDate).toLocaleDateString()
             : "N/A"}
         </span>
-        <span className="text-muted-foreground text-[15px]">
-          {getTimeLeft(project.endDate as Date)}
-        </span>
+        <span>{getTimeLeft(project.endDate as Date)}</span>
       </div>
     </Link>
   );
