@@ -27,7 +27,10 @@ export const users = pgTable(
     lastName: varchar("last_name", { length: 100 }),
     profileImageUrl: varchar("profile_image_url", { length: 512 }),
     createdAt: timestamp("created_at").defaultNow().notNull(),
-    updatedAt: timestamp("updated_at").defaultNow().notNull(),
+    updatedAt: timestamp("updated_at")
+      .defaultNow()
+      .notNull()
+      .$onUpdate(() => new Date()),
   },
   (table) => [
     index("users_email_idx").on(table.email),
@@ -46,7 +49,10 @@ export const teams = pgTable(
       onDelete: "set null",
     }), // Team leader
     createdAt: timestamp("created_at").defaultNow().notNull(),
-    updatedAt: timestamp("updated_at").defaultNow().notNull(),
+    updatedAt: timestamp("updated_at")
+      .defaultNow()
+      .notNull()
+      .$onUpdate(() => new Date()),
   },
   (table) => [
     index("teams_name_idx").on(table.name),
@@ -84,7 +90,10 @@ export const tasks = pgTable(
       }
     ),
     createdAt: timestamp("created_at").defaultNow().notNull(),
-    updatedAt: timestamp("updated_at").defaultNow().notNull(),
+    updatedAt: timestamp("updated_at")
+      .defaultNow()
+      .notNull()
+      .$onUpdate(() => new Date()),
   },
   (table) => [
     uniqueIndex("tasks_unique_task_number_idx").on(
@@ -115,7 +124,10 @@ export const comments = pgTable(
       onDelete: "set null",
     }),
     createdAt: timestamp("created_at").defaultNow().notNull(),
-    updatedAt: timestamp("updated_at").defaultNow().notNull(),
+    updatedAt: timestamp("updated_at")
+      .defaultNow()
+      .notNull()
+      .$onUpdate(() => new Date()),
   },
   (table) => [
     index("comments_task_idx").on(table.taskId),
@@ -134,7 +146,10 @@ export const projects = pgTable(
     startDate: timestamp("start_date"),
     endDate: timestamp("end_date"),
     createdAt: timestamp("created_at").defaultNow().notNull(),
-    updatedAt: timestamp("updated_at").defaultNow().notNull(),
+    updatedAt: timestamp("updated_at")
+      .defaultNow()
+      .notNull()
+      .$onUpdate(() => new Date()),
     defaultBoardId: uuid("default_board_id"),
     createdByTeamId: uuid("created_by_team_id").references(() => teams.id, {
       onDelete: "set null",
@@ -162,7 +177,10 @@ export const kanbanBoards = pgTable(
       onDelete: "cascade",
     }),
     createdAt: timestamp("created_at").defaultNow().notNull(),
-    updatedAt: timestamp("updated_at").defaultNow().notNull(),
+    updatedAt: timestamp("updated_at")
+      .defaultNow()
+      .notNull()
+      .$onUpdate(() => new Date()),
   },
   (table) => [index("kanban_boards_project_idx").on(table.projectId)]
 );
@@ -179,7 +197,10 @@ export const kanbanColumns = pgTable(
     order: integer("order").notNull(),
     color: varchar("color", { length: 20 }),
     createdAt: timestamp("created_at").defaultNow().notNull(),
-    updatedAt: timestamp("updated_at").defaultNow().notNull(),
+    updatedAt: timestamp("updated_at")
+      .defaultNow()
+      .notNull()
+      .$onUpdate(() => new Date()),
   },
   (table) => [
     index("kanban_columns_board_idx").on(table.boardId),
