@@ -89,6 +89,7 @@ export function ArchiveProjectModal({ id }: ArchiveProjectModalProps) {
             <Button
               className="order-2 sm:order-1"
               variant="outline"
+              disabled={projectHooks.isUpdatingProject}
               onClick={handleClose}
             >
               Cancel
@@ -96,6 +97,7 @@ export function ArchiveProjectModal({ id }: ArchiveProjectModalProps) {
             <Button
               className="order-1 sm:order-2"
               variant="archiveDestructive"
+              disabled={projectHooks.isUpdatingProject}
               onClick={handleSubmit}
             >
               Archive
