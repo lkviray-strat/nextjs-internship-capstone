@@ -12,14 +12,14 @@ export function AvatarGroup({ users, limit = 6 }: AvatarGroupProps) {
   const extraCount = users.length - limit;
 
   return (
-    <div className="shrink-0 *:data-[slot=avatar]:ring-background flex -space-x-4 gap-2 *:data-[slot=avatar]:ring-2 *:data-[slot=avatar]:grayscale">
+    <div className="shrink-0 *:data-[slot=avatar]:ring-background flex -space-x-4 gap-2 *:data-[slot=avatar]:ring-2">
       {displayedUsers.map((user) => (
         <Avatar key={user.id}>
           <AvatarImage
             src={user.profileImageUrl!}
             alt={`Profile picture of ${user.firstName}`}
           />
-          <AvatarFallback>
+          <AvatarFallback content={user.email}>
             {getUserInitials(user.firstName!, user.lastName!)}
           </AvatarFallback>
         </Avatar>
