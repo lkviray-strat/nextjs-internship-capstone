@@ -1,4 +1,4 @@
-import { useTRPC } from "@/trpc/client";
+import { useTRPC } from "@/server/trpc/client";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 
