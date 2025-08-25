@@ -79,8 +79,8 @@ export function ArchiveProjectModal({ id }: ArchiveProjectModalProps) {
           <DialogTitle>Are you absolutely sure?</DialogTitle>
           <ClientOnly fallback={<Loader />}>
             <DialogDescription>
-              This action cannot be undone. This will temporarily archive your
-              project and hide your data from the project list.
+              This action can still be undone. This will temporarily archive
+              your project and hide your data from the project list.
             </DialogDescription>
           </ClientOnly>
         </DialogHeader>

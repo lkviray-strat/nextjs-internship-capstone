@@ -22,7 +22,18 @@ import type {
   UserInsertRequest,
   UserUpdateRequest,
 } from "@/src/types";
-import { and, asc, desc, eq, gte, ilike, inArray, lte, or } from "drizzle-orm";
+import {
+  and,
+  asc,
+  desc,
+  eq,
+  gte,
+  ilike,
+  inArray,
+  lte,
+  notInArray,
+  or,
+} from "drizzle-orm";
 import { db } from ".";
 import {
   comments,
@@ -258,10 +269,14 @@ export const queries = {
     ) {
       const { teamId, search, page, status, start, end, order } =
         projectFilters;
-      const PROJECTS_PER_PAGE = 6;
+      const PROJECTS_PER_PAGE = 10;
       const filters = [];
 
-      if (status) filters.push(eq(projects.status, status));
+      if (status && status.length > 0) {
+        filters.push(inArray(projects.status, status));
+      } else {
+        filters.push(notInArray(projects.status, ["archived"]));
+      }
       if (start) filters.push(gte(projects.startDate, start));
       if (end) filters.push(lte(projects.startDate, end));
       if (search) filters.push(ilike(projects.name, `%${search}%`));

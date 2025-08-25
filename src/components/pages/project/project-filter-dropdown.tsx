@@ -1,9 +1,9 @@
 "use client";
 
+import { PROJECT_STATUS_ENUM } from "@/src/lib/db/enums";
 import { Filter } from "lucide-react";
 import { useState } from "react";
 import { useFormContext } from "react-hook-form";
-import { PROJECT_STATUS_ENUM } from "../../../lib/db/enums";
 import type { ProjectFilters } from "../../../types";
 import { Button } from "../../ui/button";
 import {
@@ -14,6 +14,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "../../ui/dropdown-menu";
+import { ProjectFilterCheckboxes } from "./project-filter-checkboxes";
 import { ProjectFilterDate } from "./project-filter-date";
 import { ProjectFilterSelects } from "./project-filter-selects";
 
@@ -34,10 +35,12 @@ export function ProjectFilterDropdown() {
   }
 
   function handleResetButtonClick() {
-    form.setValue("start", undefined);
-    form.setValue("end", undefined);
-    form.setValue("status", undefined);
-    form.setValue("order", undefined);
+    form.reset({
+      start: undefined,
+      end: undefined,
+      status: undefined,
+      order: undefined,
+    });
 
     setResetKey((prev) => prev + 1);
     triggerFormSubmission();
@@ -92,11 +95,10 @@ export function ProjectFilterDropdown() {
             label="Sort By"
             name="order"
           />
-          <ProjectFilterSelects
+          <ProjectFilterCheckboxes
             key={`status-${resetKey}`}
             control={form.control}
-            items={PROJECT_STATUS_ENUM}
-            label="Status"
+            items={[...PROJECT_STATUS_ENUM]}
             name="status"
           />
           <ProjectFilterDate
