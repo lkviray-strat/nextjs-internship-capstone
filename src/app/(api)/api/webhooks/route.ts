@@ -4,7 +4,7 @@ import {
   deleteUserAction,
   updateUserAction,
 } from "@/src/use/actions/user-actions";
-import { verifyWebhook, WebhookEvent } from "@clerk/nextjs/webhooks";
+import { verifyWebhook, type WebhookEvent } from "@clerk/nextjs/webhooks";
 import { NextRequest } from "next/server";
 
 export async function POST(req: NextRequest) {
