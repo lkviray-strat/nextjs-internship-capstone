@@ -208,3 +208,31 @@ body {
     margin-top: 50px;
   }
 }
+
+@layer base {
+  /* width & height of scrollbar */
+  ::-webkit-scrollbar {
+    @apply w-4 h-4;
+  }
+
+  /* Track (background of scrollbar) */
+  ::-webkit-scrollbar-track {
+    @apply bg-transparent;
+  }
+
+  /* Thumb (the draggable part) */
+  ::-webkit-scrollbar-thumb {
+    @apply bg-muted rounded-full transition-colors;
+  }
+
+  /* Hover state */
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-muted-foreground/50;
+  }
+
+  /* Firefox */
+  * {
+    scrollbar-width: auto;
+    scrollbar-color: theme(colors.muted.DEFAULT) transparent;
+  }
+}
