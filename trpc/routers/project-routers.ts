@@ -71,7 +71,7 @@ export const projectRouter = createTRPCRouter({
         input.teamId
       );
     }),
-  getProjectsBySearchAndPageAndFiltersAndOrder: protectedProcedure
+  getProjectsByFilters: protectedProcedure
     .input(projectFiltersSchema)
     .query(async ({ ctx, input }) => {
       const member = await queries.teamMembers.getTeamMembersByIds(
@@ -85,9 +85,7 @@ export const projectRouter = createTRPCRouter({
         });
       }
 
-      return await queries.projects.getProjectsBySearchAndPageAndFiltersAndOrder(
-        input
-      );
+      return await queries.projects.getProjectsByFilters(input);
     }),
   createProject: protectedProcedure
     .input(createProjectRequestSchema)

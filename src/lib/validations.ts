@@ -396,3 +396,8 @@ export const projectFiltersSchema = z.object({
   end: z.date().optional(),
   order: z.enum(["asc", "desc"]).default("desc").optional(),
 });
+
+export const kanbanBoardFiltersSchema = z.object({
+  projectId: z.guid(),
+  board: z.guid(),
+});

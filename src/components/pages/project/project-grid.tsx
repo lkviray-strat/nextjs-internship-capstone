@@ -16,7 +16,7 @@ export function ProjectGrid() {
   const projectFilters = searchParamsToProjectFilters(searchParams);
 
   const { data, error, isError, isLoading } =
-    useFetch().projects.useGetProjectsBySearchAndPageAndFiltersAndOrder({
+    useFetch().projects.useGetProjectsByFilters({
       teamId: teamId as string,
       ...projectFilters,
     });
