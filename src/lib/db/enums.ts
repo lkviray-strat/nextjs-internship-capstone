@@ -13,11 +13,11 @@ export const KANBAN_COLUMN_TW_COLORS: Record<
   (typeof DEFAULT_KANBAN_BOARD_COLUMNS)[number],
   string
 > = {
-  backlog: "bg-gray-400",
-  todo: "bg-blue-500",
-  in_progress: "bg-orange-400",
-  in_review: "bg-yellow-500",
-  done: "bg-green-500",
+  backlog: "#9CA3AF",
+  todo: "#3B82F6",
+  in_progress: "#FB923C",
+  in_review: "#F59E42",
+  done: "#22C55E",
 };
 
 export const TASK_PRIORITY_ENUM = ["low", "medium", "high", "urgent"] as const;

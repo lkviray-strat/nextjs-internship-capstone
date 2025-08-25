@@ -1,7 +1,7 @@
 "use client";
 
 import { useDebounce } from "@/src/hooks/use-debounce";
-import type { ProjectFiltersInput } from "@/src/types";
+import type { KanbanBoardFilters, ProjectFiltersInput } from "@/src/types";
 import { useTRPC } from "@/trpc/client";
 import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
 
@@ -41,13 +41,9 @@ export function useFetch() {
           trpc.projects.getMyRecentProjects.queryOptions({ teamId })
         );
       },
-      useGetProjectsBySearchAndPageAndFiltersAndOrder: (
-        projectFilters: ProjectFiltersInput
-      ) => {
+      useGetProjectsByFilters: (projectFilters: ProjectFiltersInput) => {
         return useQuery(
-          trpc.projects.getProjectsBySearchAndPageAndFiltersAndOrder.queryOptions(
-            projectFilters
-          )
+          trpc.projects.getProjectsByFilters.queryOptions(projectFilters)
         );
       },
     },
@@ -55,6 +51,15 @@ export function useFetch() {
       useGetRoleByDescLimitOffset: (limit?: number, offset?: number) => {
         return useSuspenseQuery(
           trpc.roles.getRoleByDescLimitOffset.queryOptions({ limit, offset })
+        );
+      },
+    },
+    kanbanBoards: {
+      useGetMyKanbanBoards: (kanbanBoardFilters: KanbanBoardFilters) => {
+        return useSuspenseQuery(
+          trpc.kanbanBoards.getKanbanBoardByFilters.queryOptions(
+            kanbanBoardFilters
+          )
         );
       },
     },

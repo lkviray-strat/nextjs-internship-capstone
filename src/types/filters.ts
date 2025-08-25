@@ -9,3 +9,8 @@ export type ProjectFilters = {
   end?: Date;
   order?: "asc" | "desc";
 };
+
+export type KanbanBoardFilters = {
+  projectId: string;
+  board: string;
+};

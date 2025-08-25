@@ -1,6 +1,7 @@
 import type {
   CommentsInsertRequest,
   CommentsUpdateRequest,
+  KanbanBoardFilters,
   KanbanBoardsInsertRequest,
   KanbanBoardsUpdateRequest,
   KanbanColumnsInsertRequest,
@@ -264,9 +265,7 @@ export const queries = {
         },
       });
     },
-    async getProjectsBySearchAndPageAndFiltersAndOrder(
-      projectFilters: ProjectFilters
-    ) {
+    async getProjectsByFilters(projectFilters: ProjectFilters) {
       const { teamId, search, page, status, start, end, order } =
         projectFilters;
       const PROJECTS_PER_PAGE = 10;
@@ -373,6 +372,17 @@ export const queries = {
     },
     deleteKanbanBoard: (id: string) => {
       return db.delete(kanbanBoards).where(eq(kanbanBoards.id, id)).returning();
+    },
+    getKanbanBoardByFilters: (filters: KanbanBoardFilters) => {
+      return db.query.kanbanBoards.findFirst({
+        where: and(
+          eq(kanbanBoards.projectId, filters.projectId),
+          eq(kanbanBoards.id, filters.board)
+        ),
+        with: {
+          columns: true,
+        },
+      });
     },
   },
   kanbanColumns: {
