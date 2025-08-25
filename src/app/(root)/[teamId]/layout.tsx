@@ -37,10 +37,10 @@ export default async function MainLayout({
         <div className="flex h-screen w-full">
           <MainSidebar />
           {/* py-3 pr-3 if use inset variant */}
-          <div className="flex-1 flex flex-col min-w-0 h-full overflow-y-auto">
+          <div className="flex-1 flex flex-col min-w-0 h-full">
             <MainNavbar />
             {/* Add min-h-[calc(100vh-4rem)] if use inset variant */}
-            <main className="flex-1 pt-8 px-4 sm:px-6 lg:px-8 overflow-y-auto">
+            <main className="flex-1 pt-8 px-4 sm:px-6 lg:px-8">
               <Suspense>{children}</Suspense>
             </main>
           </div>

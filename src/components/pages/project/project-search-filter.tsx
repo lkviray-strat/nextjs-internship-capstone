@@ -50,10 +50,7 @@ export function ProjectSearchFilter() {
   useEffect(() => {
     if (searchParams) {
       const filters = searchParamsToProjectFilters(searchParams);
-      form.setValue("status", filters.status);
-      form.setValue("start", filters.start);
-      form.setValue("end", filters.end);
-      form.setValue("order", filters.order);
+      form.reset(filters);
     }
   }, [searchParams, form]);
 

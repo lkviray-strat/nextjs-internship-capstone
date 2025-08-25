@@ -18,7 +18,7 @@ import {
 
 type ProjectFilterSelectsProps = {
   items: readonly string[] | string[];
-  name: "order" | "status";
+  name: "order";
   label: string;
   itemsBeingShown?: string[];
   control: ReturnType<
