@@ -17,7 +17,7 @@ export default function ProjectsPage() {
 
       <ProjectSearchFilter />
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-[repeat(auto-fit,minmax(280px,1fr))] sm:grid-cols-[repeat(auto-fit,minmax(300px,1fr))] lg:grid-cols-3 gap-6">
         <ProjectGrid />
       </div>
     </div>
