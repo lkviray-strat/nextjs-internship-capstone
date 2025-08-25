@@ -2,7 +2,7 @@
 
 import type { Projects, ProjectStatusEnum } from "@/src/types";
 import { useProjects } from "@/src/use/hooks/use-projects";
-import { ArchiveRestore, Edit, MoreHorizontal } from "lucide-react";
+import { ArchiveRestore, MoreHorizontal, Settings } from "lucide-react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { toast } from "sonner";
@@ -69,8 +69,8 @@ export function ProjectCardDropdown({ project }: ProjectCardDropdownProps) {
             <>
               <DropdownMenuItem asChild>
                 <Link href={`projects/${project.id}/settings`}>
-                  <Edit />
-                  Edit Project
+                  <Settings />
+                  Settings
                 </Link>
               </DropdownMenuItem>
               <ArchiveProjectModal id={project.id} />

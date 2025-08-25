@@ -1,5 +1,8 @@
 import type { Path, useForm } from "react-hook-form";
-import { PROJECT_STATUS_CREATE_ENUM } from "../../../lib/db/enums";
+import {
+  PROJECT_STATUS_CREATE_ENUM,
+  PROJECT_STATUS_ENUM,
+} from "../../../lib/db/enums";
 import { snakeToTitleCase } from "../../../lib/utils";
 import { RequiredLabel } from "../../required-label";
 import {
@@ -39,7 +42,9 @@ export function ProjectFormStatus<T extends ProjectFormStatus>({
       render={({ field }) => (
         <FormItem>
           <FormLabel>
-            <RequiredLabel turnOff={notRequired}>Initial Status</RequiredLabel>
+            <RequiredLabel turnOff={notRequired}>
+              {notRequired ? "Status" : "Initial Status"}
+            </RequiredLabel>
           </FormLabel>
           <Select
             onValueChange={field.onChange}
@@ -51,14 +56,29 @@ export function ProjectFormStatus<T extends ProjectFormStatus>({
               </SelectTrigger>
             </FormControl>
             <SelectContent className={`w-full ${selectWidth}`}>
-              {PROJECT_STATUS_CREATE_ENUM.map((status) => (
-                <SelectItem
-                  key={status}
-                  value={status}
-                >
-                  {snakeToTitleCase(status)}
-                </SelectItem>
-              ))}
+              {notRequired ? (
+                <>
+                  {PROJECT_STATUS_ENUM.map((status) => (
+                    <SelectItem
+                      key={status}
+                      value={status}
+                    >
+                      {snakeToTitleCase(status)}
+                    </SelectItem>
+                  ))}
+                </>
+              ) : (
+                <>
+                  {PROJECT_STATUS_CREATE_ENUM.map((status) => (
+                    <SelectItem
+                      key={status}
+                      value={status}
+                    >
+                      {snakeToTitleCase(status)}
+                    </SelectItem>
+                  ))}
+                </>
+              )}
             </SelectContent>
           </Select>
           <FormMessage />
