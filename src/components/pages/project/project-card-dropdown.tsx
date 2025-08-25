@@ -77,6 +77,12 @@ export function ProjectCardDropdown({ project }: ProjectCardDropdownProps) {
             </>
           ) : (
             <>
+              <DropdownMenuItem asChild>
+                <Link href={`projects/${project.id}/settings`}>
+                  <Settings />
+                  Settings
+                </Link>
+              </DropdownMenuItem>
               <DropdownMenuItem onSelect={handleRestoreProject}>
                 <ArchiveRestore />
                 Restore Project

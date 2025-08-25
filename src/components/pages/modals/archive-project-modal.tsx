@@ -20,12 +20,31 @@ import { DropdownMenuItem } from "../../ui/dropdown-menu";
 
 type ArchiveProjectModalProps = {
   id?: string;
+  buttonLabel?: string;
+  buttonVariant?: "archive" | "destructive";
 };
 
-export function ArchiveProjectModal({ id }: ArchiveProjectModalProps) {
+export function ArchiveProjectModal({
+  id,
+  buttonLabel,
+  buttonVariant,
+}: ArchiveProjectModalProps) {
   const projectHooks = useProjects();
   const params = useParams();
   const [open, setOpen] = useState(false);
+
+  let bVariant: "destructiveSecondary" | "archiveSecondary" | "secondary";
+
+  switch (buttonVariant) {
+    case "destructive":
+      bVariant = "destructiveSecondary";
+      break;
+    case "archive":
+      bVariant = "archiveSecondary";
+      break;
+    default:
+      bVariant = "secondary";
+  }
 
   const handlePropagation = (e: Event | React.MouseEvent) => {
     e.stopPropagation();
@@ -66,13 +85,24 @@ export function ArchiveProjectModal({ id }: ArchiveProjectModalProps) {
       onOpenChange={setOpen}
     >
       <DialogTrigger asChild>
-        <DropdownMenuItem
-          variant="archive"
-          onSelect={handlePropagation}
-        >
-          <Trash />
-          Archive Project
-        </DropdownMenuItem>
+        {buttonVariant ? (
+          <Button
+            type="button"
+            variant={bVariant}
+            className="w-full sm:w-fit"
+            disabled={projectHooks.isUpdatingProject}
+          >
+            {buttonLabel}
+          </Button>
+        ) : (
+          <DropdownMenuItem
+            variant="archive"
+            onSelect={handlePropagation}
+          >
+            <Trash />
+            Archive Project
+          </DropdownMenuItem>
+        )}
       </DialogTrigger>
       <DialogContent className="sm:max-w-[400px]">
         <DialogHeader>

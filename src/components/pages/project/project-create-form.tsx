@@ -4,7 +4,7 @@ import { hasTrueValue } from "@/src/lib/utils";
 import { useUser } from "@clerk/nextjs";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { TRPCClientError } from "@trpc/client";
-import { useParams, usePathname, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -18,10 +18,12 @@ import { ProjectFormDate } from "./project-form-date";
 import { ProjectFormDetails } from "./project-form-details";
 import { ProjectFormStatus } from "./project-form-status";
 
-export function ProjectCreateForm() {
-  const route = useRouter();
+type ProjectCreateForm = {
+  setOpen: (open: boolean) => void;
+};
+
+export function ProjectCreateForm({ setOpen }: ProjectCreateForm) {
   const projectHooks = useProjects();
-  const pathName = usePathname();
   const { user } = useUser();
   const { teamId } = useParams();
 
@@ -63,7 +65,7 @@ export function ProjectCreateForm() {
     if (isSubmitting) return;
 
     try {
-      const project = await projectHooks.createProject(values);
+      await projectHooks.createProject(values);
 
       projectHooks.clearProjectErrors();
       form.reset({
@@ -77,6 +79,7 @@ export function ProjectCreateForm() {
         defaultBoardId: values.defaultBoardId,
       });
 
+      setOpen(false);
       toast.success("Project created successfully!");
     } catch (error) {
       if (error instanceof TRPCClientError) {

@@ -1,4 +1,7 @@
+"use client";
+
 import { Plus } from "lucide-react";
+import { useState } from "react";
 import { Button } from "../../ui/button";
 import {
   Dialog,
@@ -11,8 +14,13 @@ import {
 import { ProjectCreateForm } from "../project/project-create-form";
 
 export function CreateProjectModal() {
+  const [open, setOpen] = useState(false);
+
   return (
-    <Dialog>
+    <Dialog
+      open={open}
+      onOpenChange={setOpen}
+    >
       <DialogTrigger asChild>
         <Button className="w-full !py-[21px] text-[15px] sm:w-fit">
           <Plus className="size-4" />
@@ -26,7 +34,7 @@ export function CreateProjectModal() {
           </DialogTitle>
           <DialogDescription></DialogDescription>
         </DialogHeader>
-        <ProjectCreateForm />
+        <ProjectCreateForm setOpen={setOpen} />
       </DialogContent>
     </Dialog>
   );

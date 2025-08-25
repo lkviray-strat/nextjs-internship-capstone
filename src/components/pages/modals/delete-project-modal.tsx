@@ -1,6 +1,6 @@
 import { useProjects } from "@/src/use/hooks/use-projects";
 import { Trash } from "lucide-react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { toast } from "sonner";
 import { ClientOnly } from "../../client-only";
@@ -19,12 +19,32 @@ import { DropdownMenuItem } from "../../ui/dropdown-menu";
 
 type DeleteProjectModalProps = {
   id?: string;
+  buttonLabel?: string;
+  buttonVariant?: "archive" | "destructive";
 };
 
-export function DeleteProjectModal({ id }: DeleteProjectModalProps) {
+export function DeleteProjectModal({
+  id,
+  buttonLabel,
+  buttonVariant,
+}: DeleteProjectModalProps) {
+  const router = useRouter();
   const projectHooks = useProjects();
   const params = useParams();
   const [open, setOpen] = useState(false);
+
+  let bVariant: "destructiveSecondary" | "archiveSecondary" | "secondary";
+
+  switch (buttonVariant) {
+    case "destructive":
+      bVariant = "destructiveSecondary";
+      break;
+    case "archive":
+      bVariant = "archiveSecondary";
+      break;
+    default:
+      bVariant = "secondary";
+  }
 
   const handlePropagation = (e: Event | React.MouseEvent) => {
     e.stopPropagation();
@@ -48,6 +68,7 @@ export function DeleteProjectModal({ id }: DeleteProjectModalProps) {
         teamId: teamId.toString(),
       };
 
+      if (buttonVariant) router.push(`/${teamId}/projects`);
       await projectHooks.deleteProject(deleteValue);
       setOpen(false);
       toast.success("Project deleted successfully");
@@ -64,13 +85,24 @@ export function DeleteProjectModal({ id }: DeleteProjectModalProps) {
       onOpenChange={setOpen}
     >
       <DialogTrigger asChild>
-        <DropdownMenuItem
-          variant="destructive"
-          onSelect={handlePropagation}
-        >
-          <Trash />
-          Delete Project
-        </DropdownMenuItem>
+        {buttonVariant ? (
+          <Button
+            type="button"
+            variant={bVariant}
+            className="w-full sm:w-fit"
+            disabled={projectHooks.isUpdatingProject}
+          >
+            {buttonLabel}
+          </Button>
+        ) : (
+          <DropdownMenuItem
+            variant="archive"
+            onSelect={handlePropagation}
+          >
+            <Trash />
+            Delete Project
+          </DropdownMenuItem>
+        )}
       </DialogTrigger>
       <DialogContent className="sm:max-w-[400px]">
         <DialogHeader>
