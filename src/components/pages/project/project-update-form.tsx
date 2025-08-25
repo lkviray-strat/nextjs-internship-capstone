@@ -14,8 +14,8 @@ import { useProjects } from "../../../use/hooks/use-projects";
 import { ClientOnly } from "../../client-only";
 import { Loader } from "../../loader";
 import { NavigationBlocker } from "../../navigation-blocker";
-import { Button } from "../../ui/button";
 import { Form } from "../../ui/form";
+import { ProjectUpdateDanger } from "./project-update-danger";
 import { ProjectUpdateDates } from "./project-update-date";
 import { ProjectUpdateDetails } from "./project-update-details";
 import { ProjectUpdateStatus } from "./project-update-status";
@@ -107,6 +107,11 @@ export function ProjectUpdateForm() {
     }
   }, [teamId, form]);
 
+  const handleRestore = () => {
+    onSubmit({ status: "active" });
+    router.refresh();
+  };
+
   return (
     <ClientOnly fallback={<Loader />}>
       <Form {...form}>
@@ -142,88 +147,33 @@ export function ProjectUpdateForm() {
 
           {isProjectArchived ? (
             <div className="flex flex-col gap-3">
-              <div className="flex flex-col sm:flex-row max-w-[1100px] items-center justify-start gap-6 border-border border-1 p-7 rounded-lg">
-                <div className="flex flex-col ">
-                  <span className="font-medium">Restore this project?</span>
-                  <span className="text-muted-foreground">
-                    Restoring an archived project will move it back to your
+              <ProjectUpdateDanger
+                modal={false}
+                label="Restore this project"
+                description="Restoring an archived project will move it back to your
                     active projects list. You can always archive it again later
                     if needed. No data will be lost, and this action is
-                    reversible at any time.
-                  </span>
-                </div>
-
-                <Button
-                  type="button"
-                  variant="secondary"
-                  className="w-full sm:w-fit"
-                  onClick={() => {
-                    onSubmit({ status: "active" });
-                    router.refresh();
-                  }}
-                  disabled={isSubmitting}
-                >
-                  Restore this project
-                </Button>
-              </div>
-              <div className="flex flex-col sm:flex-row  max-w-[1100px] items-center justify-start gap-6 !border-red-800 border-1 p-7 rounded-lg">
-                <div className="flex flex-col ">
-                  <span className="font-medium">Delete this project?</span>
-                  <span className="text-muted-foreground">
-                    Deleting a project will permanently remove it from your
+                    reversible at any time."
+                onSubmit={handleRestore}
+                isSubmitting={isSubmitting}
+                variant="default"
+              />
+              <ProjectUpdateDanger
+                id={projectId}
+                label="Delete this project"
+                description=" Deleting a project will permanently remove it from your
                     account and cannot be undone. All associated data will be
-                    lost. Please confirm that you want to delete this project.
-                  </span>
-                </div>
-
-                <Button
-                  type="button"
-                  variant="destructiveSecondary"
-                  className="w-full sm:w-fit"
-                  onClick={async () => {
-                    try {
-                      await projectHooks.deleteProject({
-                        id: projectId,
-                        teamId,
-                      });
-                      toast.success("Project deleted successfully");
-                      router.refresh();
-                    } catch (error) {
-                      toast.error("Error deleting project");
-                      console.log("Error deleting project:", error);
-                    }
-                  }}
-                  disabled={projectHooks.isDeletingProject || isSubmitting}
-                >
-                  Archive this project
-                </Button>
-              </div>
+                    lost. Please confirm that you want to delete this project."
+                variant="destructive"
+              />
             </div>
           ) : (
-            <div className="flex flex-col sm:flex-row max-w-[1100px] items-center justify-start gap-6 !border-orange-800 border-1 p-7 rounded-lg">
-              <div className="flex flex-col">
-                <span className="font-medium">Archive this project?</span>
-                <span className="text-muted-foreground">
-                  Archiving a project will remove it from your active projects
-                  list. You can still view archived projects, and restore them.
-                  This action does not delete any data and can be reversed at
-                  any time.
-                </span>
-              </div>
-
-              <Button
-                type="button"
-                variant="archiveSecondary"
-                className="w-full sm:w-fit"
-                onClick={() => {
-                  onSubmit({ status: "archived" });
-                  router.replace(`/${teamId}/projects`);
-                }}
-                disabled={isSubmitting}
-              >
-                Archive this project
-              </Button>
-            </div>
+            <ProjectUpdateDanger
+              id={projectId}
+              label="Archive this project?"
+              description="Archiving a project will remove it from your active projects list. You can still view archived projects, and restore them. This action does not delete any data and can be reversed at any time."
+              variant="archive"
+            />
           )}
         </form>
       </Form>
