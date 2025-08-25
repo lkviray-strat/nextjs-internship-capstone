@@ -28,6 +28,7 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
+import { GripVertical } from "lucide-react";
 import {
   createContext,
   type HTMLAttributes,
@@ -37,6 +38,7 @@ import {
 } from "react";
 import { createPortal } from "react-dom";
 import tunnel from "tunnel-rat";
+import { Button } from "../../button";
 
 const t = tunnel();
 
@@ -84,14 +86,7 @@ export const KanbanBoard = ({
   className,
   isColumnDraggable = false,
 }: KanbanBoardProps) => {
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transition,
-    transform,
-    isDragging,
-  } = useSortable({
+  const { setNodeRef, transition, transform, isDragging } = useSortable({
     id,
     disabled: !isColumnDraggable,
   });
@@ -120,13 +115,12 @@ export const KanbanBoard = ({
       )}
       ref={ref}
       style={style}
-      {...(isColumnDraggable ? { ...attributes, ...listeners } : {})}
+      // REMOVE the drag attributes from here
     >
       {children}
     </div>
   );
 };
-
 export type KanbanCardProps<T extends KanbanItemProps = KanbanItemProps> = T & {
   children?: ReactNode;
   className?: string;
@@ -220,14 +214,46 @@ export const KanbanCards = <T extends KanbanItemProps = KanbanItemProps>({
   );
 };
 
-export type KanbanHeaderProps = HTMLAttributes<HTMLDivElement>;
+export type KanbanHeaderProps = HTMLAttributes<HTMLDivElement> & {
+  isColumnDraggable?: boolean;
+  columnId?: string;
+};
 
-export const KanbanHeader = ({ className, ...props }: KanbanHeaderProps) => (
-  <div
-    className={cn("m-0 p-2 font-semibold text-sm", className)}
-    {...props}
-  />
-);
+export const KanbanHeader = ({
+  className,
+  isColumnDraggable = false,
+  columnId = "",
+  ...props
+}: KanbanHeaderProps) => {
+  const { attributes, listeners } = useSortable({
+    id: columnId,
+    disabled: !isColumnDraggable,
+  });
+
+  return (
+    <div
+      className={cn(
+        "m-0 flex items-center justify-between p-2 font-semibold text-sm",
+        className
+      )}
+      {...props}
+    >
+      {props.children}
+      {isColumnDraggable && (
+        <Button
+          {...attributes}
+          {...listeners}
+          variant="ghost"
+          size="icon"
+          className="cursor-grab !rounded-full hover:bg-muted"
+          style={{ touchAction: "none" }} // Prevent scrolling on touch devices
+        >
+          <GripVertical className="size-5 text-muted-foreground" />
+        </Button>
+      )}
+    </div>
+  );
+};
 
 export type KanbanProviderProps<
   T extends KanbanItemProps = KanbanItemProps,

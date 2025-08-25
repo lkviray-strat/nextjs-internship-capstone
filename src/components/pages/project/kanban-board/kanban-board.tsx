@@ -15,9 +15,9 @@ import {
 import { faker } from "@faker-js/faker";
 import { useParams, useSearchParams } from "next/navigation";
 import { useCallback, useMemo, useState } from "react";
-import type { KanbanColumns } from "../types";
-import { useFetch } from "../use/hooks/use-fetch";
-import { useKanbanColumns } from "../use/hooks/use-kanban-columns";
+import type { KanbanColumns } from "../../../../types";
+import { useFetch } from "../../../../use/hooks/use-fetch";
+import { useKanbanColumns } from "../../../../use/hooks/use-kanban-columns";
 
 const capitalize = (str: string) => str.charAt(0).toUpperCase() + str.slice(1);
 
@@ -124,7 +124,11 @@ export function Kanban() {
           key={column.id}
           isColumnDraggable
         >
-          <KanbanHeader className="p-4">
+          <KanbanHeader
+            className="p-4"
+            columnId={column.id}
+            isColumnDraggable
+          >
             <div className="flex items-center gap-2">
               <div
                 className="h-2 w-2 rounded-full"

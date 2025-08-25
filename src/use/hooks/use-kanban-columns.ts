@@ -35,6 +35,10 @@ export function useKanbanColumns() {
         queryClient.invalidateQueries({
           queryKey: trpc.kanbanColumns.pathKey(),
         });
+        queryClient.invalidateQueries({
+          queryKey: trpc.kanbanBoards.pathKey(),
+        });
+
         setKanbanColumnErrors({});
       },
       onError: (error) => {
