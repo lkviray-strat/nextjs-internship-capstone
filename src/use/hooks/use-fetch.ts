@@ -1,8 +1,8 @@
 "use client";
 
+import { useTRPC } from "@/server/trpc/client";
 import { useDebounce } from "@/src/hooks/use-debounce";
 import type { KanbanBoardFilters, ProjectFiltersInput } from "@/src/types";
-import { useTRPC } from "@/trpc/client";
 import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
 
 export function useFetch() {
