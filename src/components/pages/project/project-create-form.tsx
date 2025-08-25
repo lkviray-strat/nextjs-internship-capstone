@@ -76,8 +76,8 @@ export function ProjectCreateForm() {
         createdByTeamId: values.createdByTeamId,
         defaultBoardId: values.defaultBoardId,
       });
+
       toast.success("Project created successfully!");
-      route.push(`${pathName}/${project.data[0].id}`);
     } catch (error) {
       if (error instanceof TRPCClientError) {
         toast.error(error.message);

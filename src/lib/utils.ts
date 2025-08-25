@@ -56,12 +56,12 @@ export function capitalizeWords(str: string) {
     .join(" ");
 }
 
-export function getTimeLeft(endDate: string | Date) {
+export function getTimeLeft(endDate: string | Date, isAgo = false) {
   const raw = formatDistanceToNow(new Date(endDate));
   const now = new Date();
 
   if (endDate > now) return capitalizeWords(raw) + " Left";
-  return capitalizeWords(raw) + " Behind";
+  return capitalizeWords(raw) + (isAgo ? " Ago" : " Behind");
 }
 
 export function getTimeLastUpdated(endDate: string | Date) {
@@ -77,7 +77,8 @@ export function searchParamsToProjectFilters(
   const start = searchParams.get("start");
   const end = searchParams.get("end");
   const order = searchParams.get("order");
-  const status = searchParams.get("status");
+
+  const status = searchParams.getAll("status") as ProjectStatusEnum[];
 
   return {
     search,
@@ -85,7 +86,7 @@ export function searchParamsToProjectFilters(
     start: start ? new Date(Number(start) * 1000) : undefined,
     end: end ? new Date(Number(end) * 1000) : undefined,
     order: order ? (order as "asc" | "desc") : undefined,
-    status: status ? (status as ProjectStatusEnum) : undefined,
+    status: status.length > 0 ? status : undefined,
   };
 }
 
@@ -97,7 +98,13 @@ export function projectFiltersToSearchParams(
   if (projectFilters.search) params.set("search", projectFilters.search);
   if (projectFilters.page > 1) params.set("page", String(projectFilters.page));
   if (projectFilters.order) params.set("order", projectFilters.order);
-  if (projectFilters.status) params.set("status", projectFilters.status);
+
+  if (projectFilters.status && projectFilters.status.length > 0) {
+    for (const s of projectFilters.status) {
+      params.append("status", s);
+    }
+  }
+
   if (projectFilters.start)
     params.set(
       "start",
