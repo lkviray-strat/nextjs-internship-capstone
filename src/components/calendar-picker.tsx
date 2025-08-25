@@ -11,6 +11,7 @@ type CalendarPickerProps = {
   formatStr: string;
   children: React.ReactNode;
   disabled?: (date: Date) => boolean;
+  disable?: boolean;
   ref?: React.Ref<HTMLInputElement>;
 };
 
@@ -18,6 +19,7 @@ export function CalendarPicker({
   formatStr,
   children,
   disabled,
+  disable = false,
   value,
   onChange,
 }: CalendarPickerProps & { value?: Date; onChange?: (date: Date) => void }) {
@@ -65,7 +67,10 @@ export function CalendarPicker({
           modal
         >
           <PopoverTrigger asChild>
-            <Button variant="outline">
+            <Button
+              variant="outline"
+              disabled={disable}
+            >
               <CalendarIcon className="w-5 h-5" />
             </Button>
           </PopoverTrigger>
