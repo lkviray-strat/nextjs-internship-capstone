@@ -34,14 +34,21 @@ export const PROJECT_STATUS_TW_COLORS: Record<
   (typeof PROJECT_STATUS_ENUM)[number],
   string
 > = {
-  planning: "bg-indigo-400",
-  active: "bg-green-500",
-  archived: "bg-gray-400",
-  completed: "bg-green-600",
-  on_hold: "bg-yellow-500",
+  planning: "bg-purple-400/70",
+  active: "bg-blue-500/70",
+  archived: "bg-gray-400/70",
+  completed: "bg-green-500/70",
+  on_hold: "bg-yellow-500/70",
 };
 
 export const PROJECT_STATUS_CREATE_ENUM = ["planning", "active"] as const;
+
+export const PROJECT_STATUS_UPDATE_ENUM = [
+  "planning",
+  "active",
+  "completed",
+  "on_hold",
+] as const;
 
 export const PERMISSION_ACTIONS = [
   "view",
