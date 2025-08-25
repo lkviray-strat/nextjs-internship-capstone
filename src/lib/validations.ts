@@ -391,7 +391,7 @@ export const projectFiltersSchema = z.object({
   teamId: z.guid(),
   search: z.string().max(100, errorMessages.maxLength(100)).default(""),
   page: z.number().min(1).default(1),
-  status: z.enum(PROJECT_STATUS_ENUM).optional(),
+  status: z.array(z.enum(PROJECT_STATUS_ENUM)).optional(),
   start: z.date().optional(),
   end: z.date().optional(),
   order: z.enum(["asc", "desc"]).default("desc").optional(),
