@@ -74,6 +74,7 @@
     "tailwind-merge": "^3.3.1",
     "tailwindcss-animate": "^1.0.7",
     "tunnel-rat": "^0.1.2",
+    "ws": "^8.18.3",
     "zod": "^4.0.14",
     "zustand": "^5.0.7"
   },
@@ -89,6 +90,7 @@
     "@types/pg": "^8.15.4",
     "@types/react": "^19.1.8",
     "@types/react-dom": "^19.1.6",
+    "@types/ws": "^8.18.1",
     "@typescript-eslint/eslint-plugin": "^8.39.0",
     "@typescript-eslint/parser": "^8.39.0",
     "autoprefixer": "^10.4.21",
