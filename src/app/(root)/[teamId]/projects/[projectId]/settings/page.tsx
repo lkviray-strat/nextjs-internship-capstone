@@ -3,7 +3,7 @@ import { ProjectUpdateForm } from "@/src/components/pages/project/project-update
 
 export default function SettingsPage() {
   return (
-    <div className="flex flex-col space-y-9 h-full">
+    <div className="flex flex-col space-y-9 h-full px-4 sm:px-6 lg:px-8">
       <ProjectSettingsHeader />
       <ProjectUpdateForm />
     </div>

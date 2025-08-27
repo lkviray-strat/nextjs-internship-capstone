@@ -4,7 +4,7 @@ import { ProjectSearchFilter } from "@/src/components/pages/project/project-sear
 
 export default function ProjectsPage() {
   return (
-    <div className="sm:space-y-6">
+    <div className="sm:space-y-6 px-4 sm:px-6 lg:px-8">
       <div className="flex flex-col sm:flex-row justify-between items-center">
         <div className="w-full sm:w-fit mb-8 sm:mb-0">
           <h1 className="text-3xl font-bold">Projects</h1>

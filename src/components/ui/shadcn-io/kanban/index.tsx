@@ -233,7 +233,7 @@ export const KanbanHeader = ({
   return (
     <div
       className={cn(
-        "m-0 flex items-center justify-between p-2 font-semibold text-sm",
+        "m-0 flex items-center justify-between p-1 font-semibold text-sm",
         className
       )}
       {...props}
@@ -245,7 +245,7 @@ export const KanbanHeader = ({
           {...listeners}
           variant="ghost"
           size="icon"
-          className="cursor-grab !rounded-full hover:bg-muted"
+          className="cursor-grab !rounded-full !size-fit p-1.5 hover:bg-muted"
           style={{ touchAction: "none" }} // Prevent scrolling on touch devices
         >
           <GripVertical className="size-5 text-muted-foreground" />
