@@ -19,7 +19,7 @@ export type KanbanEvent =
     }
   | {
       type: "task_deleted";
-      payload: { id: string; projectId: string; teamId: string };
+      payload: { id: number; projectId: string; teamId: string };
     }
   | {
       type: "kanban_column_created";

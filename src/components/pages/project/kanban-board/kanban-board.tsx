@@ -66,7 +66,7 @@ export function Kanban() {
   const teamId = params.teamId!.toString();
   const projectId = params.projectId!.toString();
 
-  const subscription = useKanbanSubscription(teamId, projectId);
+  useKanbanSubscription(teamId, projectId);
   const kanbanColumnHooks = useKanbanColumns();
   const { data: project } = fetch.projects.useGetMyCurrentProject(
     projectId,

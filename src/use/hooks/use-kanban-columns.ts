@@ -1,19 +1,15 @@
 import { useTRPC } from "@/server/trpc/client";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
 
 export function useKanbanColumns() {
   const [kanbanColumnErrors, setKanbanColumnErrors] =
     useState<Record<string, string[]>>();
   const trpc = useTRPC();
-  const queryClient = useQueryClient();
 
   const createKanbanColumn = useMutation(
     trpc.kanbanColumns.createKanbanColumn.mutationOptions({
       onSuccess: () => {
-        queryClient.invalidateQueries({
-          queryKey: trpc.kanbanColumns.pathKey(),
-        });
         setKanbanColumnErrors({});
       },
       onError: (error) => {
@@ -32,13 +28,6 @@ export function useKanbanColumns() {
   const updateKanbanColumn = useMutation(
     trpc.kanbanColumns.updateKanbanColumn.mutationOptions({
       onSuccess: async () => {
-        queryClient.invalidateQueries({
-          queryKey: trpc.kanbanColumns.pathKey(),
-        });
-        queryClient.invalidateQueries({
-          queryKey: trpc.kanbanBoards.pathKey(),
-        });
-
         setKanbanColumnErrors({});
       },
       onError: (error) => {
@@ -57,9 +46,6 @@ export function useKanbanColumns() {
   const deleteKanbanColumn = useMutation(
     trpc.kanbanColumns.deleteKanbanColumn.mutationOptions({
       onSuccess: () => {
-        queryClient.invalidateQueries({
-          queryKey: trpc.kanbanColumns.pathKey(),
-        });
         setKanbanColumnErrors({});
       },
       onError: (error) => {

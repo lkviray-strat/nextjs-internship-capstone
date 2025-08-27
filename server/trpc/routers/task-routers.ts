@@ -2,22 +2,22 @@ import { publishKanbanEvent } from "@/server/redis/kanban-pub";
 import { queries } from "@/src/lib/db/queries";
 import { hasPermission } from "@/src/lib/permissions";
 import {
-  createKanbanColumnRequestSchema,
-  updateKanbanColumnRequestSchema,
+  createTaskRequestSchema,
+  updateTaskRequestSchema,
 } from "@/src/lib/validations";
 import {
-  createKanbanColumnAction,
-  deleteKanbanColumnAction,
-  updateKanbanColumnAction,
-} from "@/src/use/actions/kanban-column-actions";
+  createTaskAction,
+  deleteTaskAction,
+  updateTaskAction,
+} from "@/src/use/actions/task-actions";
 import { TRPCError } from "@trpc/server";
 import z from "zod";
 import { createTRPCRouter, protectedProcedure } from "../init";
 
-export const kanbanColumnRouter = createTRPCRouter({
-  createKanbanColumn: protectedProcedure
+export const taskRouter = createTRPCRouter({
+  createTask: protectedProcedure
     .input(
-      createKanbanColumnRequestSchema.extend({
+      createTaskRequestSchema.extend({
         teamId: z.guid(),
         projectId: z.guid(),
       })
@@ -31,8 +31,7 @@ export const kanbanColumnRouter = createTRPCRouter({
       if (teamMember.length === 0) {
         throw new TRPCError({
           code: "FORBIDDEN",
-          message:
-            "You are not a member of this team to create a kanban column",
+          message: "You are not a member of this team to create a task",
         });
       }
 
@@ -50,33 +49,32 @@ export const kanbanColumnRouter = createTRPCRouter({
 
       const perm = await hasPermission(ctx.auth.userId, input.teamId, {
         action: "create",
-        resource: "kanban_column",
+        resource: "task",
       });
 
       if (!perm) {
         throw new TRPCError({
           code: "FORBIDDEN",
-          message:
-            "You do not have permission to create a kanban column in this team.",
+          message: "You do not have permission to create a task in this team.",
         });
       }
 
-      const kanbanColumn = await createKanbanColumnAction(input);
+      const task = await createTaskAction(input);
 
       await publishKanbanEvent({
-        type: "kanban_column_created",
+        type: "task_created",
         payload: {
           teamId: input.teamId,
           projectId: input.projectId,
-          kanbanColumn: kanbanColumn.data[0],
+          task: task.data[0],
         },
       });
 
-      return kanbanColumn;
+      return task;
     }),
-  updateKanbanColumn: protectedProcedure
+  updateTask: protectedProcedure
     .input(
-      updateKanbanColumnRequestSchema.extend({
+      updateTaskRequestSchema.extend({
         teamId: z.guid(),
         projectId: z.guid(),
       })
@@ -90,8 +88,7 @@ export const kanbanColumnRouter = createTRPCRouter({
       if (teamMember.length === 0) {
         throw new TRPCError({
           code: "FORBIDDEN",
-          message:
-            "You are not a member of this team to update a kanban column",
+          message: "You are not a member of this team to update a task",
         });
       }
 
@@ -109,7 +106,7 @@ export const kanbanColumnRouter = createTRPCRouter({
 
       const perm = await hasPermission(ctx.auth.userId, input.teamId, {
         action: "update",
-        resource: "kanban_column",
+        resource: "task",
       });
 
       if (!perm) {
@@ -120,21 +117,21 @@ export const kanbanColumnRouter = createTRPCRouter({
         });
       }
 
-      const kanbanColumn = await updateKanbanColumnAction(input);
+      const task = await updateTaskAction(input);
 
       await publishKanbanEvent({
-        type: "kanban_column_updated",
+        type: "task_updated",
         payload: {
           teamId: input.teamId,
           projectId: input.projectId,
-          kanbanColumn: kanbanColumn.data[0],
+          task: task.data[0],
         },
       });
 
-      return kanbanColumn;
+      return task;
     }),
-  deleteKanbanColumn: protectedProcedure
-    .input(z.object({ id: z.guid(), teamId: z.guid(), projectId: z.guid() }))
+  deleteTask: protectedProcedure
+    .input(z.object({ id: z.number(), teamId: z.guid(), projectId: z.guid() }))
     .mutation(async ({ ctx, input }) => {
       const teamMember = await queries.teamMembers.getTeamMembersByIds(
         ctx.auth.userId,
@@ -144,8 +141,7 @@ export const kanbanColumnRouter = createTRPCRouter({
       if (teamMember.length === 0) {
         throw new TRPCError({
           code: "FORBIDDEN",
-          message:
-            "You are not a member of this team to delete a kanban column",
+          message: "You are not a member of this team to delete a task",
         });
       }
 
@@ -169,22 +165,20 @@ export const kanbanColumnRouter = createTRPCRouter({
       if (!perm) {
         throw new TRPCError({
           code: "FORBIDDEN",
-          message:
-            "You do not have permission to delete a kanban column in this team.",
+          message: "You do not have permission to delete a task in this team.",
         });
       }
 
-      const kanbanColumn = await deleteKanbanColumnAction(input.id);
+      const task = await deleteTaskAction(input.id);
 
       await publishKanbanEvent({
-        type: "kanban_column_deleted",
+        type: "task_deleted",
         payload: {
           teamId: input.teamId,
           projectId: input.projectId,
-          id: kanbanColumn.data[0].id,
+          id: task.data[0].id,
         },
       });
-
-      return kanbanColumn;
+      return task;
     }),
 });
