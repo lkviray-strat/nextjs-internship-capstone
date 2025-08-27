@@ -83,12 +83,11 @@ export const tasks = pgTable(
     }),
     taskNumber: integer("task_number").notNull(),
     order: integer("order").notNull().default(0),
-    kanbanColumnId: uuid("kanban_column_id").references(
-      () => kanbanColumns.id,
-      {
-        onDelete: "set null",
-      }
-    ),
+    kanbanColumnId: uuid("kanban_column_id")
+      .references(() => kanbanColumns.id, {
+        onDelete: "cascade",
+      })
+      .notNull(),
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at")
       .defaultNow()
@@ -191,9 +190,11 @@ export const kanbanColumns = pgTable(
   {
     id: uuid("id").primaryKey().defaultRandom(),
     name: varchar("name", { length: 100 }).notNull(),
-    boardId: uuid("board_id").references(() => kanbanBoards.id, {
-      onDelete: "cascade",
-    }),
+    boardId: uuid("board_id")
+      .references(() => kanbanBoards.id, {
+        onDelete: "cascade",
+      })
+      .notNull(),
     order: integer("order").notNull(),
     color: varchar("color", { length: 20 }),
     createdAt: timestamp("created_at").defaultNow().notNull(),

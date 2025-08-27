@@ -55,7 +55,12 @@ export function useFetch() {
       },
     },
     kanbanBoards: {
-      useGetMyKanbanBoards: (kanbanBoardFilters: KanbanBoardFilters) => {
+      useGetMyKanbanBoards: (id: string) => {
+        return useSuspenseQuery(
+          trpc.kanbanBoards.getKanbanBoardsByProjectId.queryOptions(id)
+        );
+      },
+      useGetMyKanbanBoardByFilter: (kanbanBoardFilters: KanbanBoardFilters) => {
         return useSuspenseQuery(
           trpc.kanbanBoards.getKanbanBoardByFilters.queryOptions(
             kanbanBoardFilters

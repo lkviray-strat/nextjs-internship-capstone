@@ -170,6 +170,12 @@ export const queries = {
     getTasksByOrder: (order: number) => {
       return db.select().from(tasks).where(eq(tasks.order, order));
     },
+    getTasksByKanbanColumnId: (kanbanColumnId: string) => {
+      return db
+        .select()
+        .from(tasks)
+        .where(eq(tasks.kanbanColumnId, kanbanColumnId));
+    },
     createTask: (task: TasksInsertRequest) => {
       return db.insert(tasks).values(task).returning();
     },
@@ -380,7 +386,11 @@ export const queries = {
           eq(kanbanBoards.id, filters.board)
         ),
         with: {
-          columns: true,
+          columns: {
+            with: {
+              tasks: true,
+            },
+          },
         },
       });
     },
