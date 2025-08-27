@@ -12,6 +12,7 @@ import {
   KanbanHeader,
   KanbanProvider,
 } from "@/src/components/ui/shadcn-io/kanban";
+import { useUIStore } from "@/src/stores/ui-store";
 import { useKanbanSubscription } from "@/src/use/hooks/use-subscribe";
 import { faker } from "@faker-js/faker";
 import { useParams, useSearchParams } from "next/navigation";
@@ -62,6 +63,7 @@ export function Kanban() {
   const fetch = useFetch();
   const params = useParams();
   const searchParams = useSearchParams();
+  const { isEditingMode } = useUIStore();
 
   const teamId = params.teamId!.toString();
   const projectId = params.projectId!.toString();
@@ -76,7 +78,7 @@ export function Kanban() {
   const board =
     searchParams.get("board")?.toString() ?? project[0].defaultBoardId ?? "";
 
-  const { data: kanbanBoard } = fetch.kanbanBoards.useGetMyKanbanBoards({
+  const { data: kanbanBoard } = fetch.kanbanBoards.useGetMyKanbanBoardByFilter({
     projectId,
     board,
   });
@@ -118,22 +120,22 @@ export function Kanban() {
       data={features}
       onDataChange={setFeatures}
       onColumnReorder={handleColumnReorder}
-      className="h-[calc(100vh-14rem)] w-full overflow-x-auto pb-3 scroll: "
+      className="h-[calc(100vh-15rem)] w-full overflow-x-auto pb-3  px-4 sm:px-6 lg:px-8"
     >
       {(column) => (
         <KanbanBoard
           id={column.id}
           key={column.id}
-          isColumnDraggable
+          isColumnDraggable={isEditingMode}
         >
           <KanbanHeader
-            className="p-4"
+            className="p-2 px-3"
             columnId={column.id}
-            isColumnDraggable
+            isColumnDraggable={isEditingMode}
           >
-            <div className="flex items-center gap-2">
+            <div className="flex text-[15px] py-2 items-center gap-2">
               <div
-                className="h-2 w-2 rounded-full"
+                className="h-3 w-3 rounded-full"
                 style={{ backgroundColor: column.color }}
               />
               <span>{column.name}</span>
