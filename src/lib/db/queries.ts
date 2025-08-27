@@ -436,6 +436,21 @@ export const queries = {
         .where(eq(kanbanColumns.id, id))
         .returning();
     },
+    getKanbanColumnsByBoardIdDescLimit: (boardId: string, limit: number) => {
+      return db
+        .select()
+        .from(kanbanColumns)
+        .where(eq(kanbanColumns.boardId, boardId))
+        .orderBy(desc(kanbanColumns.order))
+        .limit(limit);
+    },
+    getKanbanColumnsByBoardIdAsc: (boardId: string) => {
+      return db
+        .select()
+        .from(kanbanColumns)
+        .where(eq(kanbanColumns.boardId, boardId))
+        .orderBy(asc(kanbanColumns.order));
+    },
   },
   teamMembers: {
     getAllTeamMembers: () => {
