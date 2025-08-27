@@ -182,6 +182,7 @@ export const kanbanColumnRouter = createTRPCRouter({
           teamId: input.teamId,
           projectId: input.projectId,
           id: kanbanColumn.data[0].id,
+          boardId: kanbanColumn.data[0].boardId as string,
         },
       });
 

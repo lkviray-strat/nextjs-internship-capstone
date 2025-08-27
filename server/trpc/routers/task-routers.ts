@@ -163,13 +163,31 @@ export const taskRouter = createTRPCRouter({
       });
 
       if (!perm) {
-        throw new TRPCError({
-          code: "FORBIDDEN",
-          message: "You do not have permission to delete a task in this team.",
-        });
+        const task = await queries.tasks.getTasksById(input.id);
+        const hasRelations =
+          ctx.auth.userId !== task[0]?.createdById ||
+          ctx.auth.userId !== task[0]?.assigneeId;
+        if (!hasRelations) {
+          throw new TRPCError({
+            code: "FORBIDDEN",
+            message:
+              "You do not have permission to delete a task in this team.",
+          });
+        }
       }
 
       const task = await deleteTaskAction(input.id);
+
+      if (!task.data[0]) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Task not found",
+        });
+      }
+
+      const kanbanColumn = await queries.kanbanColumns.getKanbanColumnById(
+        task.data[0].kanbanColumnId
+      );
 
       await publishKanbanEvent({
         type: "task_deleted",
@@ -177,6 +195,7 @@ export const taskRouter = createTRPCRouter({
           teamId: input.teamId,
           projectId: input.projectId,
           id: task.data[0].id,
+          boardId: kanbanColumn[0].boardId as string,
         },
       });
       return task;

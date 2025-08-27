@@ -62,6 +62,12 @@ export async function deleteKanbanColumnAction(id: string) {
       throw new Error("Kanban column with the given ID does not exist");
     }
 
+    const existingColumnTasks =
+      await queries.tasks.getTasksByKanbanColumnId(id);
+
+    if (existingColumnTasks.length > 0) {
+      throw new Error("Kanban column contains tasks");
+    }
     const result = await queries.kanbanColumns.deleteKanbanColumn(id);
 
     return { success: true, data: result };

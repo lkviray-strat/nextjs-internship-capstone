@@ -64,60 +64,71 @@ function handleKanbanEvent(
           projectId: event.payload.projectId,
           board: event.payload.kanbanColumn.boardId as string,
         }),
-        (old) =>
-          old
-            ? {
-                ...old,
-                columns: old.columns.some(
-                  (c) => c.id === event.payload.kanbanColumn.id
-                )
-                  ? old.columns.map((c) =>
-                      c.id === event.payload.kanbanColumn.id
-                        ? (event.payload.kanbanColumn as KanbanColumns)
-                        : c
-                    )
-                  : [
-                      ...old.columns,
-                      event.payload.kanbanColumn as KanbanColumns,
-                    ],
-              }
-            : old
+        (old) => {
+          if (!old) return old;
+
+          const existingColumn = old.columns.find(
+            (c) => c.id === event.payload.kanbanColumn.id
+          );
+
+          // If column already exists, update it but preserve tasks
+          if (existingColumn) {
+            return {
+              ...old,
+              columns: old.columns.map((c) =>
+                c.id === existingColumn.id
+                  ? {
+                      ...(event.payload.kanbanColumn as KanbanColumns),
+                      tasks: c.tasks, // keep existing tasks
+                    }
+                  : c
+              ),
+            };
+          }
+
+          // Otherwise, add new column with empty tasks
+          return {
+            ...old,
+            columns: [
+              ...old.columns,
+              { ...(event.payload.kanbanColumn as KanbanColumns), tasks: [] },
+            ],
+          };
+        }
       );
       break;
     }
 
-    case "kanban_column_updated":
+    case "kanban_column_updated": {
       queryClient.setQueryData<KanbanBoardFilterOutput>(
         trpc.kanbanBoards.getKanbanBoardByFilters.queryKey({
           projectId: event.payload.projectId,
           board: event.payload.kanbanColumn.boardId as string,
         }),
-        (old) =>
-          old
-            ? {
-                ...old,
-                columns: old.columns.some(
-                  (c) => c.id === event.payload.kanbanColumn.id
-                )
-                  ? old.columns.map((c) =>
-                      c.id === event.payload.kanbanColumn.id
-                        ? (event.payload.kanbanColumn as KanbanColumns)
-                        : c
-                    )
-                  : [
-                      ...old.columns,
-                      event.payload.kanbanColumn as KanbanColumns,
-                    ],
-              }
-            : old
+        (old) => {
+          if (!old) return old;
+
+          return {
+            ...old,
+            columns: old.columns.map((c) =>
+              c.id === event.payload.kanbanColumn.id
+                ? {
+                    ...(event.payload.kanbanColumn as KanbanColumns),
+                    tasks: c.tasks, // preserve existing tasks
+                  }
+                : c
+            ),
+          };
+        }
       );
       break;
+    }
 
     case "kanban_column_deleted": {
       queryClient.setQueryData<KanbanBoardFilterOutput>(
         trpc.kanbanBoards.getKanbanBoardByFilters.queryKey({
           projectId: event.payload.projectId,
-          board: event.payload.id,
+          board: event.payload.boardId,
         }),
         (old) => {
           if (!old) return old;
