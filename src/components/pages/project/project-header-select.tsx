@@ -1,6 +1,6 @@
+import { useBoardStore } from "@/src/stores/board";
 import type { KanbanBoards, Projects } from "@/src/types";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
 import {
   Select,
   SelectContent,
@@ -21,14 +21,17 @@ export function ProjectHeaderSelect({
   project,
 }: ProjectHeaderSelectProps) {
   const router = useRouter();
-  const [value, setValue] = useState<string | undefined>(
-    project.defaultBoardId ?? undefined
-  );
+  const { currentBoardId, setCurrentBoardId } = useBoardStore();
+
+  const value = currentBoardId ?? project.defaultBoardId ?? undefined;
 
   const handleValueChange = (newValue: string) => {
-    setValue((prev) => (prev === newValue ? undefined : newValue));
-    if (value === project.defaultBoardId) return;
-    router.push(`?board=${newValue}`);
+    setCurrentBoardId(newValue);
+    if (newValue !== project.defaultBoardId) {
+      router.push(`?board=${newValue}`);
+    } else {
+      router.push(`?`);
+    }
   };
 
   return (
