@@ -43,8 +43,8 @@ export default async function RootLayout({
   );
 
   return (
-    <TRPCReactProvider ssrOnlySecret={encryptedCookie}>
-      <ClerkProvider {...clerkProviderProps}>
+    <ClerkProvider {...clerkProviderProps}>
+      <TRPCReactProvider ssrOnlySecret={encryptedCookie}>
         <html
           lang="en"
           suppressHydrationWarning
@@ -60,7 +60,7 @@ export default async function RootLayout({
             </ThemeProvider>
           </body>
         </html>
-      </ClerkProvider>
-    </TRPCReactProvider>
+      </TRPCReactProvider>
+    </ClerkProvider>
   );
 }

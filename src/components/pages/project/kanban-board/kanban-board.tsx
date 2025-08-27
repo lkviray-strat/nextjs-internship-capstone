@@ -12,6 +12,7 @@ import {
   KanbanHeader,
   KanbanProvider,
 } from "@/src/components/ui/shadcn-io/kanban";
+import { useKanbanSubscription } from "@/src/use/hooks/use-subscribe";
 import { faker } from "@faker-js/faker";
 import { useParams, useSearchParams } from "next/navigation";
 import { useCallback, useMemo, useState } from "react";
@@ -65,6 +66,7 @@ export function Kanban() {
   const teamId = params.teamId!.toString();
   const projectId = params.projectId!.toString();
 
+  const subscription = useKanbanSubscription(teamId, projectId);
   const kanbanColumnHooks = useKanbanColumns();
   const { data: project } = fetch.projects.useGetMyCurrentProject(
     projectId,
