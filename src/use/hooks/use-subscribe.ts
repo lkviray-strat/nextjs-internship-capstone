@@ -6,18 +6,27 @@ import { useSubscription, type inferOutput } from "@trpc/tanstack-react-query";
 import { useMemo, useState } from "react";
 
 export function useKanbanSubscription(teamId: string, projectId: string) {
-  const [kanbanColumnError, setKanbanColumnError] =
+  const [kanbanSubscriptionError, setKanbanSubscriptionError] =
     useState<Record<string, string[]>>();
   const queryClient = useQueryClient();
   const trpc = useTRPC();
 
-  const subscriptionOptions = useMemo(() => {
-    return trpc.kanbanColumns.subscribeKanbanColumn.subscriptionOptions(
+  const kanbanSubscriptionsOptions = useMemo(() => {
+    return trpc.kanbanSubscriptions.subscribeKanban.subscriptionOptions(
       { teamId, projectId },
       {
         enabled: !!teamId && !!projectId,
         onData: (data) => handleKanbanEvent(data, queryClient, trpc),
-        onError: (err) => console.error("Subscription error", err),
+        onError: (error) => {
+          try {
+            const parsed = JSON.parse(error.message) as {
+              fieldErrors?: Record<string, string[]>;
+            };
+            setKanbanSubscriptionError(parsed.fieldErrors);
+          } catch {
+            setKanbanSubscriptionError({ global: [error.message] });
+          }
+        },
         onStarted: () => console.log("Kanban subscription started"),
         onConnectionStateChange: (state) =>
           console.log("Connection state changed:", state),
@@ -25,17 +34,17 @@ export function useKanbanSubscription(teamId: string, projectId: string) {
     );
   }, [teamId, projectId, queryClient, trpc]);
 
-  const kanbanColumnSub = useSubscription(subscriptionOptions);
+  const kanbanSubscription = useSubscription(kanbanSubscriptionsOptions);
 
   return {
-    status: kanbanColumnSub.status,
-    data: kanbanColumnSub.data,
-    error: kanbanColumnSub.error,
-    reset: kanbanColumnSub.reset,
-    isConnected: kanbanColumnSub.status === "pending",
-    isConnecting: kanbanColumnSub.status === "connecting",
-    isError: kanbanColumnSub.status === "error",
-    kanbanColumnError,
+    status: kanbanSubscription.status,
+    data: kanbanSubscription.data,
+    error: kanbanSubscription.error,
+    reset: kanbanSubscription.reset,
+    isConnected: kanbanSubscription.status === "pending",
+    isConnecting: kanbanSubscription.status === "connecting",
+    isError: kanbanSubscription.status === "error",
+    kanbanSubscriptionError,
   };
 }
 

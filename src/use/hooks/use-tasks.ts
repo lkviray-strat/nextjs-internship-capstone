@@ -1,77 +1,73 @@
-// TODO: Task 4.4 - Build task creation and editing functionality
-// TODO: Task 5.4 - Implement optimistic UI updates for smooth interactions
+import { useTRPC } from "@/server/trpc/client";
+import { useMutation } from "@tanstack/react-query";
+import { useState } from "react";
 
-/*
-TODO: Implementation Notes for Interns:
+export function useTasks() {
+  const [taskErrors, setTaskErrors] = useState<Record<string, string[]>>();
+  const trpc = useTRPC();
 
-Custom hook for task data management:
-- Fetch tasks for a project
-- Create new task
-- Update task
-- Delete task
-- Move task between lists
-- Bulk operations
+  const createTask = useMutation(
+    trpc.tasks.createTask.mutationOptions({
+      onSuccess: () => {
+        setTaskErrors({});
+      },
+      onError: (error) => {
+        try {
+          const parsed = JSON.parse(error.message) as {
+            fieldErrors?: Record<string, string[]>;
+          };
+          setTaskErrors(parsed.fieldErrors);
+        } catch {
+          setTaskErrors({ global: [error.message] });
+        }
+      },
+    })
+  );
 
-Features:
-- Optimistic updates for smooth UX
-- Real-time synchronization
-- Conflict resolution
-- Undo functionality
-- Batch operations
+  const updateTask = useMutation(
+    trpc.tasks.updateTask.mutationOptions({
+      onSuccess: async () => {
+        setTaskErrors({});
+      },
+      onError: (error) => {
+        try {
+          const parsed = JSON.parse(error.message) as {
+            fieldErrors?: Record<string, string[]>;
+          };
+          setTaskErrors(parsed.fieldErrors);
+        } catch {
+          setTaskErrors({ global: [error.message] });
+        }
+      },
+    })
+  );
 
-Example structure:
-export function useTasks(projectId: string) {
-  const queryClient = useQueryClient()
-  
-  const {
-    data: tasks,
-    isLoading,
-    error
-  } = useQuery({
-    queryKey: ['tasks', projectId],
-    queryFn: () => queries.tasks.getByProject(projectId),
-    enabled: !!projectId
-  })
-  
-  const createTask = useMutation({
-    mutationFn: queries.tasks.create,
-    onMutate: async (newTask) => {
-      // Optimistic update
-      await queryClient.cancelQueries({ queryKey: ['tasks', projectId] })
-      const previousTasks = queryClient.getQueryData(['tasks', projectId])
-      queryClient.setQueryData(['tasks', projectId], (old: Task[]) => [...old, { ...newTask, id: 'temp-' + Date.now() }])
-      return { previousTasks }
-    },
-    onError: (err, newTask, context) => {
-      // Rollback on error
-      queryClient.setQueryData(['tasks', projectId], context?.previousTasks)
-    },
-    onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ['tasks', projectId] })
-    }
-  })
-  
+  const deleteTask = useMutation(
+    trpc.tasks.deleteTask.mutationOptions({
+      onSuccess: () => {
+        setTaskErrors({});
+      },
+      onError: (error) => {
+        try {
+          const parsed = JSON.parse(error.message) as {
+            fieldErrors?: Record<string, string[]>;
+          };
+          setTaskErrors(parsed.fieldErrors);
+        } catch {
+          setTaskErrors({ global: [error.message] });
+        }
+      },
+    })
+  );
+
   return {
-    tasks,
-    isLoading,
-    error,
-    createTask: createTask.mutate,
-    isCreating: createTask.isPending
-  }
-}
-*/
-
-// Placeholder to prevent import errors
-export function useTasks(projectId: string) {
-  console.log(`TODO: Implement useTasks hook for project ${projectId}`)
-  return {
-    tasks: [],
-    isLoading: false,
-    error: null,
-    createTask: (data: any) => console.log("TODO: Create task", data),
-    updateTask: (id: string, data: any) => console.log(`TODO: Update task ${id}`, data),
-    deleteTask: (id: string) => console.log(`TODO: Delete task ${id}`),
-    moveTask: (taskId: string, newListId: string, position: number) =>
-      console.log(`TODO: Move task ${taskId} to list ${newListId} at position ${position}`),
-  }
+    createTask: createTask.mutateAsync,
+    isCreatingTask: createTask.isPending,
+    updateTask: updateTask.mutateAsync,
+    isUpdatingTask: updateTask.isPending,
+    deleteTask: deleteTask.mutateAsync,
+    isDeletingTask: deleteTask.isPending,
+    taskErrors,
+    clearTaskErrors: () => setTaskErrors({}),
+  };
 }
