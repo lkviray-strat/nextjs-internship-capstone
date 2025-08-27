@@ -4,13 +4,14 @@ import { PROJECT_STATUS_TW_COLORS } from "@/src/lib/db/enums";
 import { extractEveryMember, extractNonNullableFrom } from "@/src/lib/utils";
 import { useUIStore } from "@/src/stores/ui-store";
 import { useFetch } from "@/src/use/hooks/use-fetch";
-import { Edit, Plus, Settings } from "lucide-react";
+import { Edit, Settings, View } from "lucide-react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useEffect } from "react";
 import { AvatarGroup } from "../../avatar-group";
 import { TooltipHover } from "../../tooltip-hover";
 import { Button, buttonVariants } from "../../ui/button";
+import { CreateColumnModal } from "../modals/create-column-modal";
 import { ProjectAvatar } from "./project-avatar";
 import { ProjectHeaderDropdown } from "./project-header-dropdown";
 import { ProjectHeaderSelect } from "./project-header-select";
@@ -23,7 +24,7 @@ type ProjectHeaderProps = {
 export function ProjectHeader({ showOptions = true }: ProjectHeaderProps) {
   const params = useParams();
   const fetch = useFetch();
-  const { setIsEditingMode } = useUIStore();
+  const { isEditingMode, setIsEditingMode } = useUIStore();
 
   const projectId = params.projectId!.toString();
   const teamId = params.teamId!.toString();
@@ -96,12 +97,17 @@ export function ProjectHeader({ showOptions = true }: ProjectHeaderProps) {
           variant="outline"
           onClick={handleEditingMode}
         >
-          <Edit /> Editing Mode
+          {isEditingMode ? (
+            <>
+              <View /> Viewing Mode
+            </>
+          ) : (
+            <>
+              <Edit /> Editing Mode
+            </>
+          )}
         </Button>
-        <Button>
-          {" "}
-          <Plus /> Add Column
-        </Button>
+        {kanbanBoards.data.length > 0 && <CreateColumnModal />}
       </div>
     </div>
   );
