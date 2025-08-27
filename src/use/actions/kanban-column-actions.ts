@@ -16,6 +16,24 @@ export async function createKanbanColumnAction(
 ) {
   try {
     const parsed = createKanbanColumnRequestSchema.parse(column);
+
+    if (parsed.order === 0) {
+      const nextColumns =
+        await queries.kanbanColumns.getKanbanColumnsByBoardIdAsc(
+          parsed.boardId
+        );
+      if (nextColumns.length > 0) {
+        for (const col of nextColumns) {
+          if (col.order >= parsed.order) {
+            col.order++;
+            await queries.kanbanColumns.updateKanbanColumn(col.id, {
+              order: col.order,
+            });
+          }
+        }
+      }
+    }
+
     const result = await queries.kanbanColumns.createKanbanColumn(parsed);
 
     return { success: true, data: result };

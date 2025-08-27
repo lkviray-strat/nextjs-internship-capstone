@@ -3,7 +3,7 @@ import type { KanbanColumns } from "@/src/types";
 import type { KanbanEvent } from "@/src/types/websocket";
 import { QueryClient, useQueryClient } from "@tanstack/react-query";
 import { useSubscription, type inferOutput } from "@trpc/tanstack-react-query";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 
 export function useKanbanSubscription(teamId: string, projectId: string) {
   const [kanbanSubscriptionError, setKanbanSubscriptionError] =
@@ -11,11 +11,11 @@ export function useKanbanSubscription(teamId: string, projectId: string) {
   const queryClient = useQueryClient();
   const trpc = useTRPC();
 
-  const kanbanSubscriptionsOptions = useMemo(() => {
-    return trpc.kanbanSubscriptions.subscribeKanban.subscriptionOptions(
+  const kanbanSubscription = useSubscription(
+    trpc.kanbanSubscriptions.subscribeKanban.subscriptionOptions(
       { teamId, projectId },
       {
-        enabled: !!teamId && !!projectId,
+        enabled: Boolean(teamId && projectId),
         onData: (data) => handleKanbanEvent(data, queryClient, trpc),
         onError: (error) => {
           try {
@@ -31,10 +31,8 @@ export function useKanbanSubscription(teamId: string, projectId: string) {
         onConnectionStateChange: (state) =>
           console.log("Connection state changed:", state),
       }
-    );
-  }, [teamId, projectId, queryClient, trpc]);
-
-  const kanbanSubscription = useSubscription(kanbanSubscriptionsOptions);
+    )
+  );
 
   return {
     status: kanbanSubscription.status,
@@ -67,33 +65,17 @@ function handleKanbanEvent(
         (old) => {
           if (!old) return old;
 
-          const existingColumn = old.columns.find(
-            (c) => c.id === event.payload.kanbanColumn.id
+          const newCol = event.payload.kanbanColumn as KanbanColumns;
+
+          const updatedCols = old.columns.map((c) =>
+            c.order >= newCol.order ? { ...c, order: c.order + 1 } : c
           );
 
-          // If column already exists, update it but preserve tasks
-          if (existingColumn) {
-            return {
-              ...old,
-              columns: old.columns.map((c) =>
-                c.id === existingColumn.id
-                  ? {
-                      ...(event.payload.kanbanColumn as KanbanColumns),
-                      tasks: c.tasks, // keep existing tasks
-                    }
-                  : c
-              ),
-            };
-          }
+          const withNew = [...updatedCols, { ...newCol, tasks: [] }].sort(
+            (a, b) => a.order - b.order
+          );
 
-          // Otherwise, add new column with empty tasks
-          return {
-            ...old,
-            columns: [
-              ...old.columns,
-              { ...(event.payload.kanbanColumn as KanbanColumns), tasks: [] },
-            ],
-          };
+          return { ...old, columns: withNew };
         }
       );
       break;
