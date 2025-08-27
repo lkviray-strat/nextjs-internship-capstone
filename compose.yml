@@ -21,6 +21,13 @@ services:
       - .env
     networks:
       - app_network
+  redis:
+    image: redis:7
+    container_name: redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
 
 networks:
   app_network:
@@ -28,3 +35,4 @@ networks:
 
 volumes:
   estratify_db:
+  redis_data:

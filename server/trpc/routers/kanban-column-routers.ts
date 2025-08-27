@@ -1,3 +1,5 @@
+import { publishKanbanEvent } from "@/server/redis/kanban-pub";
+import { subscribeKanbanEvents } from "@/server/redis/kanban-sub";
 import { queries } from "@/src/lib/db/queries";
 import { hasPermission } from "@/src/lib/permissions";
 import {
@@ -10,7 +12,6 @@ import {
   updateKanbanColumnAction,
 } from "@/src/use/actions/kanban-column-actions";
 import { TRPCError } from "@trpc/server";
-import { revalidatePath } from "next/cache";
 import z from "zod";
 import { createTRPCRouter, protectedProcedure } from "../init";
 
@@ -61,7 +62,9 @@ export const kanbanColumnRouter = createTRPCRouter({
         });
       }
 
-      return await createKanbanColumnAction(input);
+      const kanbanColumn = await createKanbanColumnAction(input);
+
+      return kanbanColumn;
     }),
   updateKanbanColumn: protectedProcedure
     .input(
@@ -109,8 +112,18 @@ export const kanbanColumnRouter = createTRPCRouter({
         });
       }
 
-      revalidatePath(`${input.teamId}/projects/${input.id}`);
-      return await updateKanbanColumnAction(input);
+      const kanbanColumn = await updateKanbanColumnAction(input);
+
+      await publishKanbanEvent({
+        type: "kanban_column_updated",
+        payload: {
+          teamId: input.teamId,
+          projectId: input.projectId,
+          kanbanColumn: kanbanColumn.data[0],
+        },
+      });
+
+      return kanbanColumn;
     }),
   deleteKanbanColumn: protectedProcedure
     .input(z.object({ id: z.guid(), teamId: z.guid(), projectId: z.guid() }))
@@ -153,7 +166,24 @@ export const kanbanColumnRouter = createTRPCRouter({
         });
       }
 
-      revalidatePath(`${input.teamId}/projects/${input.id}`);
-      return await deleteKanbanColumnAction(input.id);
+      const kanbanColumn = await deleteKanbanColumnAction(input.id);
+      return kanbanColumn;
+    }),
+  subscribeKanbanColumn: protectedProcedure
+    .input(
+      z.object({
+        projectId: z.guid(),
+        teamId: z.guid(),
+      })
+    )
+    .subscription(async function* ({ input, signal }) {
+      const events = subscribeKanbanEvents({ signal });
+
+      for await (const event of events) {
+        if (event.payload.teamId !== input.teamId) continue;
+        if (event.payload.projectId !== input.projectId) continue;
+
+        yield event;
+      }
     }),
 });

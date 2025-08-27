@@ -68,6 +68,15 @@ export const PERMISSION_RESOURCES = [
   "comment",
 ] as const;
 
+export const KANBAN_EVENT_TYPES = [
+  "task_created",
+  "task_updated",
+  "task_deleted",
+  "kanban_column_created",
+  "kanban_column_updated",
+  "kanban_column_deleted",
+] as const;
+
 // pgEnums for drizzle schema
 export const taskPriorityEnum = pgEnum("task_priority", TASK_PRIORITY_ENUM);
 export const projectStatusEnum = pgEnum("project_status", PROJECT_STATUS_ENUM);
