@@ -16,4 +16,19 @@ export const userRouter = createTRPCRouter({
     .query(async ({ input }) => {
       return await queries.users.getUsersBySearch(input.query, input.limit);
     }),
+  getUserBySearchWithinTeamMembers: protectedProcedure
+    .input(
+      z.object({
+        query: z.string().max(100),
+        teamId: z.string().max(100),
+        limit: z.number().min(1).max(100).optional(),
+      })
+    )
+    .query(async ({ input }) => {
+      return await queries.users.getUserBySearchWithinTeamMembers(
+        input.query,
+        input.teamId,
+        input.limit
+      );
+    }),
 });

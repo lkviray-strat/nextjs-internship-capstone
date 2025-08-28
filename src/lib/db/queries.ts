@@ -111,6 +111,32 @@ export const queries = {
         )
         .limit(limit);
     },
+    getUserBySearchWithinTeamMembers: async (
+      query: string,
+      teamId: string,
+      limit = 10
+    ) => {
+      const teamMembers =
+        await queries.teamMembers.getTeamMembersByTeamId(teamId);
+      const userIds = teamMembers
+        .map((teamMember) => teamMember.userId)
+        .filter((id): id is string => id != null);
+
+      return db
+        .select()
+        .from(users)
+        .where(
+          and(
+            inArray(users.id, userIds),
+            or(
+              ilike(users.firstName, `%${query}%`),
+              ilike(users.lastName, `%${query}%`),
+              ilike(users.email, `%${query}%`)
+            )
+          )
+        )
+        .limit(limit);
+    },
   },
   teams: {
     getAllTeams: () => {
