@@ -9,6 +9,7 @@ import {
 
 import type { CreateTaskRequestInput } from "@/src/types";
 import type { useForm } from "react-hook-form";
+import { TaskAssigneeBadge } from "./task-assignee-badge";
 import { TaskCreateSearch } from "./task-create-search";
 
 type TaskCreateAssignProps = {
@@ -26,9 +27,21 @@ export function TaskCreateAssign({ control }: TaskCreateAssignProps) {
             <FormLabel>
               <RequiredLabel>Assignee</RequiredLabel>
             </FormLabel>
+
             <FormControl>
-              <TaskCreateSearch field={field} />
+              <div className="relative">
+                <TaskCreateSearch field={field} />
+                {field.value && (
+                  <div className="absolute left-3 top-1/2">
+                    <TaskAssigneeBadge
+                      userId={field.value}
+                      removeHandler={() => field.onChange(null)}
+                    />
+                  </div>
+                )}
+              </div>
             </FormControl>
+
             <FormMessage />
           </FormItem>
         )}
