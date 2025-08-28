@@ -1,5 +1,6 @@
 "use client";
 
+import { KanbanColumnsEmpty } from "@/src/components/states/empty-states";
 import {
   Avatar,
   AvatarFallback,
@@ -20,6 +21,7 @@ import { useCallback, useMemo, useState } from "react";
 import type { KanbanColumns } from "../../../../types";
 import { useFetch } from "../../../../use/hooks/use-fetch";
 import { useKanbanColumns } from "../../../../use/hooks/use-kanban-columns";
+import { KanbanColumnDropdown } from "./column-dropdown";
 
 const capitalize = (str: string) => str.charAt(0).toUpperCase() + str.slice(1);
 
@@ -113,7 +115,7 @@ export function Kanban() {
   );
 
   const [features, setFeatures] = useState(exampleFeatures);
-
+  if (kanbanBoard?.columns.length === 0) return <KanbanColumnsEmpty />;
   return (
     <KanbanProvider
       columns={columns}
@@ -133,12 +135,15 @@ export function Kanban() {
             columnId={column.id}
             isColumnDraggable={isEditingMode}
           >
-            <div className="flex text-[15px] py-2 items-center gap-2">
-              <div
-                className="h-3 w-3 rounded-full"
-                style={{ backgroundColor: column.color }}
-              />
-              <span>{column.name}</span>
+            <div className="flex flex-row justify-between items-center w-full">
+              <div className="flex text-[15px] py-2 items-center gap-2">
+                <div
+                  className="h-3 w-3 rounded-full"
+                  style={{ backgroundColor: column.color }}
+                />
+                <span>{column.name}</span>
+              </div>
+              {!isEditingMode && <KanbanColumnDropdown column={column} />}
             </div>
           </KanbanHeader>
           <KanbanCards id={column.id}>

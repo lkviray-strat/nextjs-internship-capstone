@@ -89,6 +89,14 @@ export function AssembleWizard() {
           throw error;
         }
       }
+
+      form.reset({
+        name: values.name,
+        description: values.description,
+        leaderId: values.leaderId,
+        teamMembers: [],
+      });
+
       toast.success("Team created successfully!");
       route.push(`${team.data[0].id}/dashboard`);
     } catch (error) {

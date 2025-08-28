@@ -1,6 +1,6 @@
-import { useProjects } from "@/src/use/hooks/use-projects";
+import { useKanbanColumns } from "@/src/use/hooks/use-kanban-columns";
 import { Trash } from "lucide-react";
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import React, { useState } from "react";
 import { toast } from "sonner";
 import { ClientOnly } from "../../client-only";
@@ -17,34 +17,17 @@ import {
 } from "../../ui/dialog";
 import { DropdownMenuItem } from "../../ui/dropdown-menu";
 
-type DeleteProjectModalProps = {
-  id?: string;
-  buttonLabel?: string;
-  buttonVariant?: "archive" | "destructive";
+type DeleteKanbanColumnModalProps = {
+  id: string;
 };
 
-export function DeleteProjectModal({
-  id,
-  buttonLabel,
-  buttonVariant,
-}: DeleteProjectModalProps) {
-  const router = useRouter();
-  const projectHooks = useProjects();
+export function DeleteKanbanColumnModal({ id }: DeleteKanbanColumnModalProps) {
   const params = useParams();
+  const columnHooks = useKanbanColumns();
   const [open, setOpen] = useState(false);
 
-  let bVariant: "destructiveSecondary" | "archiveSecondary" | "secondary";
-
-  switch (buttonVariant) {
-    case "destructive":
-      bVariant = "destructiveSecondary";
-      break;
-    case "archive":
-      bVariant = "archiveSecondary";
-      break;
-    default:
-      bVariant = "secondary";
-  }
+  const teamId = params.teamId!.toString();
+  const projectId = params.projectId!.toString();
 
   const handlePropagation = (e: Event | React.MouseEvent) => {
     e.stopPropagation();
@@ -56,24 +39,21 @@ export function DeleteProjectModal({
     setOpen(false);
   };
 
-  const handleSubmit = async () => {
-    const projectId = id ?? params.projectId;
-    const teamId = params.teamId;
-
+  const handleSubmit = async (e: React.MouseEvent) => {
     try {
       if (!projectId || !teamId) return;
 
       const deleteValue = {
-        id: projectId.toString(),
-        teamId: teamId.toString(),
+        id,
+        teamId,
+        projectId,
       };
 
-      if (buttonVariant) router.push(`/${teamId}/projects`);
-      await projectHooks.deleteProject(deleteValue);
-      setOpen(false);
-      toast.success("Project deleted successfully");
+      await columnHooks.deleteKanbanColumn(deleteValue);
+      handleClose(e);
+      toast.success("Column deleted successfully");
     } catch (error) {
-      toast.error("Failed to delete project");
+      toast.error("Failed to delete column");
       setOpen(false);
       console.log(error);
     }
@@ -85,24 +65,13 @@ export function DeleteProjectModal({
       onOpenChange={setOpen}
     >
       <DialogTrigger asChild>
-        {buttonVariant ? (
-          <Button
-            type="button"
-            variant={bVariant}
-            className="w-full sm:w-fit"
-            disabled={projectHooks.isUpdatingProject}
-          >
-            {buttonLabel}
-          </Button>
-        ) : (
-          <DropdownMenuItem
-            variant="destructive"
-            onSelect={handlePropagation}
-          >
-            <Trash />
-            Delete Project
-          </DropdownMenuItem>
-        )}
+        <DropdownMenuItem
+          variant="destructive"
+          onSelect={handlePropagation}
+        >
+          <Trash />
+          Delete Column
+        </DropdownMenuItem>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[400px]">
         <DialogHeader>
@@ -110,7 +79,8 @@ export function DeleteProjectModal({
           <ClientOnly fallback={<Loader />}>
             <DialogDescription>
               This action cannot be undone. This will permanently delete your
-              project and all associated data.
+              column and all associated data. Please move any tasks to another
+              column before deleting.
             </DialogDescription>
           </ClientOnly>
         </DialogHeader>
@@ -119,7 +89,7 @@ export function DeleteProjectModal({
             <Button
               className="order-2 sm:order-1"
               variant="outline"
-              disabled={projectHooks.isDeletingProject}
+              disabled={columnHooks.isDeletingKanbanColumn}
               onClick={handleClose}
             >
               Cancel
@@ -127,7 +97,7 @@ export function DeleteProjectModal({
             <Button
               className="order-1 sm:order-2"
               variant="destructive"
-              disabled={projectHooks.isDeletingProject}
+              disabled={columnHooks.isDeletingKanbanColumn}
               onClick={handleSubmit}
             >
               Delete
