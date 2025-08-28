@@ -69,6 +69,7 @@ export function CommandSearch<T>({
 
   const isAtLimit = selectedItems.length >= limit;
 
+  console.log("isAtLimit:", isAtLimit);
   return (
     <div
       ref={ref}
@@ -148,6 +149,7 @@ export function CommandSearch<T>({
               <>
                 {items.length > 0 ? (
                   <CommandList
+                    onSelect={(e) => e.preventDefault()}
                     className="
                       absolute left-0 top-11 w-full
                       max-h-64 overflow-y-auto rounded-md border 
