@@ -2,52 +2,44 @@
 
 import { NavigationBlocker } from "@/src/components/navigation-blocker";
 import { hasTrueValue } from "@/src/lib/utils";
-import { createKanbanColumnRequestSchema } from "@/src/lib/validations";
-import { useBoardStore } from "@/src/stores/board";
-import type { CreateKanbanColumnRequestInput } from "@/src/types";
-import { useFetch } from "@/src/use/hooks/use-fetch";
+import { updateKanbanColumnRequestSchema } from "@/src/lib/validations";
+import type {
+  KanbanColumns,
+  UpdateKanbanColumnRequestInput,
+} from "@/src/types";
 import { useKanbanColumns } from "@/src/use/hooks/use-kanban-columns";
-import { useUser } from "@clerk/nextjs";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { TRPCClientError } from "@trpc/client";
 import { useParams } from "next/navigation";
-import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
 import { Button } from "@/src/components/ui/button";
 import { Form } from "@/src/components/ui/form";
 import Color from "color";
-import { KanbanColumnCreateDetails } from "./column-create-details";
+import { KanbanColumnUpdateDetails } from "./column-update-details";
 
-type KanbanColumnCreateFormProps = {
+type KanbanColumnUpdateFormProps = {
+  column: KanbanColumns;
   setOpen: (open: boolean) => void;
 };
 
-export function KanbanColumnCreateForm({
+export function KanbanColumnUpdateForm({
   setOpen,
-}: KanbanColumnCreateFormProps) {
+  column,
+}: KanbanColumnUpdateFormProps) {
   const columnHooks = useKanbanColumns();
   const params = useParams();
-  const fetch = useFetch();
-  const { currentBoardId } = useBoardStore();
-  const { user } = useUser();
 
   const teamId = params.teamId!.toString();
   const projectId = params.projectId!.toString();
 
-  const { data: projects } = fetch.projects.useGetMyCurrentProject(
-    projectId,
-    teamId
-  );
-
-  const form = useForm<CreateKanbanColumnRequestInput>({
-    resolver: zodResolver(createKanbanColumnRequestSchema),
+  const form = useForm<UpdateKanbanColumnRequestInput>({
+    resolver: zodResolver(updateKanbanColumnRequestSchema),
     defaultValues: {
-      name: "",
-      order: 0,
-      boardId: "",
-      color: "#FFFFFF",
+      id: column.id,
+      name: column.name,
+      color: column.color ?? "#FFFFFF ",
     },
   });
 
@@ -69,13 +61,13 @@ export function KanbanColumnCreateForm({
     console.log("Submission error:", error);
   }
 
-  async function onSubmit(values: CreateKanbanColumnRequestInput) {
+  async function onSubmit(values: UpdateKanbanColumnRequestInput) {
     if (isSubmitting) return;
 
     try {
       const color = new Color(values.color || "#FFFFFF");
 
-      await columnHooks.createKanbanColumn({
+      await columnHooks.updateKanbanColumn({
         ...values,
         teamId,
         projectId,
@@ -86,31 +78,21 @@ export function KanbanColumnCreateForm({
 
       form.reset({
         name: values.name,
-        order: values.order,
-        boardId: values.boardId,
         color: values.color,
       });
 
       setOpen(false);
-      toast.success("Kanban column created successfully!");
+      toast.success("Kanban column updated successfully!");
     } catch (error) {
       if (error instanceof TRPCClientError) {
         toast.error(error.message);
         console.log("Submission error:", error);
       } else {
-        toast.error("Unknown Error. Failed to create kanban column");
+        toast.error("Unknown Error. Failed to update kanban column");
         console.log("Submission error:", error);
       }
     }
   }
-
-  useEffect(() => {
-    if (currentBoardId) {
-      form.setValue("boardId", currentBoardId);
-    } else {
-      form.setValue("boardId", projects[0].defaultBoardId ?? "");
-    }
-  }, [user, teamId, form, currentBoardId, projects]);
 
   return (
     <Form {...form}>
@@ -122,13 +104,13 @@ export function KanbanColumnCreateForm({
         className="space-y-8 w-full"
       >
         <div className="flex flex-col gap-5">
-          <KanbanColumnCreateDetails control={form.control} />
+          <KanbanColumnUpdateDetails control={form.control} />
           <Button
             type="submit"
             disabled={isSubmitting}
             className="mt-2"
           >
-            Create Column
+            Update Column
           </Button>
         </div>
       </form>

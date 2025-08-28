@@ -1,7 +1,7 @@
 "use client";
 
 import type { KanbanColumns } from "@/src/types";
-import { Plus } from "lucide-react";
+import { Pencil } from "lucide-react";
 import { useState } from "react";
 import {
   Dialog,
@@ -12,12 +12,15 @@ import {
   DialogTrigger,
 } from "../../ui/dialog";
 import { DropdownMenuItem } from "../../ui/dropdown-menu";
-import { TaskCreateForm } from "../project/kanban-board/task-create-form";
+import { KanbanColumnUpdateForm } from "../project/kanban-board/column-update-form";
 
-type CreateTaskModalProps = {
+type UpdateKanbanColumnModalProps = {
   column: KanbanColumns;
 };
-export function CreateTaskModal({ column }: CreateTaskModalProps) {
+
+export function UpdateKanbanColumnModal({
+  column,
+}: UpdateKanbanColumnModalProps) {
   const [open, setOpen] = useState(false);
 
   const handlePropagation = (e: Event | React.MouseEvent) => {
@@ -32,18 +35,18 @@ export function CreateTaskModal({ column }: CreateTaskModalProps) {
     >
       <DialogTrigger asChild>
         <DropdownMenuItem onSelect={handlePropagation}>
-          <Plus />
-          New Task
+          <Pencil />
+          Edit Column
         </DropdownMenuItem>
       </DialogTrigger>
-      <DialogContent className="">
+      <DialogContent className="sm:max-w-[350px]">
         <DialogHeader>
           <DialogTitle className="text-[24px] font-semibold">
-            Create New Task
+            Edit Column
           </DialogTitle>
           <DialogDescription></DialogDescription>
         </DialogHeader>
-        <TaskCreateForm
+        <KanbanColumnUpdateForm
           setOpen={setOpen}
           column={column}
         />

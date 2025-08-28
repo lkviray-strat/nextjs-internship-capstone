@@ -7,7 +7,7 @@ import {
 } from "@/src/lib/validations";
 import type {
   CreateKanbanColumnRequestInput,
-  UpdateKanbanBoardsRequestInput,
+  UpdateKanbanColumnRequestInput,
 } from "@/src/types";
 import z from "zod";
 
@@ -26,7 +26,8 @@ export async function createKanbanColumnAction(
         for (const col of nextColumns) {
           if (col.order >= parsed.order) {
             col.order++;
-            await queries.kanbanColumns.updateKanbanColumn(col.id, {
+            await updateKanbanColumnAction({
+              id: col.id,
               order: col.order,
             });
           }
@@ -46,7 +47,7 @@ export async function createKanbanColumnAction(
 }
 
 export async function updateKanbanColumnAction(
-  column: UpdateKanbanBoardsRequestInput
+  column: UpdateKanbanColumnRequestInput
 ) {
   try {
     const existingColumn = (
@@ -87,6 +88,22 @@ export async function deleteKanbanColumnAction(id: string) {
       throw new Error("Kanban column contains tasks");
     }
     const result = await queries.kanbanColumns.deleteKanbanColumn(id);
+
+    const remainingColumns =
+      await queries.kanbanColumns.getKanbanColumnsByBoardIdAsc(
+        existingColumn.boardId
+      );
+
+    let order = 0;
+    for (const col of remainingColumns) {
+      if (col.order !== order) {
+        await updateKanbanColumnAction({
+          id: col.id,
+          order,
+        });
+      }
+      order++;
+    }
 
     return { success: true, data: result };
   } catch (error) {

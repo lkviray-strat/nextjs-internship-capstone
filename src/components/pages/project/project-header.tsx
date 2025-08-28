@@ -4,7 +4,7 @@ import { PROJECT_STATUS_TW_COLORS } from "@/src/lib/db/enums";
 import { extractEveryMember, extractNonNullableFrom } from "@/src/lib/utils";
 import { useUIStore } from "@/src/stores/ui-store";
 import { useFetch } from "@/src/use/hooks/use-fetch";
-import { Edit, Settings, View } from "lucide-react";
+import { GripVertical, Settings, View } from "lucide-react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useEffect } from "react";
@@ -98,12 +98,12 @@ export function ProjectHeader({ showOptions = true }: ProjectHeaderProps) {
           onClick={handleEditingMode}
         >
           {isEditingMode ? (
-            <>
-              <View /> Viewing Mode
-            </>
+            <span className="text-yellow-500 flex gap-2 items-center ">
+              <GripVertical /> Dragging Mode
+            </span>
           ) : (
             <>
-              <Edit /> Editing Mode
+              <View /> Viewing Mode
             </>
           )}
         </Button>
