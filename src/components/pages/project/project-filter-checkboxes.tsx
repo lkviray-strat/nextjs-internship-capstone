@@ -36,13 +36,16 @@ export function ProjectFilterCheckboxes({
               <FormItem className="flex flex-row">
                 <FormControl>
                   <Checkbox
-                    checked={field.value?.includes(item)}
+                    checked={
+                      Array.isArray(field.value) && field.value.includes(item)
+                    }
                     onCheckedChange={(checked) => {
+                      const current = Array.isArray(field.value)
+                        ? field.value
+                        : [];
                       return checked
-                        ? field.onChange([...(field.value ?? []), item])
-                        : field.onChange(
-                            (field.value ?? []).filter((i) => i !== item)
-                          );
+                        ? field.onChange([...current, item])
+                        : field.onChange(current.filter((i) => i !== item));
                     }}
                   ></Checkbox>
                 </FormControl>

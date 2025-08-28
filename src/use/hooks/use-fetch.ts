@@ -24,6 +24,21 @@ export function useFetch() {
           )
         );
       },
+      useGetUsersBySearchWithinTeamMembers: (
+        query: string,
+        teamId: string,
+        limit?: number
+      ) => {
+        const debounced = useDebounce(query, 300);
+        return useQuery(
+          trpc.users.getUserBySearchWithinTeamMembers.queryOptions(
+            { query: debounced, teamId, limit },
+            {
+              enabled: debounced.length > 0,
+            }
+          )
+        );
+      },
     },
     teams: {
       useGetMyTeams: () => {

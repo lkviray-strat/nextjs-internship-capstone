@@ -14,6 +14,9 @@ interface CommandSearchProps<T> {
   placeholder?: string;
   emptyText?: string;
   className?: string;
+  limit?: number;
+  selectedItems?: T[];
+  onClear?: () => void;
 }
 
 export function CommandSearch<T>({
@@ -27,6 +30,9 @@ export function CommandSearch<T>({
   placeholder = "Search...",
   emptyText = "No items found",
   className,
+  limit = Infinity,
+  selectedItems = [],
+  onClear,
 }: CommandSearchProps<T>) {
   const ref = useRef<HTMLDivElement>(null);
   const [open, setOpen] = useState(false);
@@ -37,6 +43,7 @@ export function CommandSearch<T>({
   const itemRefs = useRef<(HTMLDivElement | null)[]>([]);
 
   const handleItemSelect = (item: T) => {
+    if (selectedItems.length >= limit) return;
     onItemSelect(item);
     onSearchChange("");
     setOpen(false);
@@ -60,6 +67,8 @@ export function CommandSearch<T>({
     }
   }, [highlightedIndex]);
 
+  const isAtLimit = selectedItems.length >= limit;
+
   return (
     <div
       ref={ref}
@@ -77,6 +86,7 @@ export function CommandSearch<T>({
           tabIndex={0}
           placeholder={placeholder}
           value={searchTerm}
+          disabled={isAtLimit}
           onFocus={() => {
             setIsFocused(true);
             if (searchTerm.length > 0) setOpen(true);
@@ -112,6 +122,16 @@ export function CommandSearch<T>({
             }
           }}
         />
+
+        {limit === 1 && selectedItems.length === 1 && (
+          <div
+            className="absolute right-2 top-2 text-sm text-muted-foreground cursor-pointer"
+            onClick={onClear}
+          >
+            ✕
+          </div>
+        )}
+
         {open && (
           <>
             {isLoading ? (
