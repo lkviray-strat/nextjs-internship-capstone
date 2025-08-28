@@ -64,33 +64,63 @@ export const teamsSchema = z.object({
   updatedAt: z.date().optional(),
 });
 
-export const taskSchema = z.object({
-  id: z.number(),
-  title: z
-    .string()
-    .min(1, errorMessages.required("Title"))
-    .max(255, errorMessages.maxLength(255)),
-  description: z.string().max(4000, errorMessages.maxLength(4000)).optional(),
-  projectId: z.guid(),
-  priority: z.enum(TASK_PRIORITY_ENUM).optional(),
-  dueDate: z.date().optional(),
-  estimatedHours: z
-    .number()
-    .min(0, errorMessages.numMinimum(0))
-    .max(1000, errorMessages.numMaximum(1000))
-    .optional(),
-  assigneeId: z.string(),
-  createdById: z.string(),
-  taskNumber: z.number().min(1, errorMessages.numMinimum(1)),
-  order: z
-    .number()
-    .min(0, errorMessages.numMinimum(0))
-    .max(1000, errorMessages.numMaximum(1000))
-    .optional(),
-  kanbanColumnId: z.guid(),
-  createdAt: z.date().optional(),
-  updatedAt: z.date().optional(),
-});
+export const taskSchema = z
+  .object({
+    id: z.number(),
+    title: z
+      .string()
+      .min(1, errorMessages.required("Title"))
+      .max(255, errorMessages.maxLength(255)),
+    description: z.string().max(4000, errorMessages.maxLength(4000)).optional(),
+    projectId: z.guid(),
+    priority: z.enum(TASK_PRIORITY_ENUM).optional(),
+    startDate: z.date({
+      error: (date) => {
+        if (date.input === undefined) {
+          return "Start date is required.";
+        }
+        return "Invalid date format.";
+      },
+    }),
+    endDate: z.date({
+      error: (date) => {
+        if (date.input === undefined) {
+          return "End date is required.";
+        }
+        return "Invalid date format.";
+      },
+    }),
+    estimatedHours: z
+      .number()
+      .min(0, errorMessages.numMinimum(0))
+      .max(1000, errorMessages.numMaximum(1000))
+      .optional(),
+    assigneeId: z.string(),
+    createdById: z.string(),
+    taskNumber: z.number().min(1, errorMessages.numMinimum(1)),
+    order: z
+      .number()
+      .min(0, errorMessages.numMinimum(0))
+      .max(1000, errorMessages.numMaximum(1000))
+      .optional(),
+    kanbanColumnId: z.guid(),
+    createdAt: z.date().optional(),
+    updatedAt: z.date().optional(),
+  })
+  .superRefine((data, ctx) => {
+    if (data.startDate > data.endDate) {
+      ctx.addIssue({
+        path: ["startDate"],
+        message: "Start date cannot be after end date",
+        code: "custom",
+      });
+      ctx.addIssue({
+        path: ["endDate"],
+        message: "End date cannot be before start date",
+        code: "custom",
+      });
+    }
+  });
 
 export const commentsSchema = z.object({
   id: z.guid(),
