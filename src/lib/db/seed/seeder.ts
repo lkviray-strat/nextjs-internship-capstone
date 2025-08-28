@@ -124,6 +124,8 @@ async function main() {
           taskNumber: f.int({ isUnique: true, minValue: 1 }),
           order: f.int({ isUnique: true, minValue: 0 }),
           estimatedHours: f.int({ minValue: 1, maxValue: 40 }),
+          startDate: f.date({ minDate: "2025-01-01", maxDate: "2025-03-31" }),
+          endDate: f.date({ minDate: "2025-04-01", maxDate: "2025-06-30" }),
         },
       },
       comments: {
