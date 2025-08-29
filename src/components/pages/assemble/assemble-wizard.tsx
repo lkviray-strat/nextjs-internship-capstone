@@ -27,9 +27,6 @@ export function AssembleWizard() {
   const teamMemberHooks = useTeamMembers();
   const [step, setStep] = useState(1);
 
-  const isSubmitting =
-    teamHooks.isCreatingTeam || teamMemberHooks.isCreatingTeamMember;
-
   const form = useForm<CreateFullWizardRequestInput>({
     resolver: zodResolver(fullWizardSchema),
     defaultValues: {
@@ -39,6 +36,11 @@ export function AssembleWizard() {
       teamMembers: [],
     },
   });
+
+  const isSubmitting =
+    teamHooks.isCreatingTeam ||
+    teamMemberHooks.isCreatingTeamMember ||
+    form.formState.isSubmitting;
 
   function onReset() {
     form.reset();
@@ -90,13 +92,7 @@ export function AssembleWizard() {
         }
       }
 
-      form.reset({
-        name: values.name,
-        description: values.description,
-        leaderId: values.leaderId,
-        teamMembers: [],
-      });
-
+      form.reset(structuredClone(values), { keepDirty: false });
       toast.success("Team created successfully!");
       route.push(`${team.data[0].id}/dashboard`);
     } catch (error) {
@@ -120,9 +116,13 @@ export function AssembleWizard() {
     }
   }, [user, form]);
 
+  const canLeave = isSubmitting || !hasTrueValue(form.formState.dirtyFields);
+
+  console.log("is Submitted?:", form.formState.isSubmitted);
+  console.log("can Leave?:", canLeave);
   return (
     <ClientOnly fallback={<Loader />}>
-      <NavigationBlocker block={hasTrueValue(form.formState.dirtyFields)} />
+      <NavigationBlocker block={!canLeave} />
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit, onError)}

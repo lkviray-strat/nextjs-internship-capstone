@@ -31,7 +31,10 @@ export function AssembleUserCard({ userId, removeHandler }: AssembleUserCard) {
     <div className="flex flex-row justify-between items-center w-full hover:bg-secondary py-2 px-4 rounded-md">
       <div className="flex flex-row gap-4">
         <div className="relative size-10 rounded-full overflow-clip shrink-0">
-          <Avatar className="size-full">
+          <Avatar
+            className="size-full"
+            content={`${user.firstName} ${user.lastName}`}
+          >
             <AvatarImage
               src={user.profileImageUrl as string}
               alt={`${user.firstName}'s Profile Picture`}
