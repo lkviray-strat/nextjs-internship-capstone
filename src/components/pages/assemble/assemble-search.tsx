@@ -22,7 +22,10 @@ function SearchRender({ member }: { member: User }) {
   return (
     <div className="flex flex-row gap-4">
       <div className="relative size-10 rounded-full overflow-clip shrink-0">
-        <Avatar className="size-full">
+        <Avatar
+          className="size-full"
+          content={`${member.firstName} ${member.lastName}`}
+        >
           <AvatarImage
             src={member.profileImageUrl as string}
             alt={`${member.firstName}'s Profile Picture`}
