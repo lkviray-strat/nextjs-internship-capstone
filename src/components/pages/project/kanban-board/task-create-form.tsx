@@ -27,13 +27,13 @@ type TaskCreateFormProps = {
 
 export function TaskCreateForm({ setOpen, column }: TaskCreateFormProps) {
   const taskHooks = useTasks();
-  const params = useParams();
   const fetch = useFetch();
-
   const { user } = useUser();
 
-  const teamId = params.teamId!.toString();
-  const projectId = params.projectId!.toString();
+  const { teamId, projectId } = useParams<{
+    teamId: string;
+    projectId: string;
+  }>();
 
   const form = useForm<CreateTaskRequestInput>({
     resolver: zodResolver(createTaskRequestSchema),
@@ -77,6 +77,7 @@ export function TaskCreateForm({ setOpen, column }: TaskCreateFormProps) {
     if (isSubmitting) return;
 
     try {
+      console.log(projectId);
       await taskHooks.createTask({
         ...values,
         teamId,
@@ -119,6 +120,7 @@ export function TaskCreateForm({ setOpen, column }: TaskCreateFormProps) {
     }
   }, [user, teamId, form, projectId]);
 
+  console.log(form.formState.isSubmitting);
   return (
     <Form {...form}>
       <NavigationBlocker block={hasTrueValue(form.formState.dirtyFields)} />
