@@ -63,12 +63,12 @@ const shortDateFormatter = new Intl.DateTimeFormat("en-US", {
 
 export function Kanban() {
   const fetch = useFetch();
-  const params = useParams();
   const searchParams = useSearchParams();
   const { isEditingMode } = useUIStore();
-
-  const teamId = params.teamId!.toString();
-  const projectId = params.projectId!.toString();
+  const { teamId, projectId } = useParams<{
+    teamId: string;
+    projectId: string;
+  }>();
 
   useKanbanSubscription(teamId, projectId);
   const kanbanColumnHooks = useKanbanColumns();

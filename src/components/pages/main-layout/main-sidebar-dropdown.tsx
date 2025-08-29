@@ -26,7 +26,7 @@ export function MainSidebarDropdown({
   teams,
   isOpen,
 }: MainSidebarDropdownProps) {
-  const { teamId } = useParams();
+  const { teamId } = useParams<{ teamId: string }>();
   const router = useRouter();
 
   const selectedTeam = teams.find((team) => team.id === teamId);

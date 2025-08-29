@@ -19,6 +19,7 @@ import { Button } from "@/src/components/ui/button";
 import { Form } from "@/src/components/ui/form";
 import Color from "color";
 import { KanbanColumnCreateDetails } from "./column-create-details";
+import type { projects } from "@/src/lib/db/models";
 
 type KanbanColumnCreateFormProps = {
   setOpen: (open: boolean) => void;
@@ -28,13 +29,13 @@ export function KanbanColumnCreateForm({
   setOpen,
 }: KanbanColumnCreateFormProps) {
   const columnHooks = useKanbanColumns();
-  const params = useParams();
   const fetch = useFetch();
   const { currentBoardId } = useBoardStore();
   const { user } = useUser();
-
-  const teamId = params.teamId!.toString();
-  const projectId = params.projectId!.toString();
+  const { teamId, projectId } = useParams<{
+    teamId: string;
+    projectId: string;
+  }>();
 
   const { data: projects } = fetch.projects.useGetMyCurrentProject(
     projectId,

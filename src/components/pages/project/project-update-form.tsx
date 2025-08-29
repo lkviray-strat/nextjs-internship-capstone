@@ -24,10 +24,10 @@ export function ProjectUpdateForm() {
   const projectHooks = useProjects();
   const router = useRouter();
   const fetch = useFetch();
-  const params = useParams();
-
-  const teamId = params.teamId!.toString();
-  const projectId = params.projectId!.toString();
+  const { teamId, projectId } = useParams<{
+    teamId: string;
+    projectId: string;
+  }>();
 
   const { data: project } = fetch.projects.useGetMyCurrentProject(
     projectId,

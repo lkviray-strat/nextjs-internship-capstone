@@ -29,10 +29,10 @@ export function KanbanColumnUpdateForm({
   column,
 }: KanbanColumnUpdateFormProps) {
   const columnHooks = useKanbanColumns();
-  const params = useParams();
-
-  const teamId = params.teamId!.toString();
-  const projectId = params.projectId!.toString();
+  const { teamId, projectId } = useParams<{
+    teamId: string;
+    projectId: string;
+  }>();
 
   const form = useForm<UpdateKanbanColumnRequestInput>({
     resolver: zodResolver(updateKanbanColumnRequestSchema),
