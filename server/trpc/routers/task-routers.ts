@@ -19,7 +19,6 @@ export const taskRouter = createTRPCRouter({
     .input(
       createTaskRequestSchema.extend({
         teamId: z.guid(),
-        projectId: z.guid(),
       })
     )
     .mutation(async ({ ctx, input }) => {

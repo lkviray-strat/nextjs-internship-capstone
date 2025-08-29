@@ -19,15 +19,18 @@ import { ProjectStatus } from "./project-status";
 
 type ProjectHeaderProps = {
   showOptions?: boolean;
+  projectId: string;
 };
 
-export function ProjectHeader({ showOptions = true }: ProjectHeaderProps) {
-  const params = useParams();
+export function ProjectHeader({
+  showOptions = true,
+  projectId,
+}: ProjectHeaderProps) {
+  const params = useParams<{ teamId: string }>();
   const fetch = useFetch();
   const { isEditingMode, setIsEditingMode } = useUIStore();
 
-  const projectId = params.projectId!.toString();
-  const teamId = params.teamId!.toString();
+  const teamId = params.teamId;
 
   const project = fetch.projects.useGetMyCurrentProject(projectId, teamId);
   const projectTeams =

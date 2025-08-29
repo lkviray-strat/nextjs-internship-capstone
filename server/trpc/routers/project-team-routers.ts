@@ -5,7 +5,7 @@ import { createTRPCRouter, protectedProcedure } from "../init";
 
 export const projectTeamRouter = createTRPCRouter({
   getProjectTeamsByProjectIdWithTeamMembers: protectedProcedure
-    .input(z.object({ projectId: z.uuid(), teamId: z.uuid() }))
+    .input(z.object({ projectId: z.guid(), teamId: z.guid() }))
     .query(async ({ ctx, input }) => {
       const teamMember = await queries.teamMembers.getTeamMembersByIds(
         ctx.auth.userId,

@@ -15,7 +15,7 @@ interface CommandSearchProps<T> {
   emptyText?: string;
   className?: string;
   limit?: number;
-  selectedItems?: T[];
+  selectedItems?: string[];
   onClear?: () => void;
 }
 
@@ -32,7 +32,6 @@ export function CommandSearch<T>({
   className,
   limit = Infinity,
   selectedItems = [],
-  onClear,
 }: CommandSearchProps<T>) {
   const ref = useRef<HTMLDivElement>(null);
   const [open, setOpen] = useState(false);
@@ -69,7 +68,6 @@ export function CommandSearch<T>({
 
   const isAtLimit = selectedItems.length >= limit;
 
-  console.log("isAtLimit:", isAtLimit);
   return (
     <div
       ref={ref}
@@ -124,15 +122,6 @@ export function CommandSearch<T>({
           }}
         />
 
-        {limit === 1 && selectedItems.length === 1 && (
-          <div
-            className="absolute right-2 top-2 text-sm text-muted-foreground cursor-pointer"
-            onClick={onClear}
-          >
-            ✕
-          </div>
-        )}
-
         {open && (
           <>
             {isLoading ? (
@@ -163,7 +152,10 @@ export function CommandSearch<T>({
                           itemRefs.current[idx] = el;
                         }}
                         tabIndex={0}
-                        onClick={() => handleItemSelect(item)}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          handleItemSelect(item);
+                        }}
                         className={cn(
                           "px-4 py-2.5 rounded-sm cursor-pointer",
                           highlightedIndex === idx

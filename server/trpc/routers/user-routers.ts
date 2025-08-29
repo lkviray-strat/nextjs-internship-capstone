@@ -20,7 +20,7 @@ export const userRouter = createTRPCRouter({
     .input(
       z.object({
         query: z.string().max(100),
-        teamId: z.string().max(100),
+        teamId: z.guid(),
         limit: z.number().min(1).max(100).optional(),
       })
     )
