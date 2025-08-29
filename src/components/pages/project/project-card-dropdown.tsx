@@ -23,7 +23,7 @@ type ProjectCardDropdownProps = {
 
 export function ProjectCardDropdown({ project }: ProjectCardDropdownProps) {
   const projectHooks = useProjects();
-  const { teamId } = useParams();
+  const { teamId } = useParams<{ teamId: string }>();
 
   const handlePropagation = (e: React.MouseEvent) => {
     e.stopPropagation();

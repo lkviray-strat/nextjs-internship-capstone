@@ -38,7 +38,7 @@ const navigation = [
 ];
 
 export function MainSidebar() {
-  const { teamId } = useParams();
+  const { teamId } = useParams<{ teamId: string }>();
   const { data } = useFetch().teams.useGetMyTeams();
   const { open, setOpenMobile } = useSidebar();
   const [isOpen, setIsOpen] = useState<boolean>(true);

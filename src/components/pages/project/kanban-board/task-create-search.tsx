@@ -44,15 +44,13 @@ function SearchRender({ member }: { member: User }) {
 
 export function TaskCreateSearch({ field }: TaskCreateSearchProps) {
   const { user } = useUser();
-  const params = useParams();
+  const { teamId } = useParams<{ teamId: string }>();
   const [search, setSearch] = useState("");
-
-  const teamId = params.teamId!.toString();
 
   const { data: searchResults, isLoading } =
     useFetch().users.useGetUsersBySearchWithinTeamMembers(search, teamId, 8);
 
-  if (!user || !params.teamId) return notFound();
+  if (!user || !teamId) return notFound();
 
   const filteredUsers =
     searchResults?.filter((member) => member.id !== user.id) || [];
@@ -65,6 +63,7 @@ export function TaskCreateSearch({ field }: TaskCreateSearchProps) {
       searchTerm={search}
       onSearchChange={setSearch}
       limit={1}
+      selectedItems={field.value ? [field.value] : []}
       onItemSelect={(member) => {
         field.onChange(member.id);
       }}

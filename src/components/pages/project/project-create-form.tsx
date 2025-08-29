@@ -25,7 +25,7 @@ type ProjectCreateForm = {
 export function ProjectCreateForm({ setOpen }: ProjectCreateForm) {
   const projectHooks = useProjects();
   const { user } = useUser();
-  const { teamId } = useParams();
+  const { teamId } = useParams<{ teamId: string }>();
 
   const form = useForm<CreateProjectRequestInput>({
     resolver: zodResolver(createProjectRequestSchema),

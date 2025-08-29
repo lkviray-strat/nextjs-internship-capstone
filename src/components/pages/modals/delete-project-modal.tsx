@@ -30,7 +30,7 @@ export function DeleteProjectModal({
 }: DeleteProjectModalProps) {
   const router = useRouter();
   const projectHooks = useProjects();
-  const params = useParams();
+  const params = useParams<{ teamId: string; projectId: string }>();
   const [open, setOpen] = useState(false);
 
   let bVariant: "destructiveSecondary" | "archiveSecondary" | "secondary";

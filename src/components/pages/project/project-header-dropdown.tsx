@@ -22,7 +22,7 @@ type ProjectHeaderDropdownProps = {
 
 export function ProjectHeaderDropdown({ project }: ProjectHeaderDropdownProps) {
   const projectHooks = useProjects();
-  const { teamId } = useParams();
+  const { teamId } = useParams<{ teamId: string }>();
 
   const handlePropagation = (e: React.MouseEvent) => {
     e.stopPropagation();

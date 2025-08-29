@@ -10,7 +10,7 @@ import { ProjectCard } from "./project-card";
 import { ProjectPagination } from "./project-pagination";
 
 export function ProjectGrid() {
-  const { teamId } = useParams();
+  const { teamId } = useParams<{ teamId: string }>();
 
   const searchParams = useSearchParams();
   const projectFilters = searchParamsToProjectFilters(searchParams);
