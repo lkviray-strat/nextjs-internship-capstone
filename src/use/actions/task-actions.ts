@@ -14,6 +14,24 @@ import z from "zod";
 export async function createTaskAction(task: CreateTaskRequestInput) {
   try {
     const parsed = createTaskRequestSchema.parse(task);
+
+    if (parsed.order === 0) {
+      const nextTasks = await queries.tasks.getTasksByKanbanColumnIdAsc(
+        parsed.kanbanColumnId
+      );
+      if (nextTasks.length > 0) {
+        for (const col of nextTasks) {
+          if (col.order >= parsed.order) {
+            col.order++;
+            await updateTaskAction({
+              id: col.id,
+              order: col.order,
+            });
+          }
+        }
+      }
+    }
+
     const result = await queries.tasks.createTask(parsed);
 
     return { success: true, data: result };

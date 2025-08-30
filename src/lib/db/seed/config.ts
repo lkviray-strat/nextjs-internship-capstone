@@ -1,40 +1,74 @@
 // AUTHORIZATION CONFIGURATION ======================================
 
+import type {
+  PermissionActionsEnum,
+  PermissionResourcesEnum,
+} from "@/src/types";
+import { PERMISSION_ACTIONS, PERMISSION_RESOURCES } from "../enums";
+
+/* Combinations:
+PROJECTS: view:project, create:project, update:project, delete:project
+TEAMS: view:team, create:team, update:team, delete:team
+TASK: view:task, create:task, update:task, delete:task
+KANBAN COLUMN: view:kanban_column, create:kanban_column, update:kanban_column, delete:kanban_column
+KANBAN BOARD: view:kanban_board, create:kanban_board, update:kanban_board, delete:kanban_board
+TEAM MEMBER: view:team_member, create:team_member, update:team_member, delete:team_member
+PROJECT TEAM: view:project_team, create:project_team, update:project_team, delete:project_team
+COMMENT: view:comment, create:comment, update:comment, delete:comment 
+*/
+
+const generatePermissions = (
+  selectedActions: PermissionActionsEnum[],
+  selectedResources: PermissionResourcesEnum[]
+): string[] =>
+  selectedResources.flatMap((resource) =>
+    selectedActions.map((action) => `${action}:${resource}`)
+  );
+
+const actions = [...PERMISSION_ACTIONS];
+const resources = [...PERMISSION_RESOURCES];
+// Predefined permission groups
+const allPermissions = generatePermissions(actions, resources);
+
+const viewPermissions = generatePermissions(["view"], resources);
+const createPermissions = generatePermissions(["create"], resources);
+const updatePermissions = generatePermissions(["update"], resources);
+const deletePermissions = generatePermissions(["delete"], resources);
+
 export const authorizations = {
   owner: {
     priority: 0,
     canLead: true,
-    permissions: [
-      "create:project",
-      "view:project",
-      "update:project",
-      "delete:project",
-      "update:kanban_board",
-      "create:kanban_column",
-      "update:kanban_column",
-      "delete:kanban_column",
-      "create:team_member",
-      "update:team_member",
-      "delete:team_member",
-      "view:team",
-      "update:team",
-      "delete:team",
-    ],
+    permissions: allPermissions,
   },
   admin: {
     priority: 1,
     canLead: true,
-    permissions: ["view:project", "update:project", "view:team", "update:team"],
+    permissions: [
+      ...viewPermissions,
+      ...createPermissions,
+      ...updatePermissions,
+      "delete:team_member",
+      "delete:task",
+      "delete:kanban_column",
+      "delete:kanban_board",
+      "delete:comment",
+    ],
   },
   member: {
     priority: 2,
     canLead: true,
-    permissions: ["view:project", "view:team"],
+    permissions: [
+      ...viewPermissions,
+      "create:team",
+      "create:task",
+      "create:comment",
+    ],
   },
   viewer: {
     priority: 3,
     canLead: false,
-    permissions: [],
+    permissions: [...viewPermissions, "create:team"],
   },
 } as const;
 
