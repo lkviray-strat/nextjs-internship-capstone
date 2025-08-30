@@ -12,7 +12,11 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export type WithRelations<T, R extends Record<string, unknown>> = T & R;
-
+export type MakeSomeRequired<T, K extends keyof T> = {
+  [P in K]-?: T[P];
+} & {
+  [P in Exclude<keyof T, K>]?: T[P];
+};
 export function logWebhookEvent(
   status: "success" | "error",
   action: string,

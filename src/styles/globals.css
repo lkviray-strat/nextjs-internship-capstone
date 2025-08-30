@@ -182,27 +182,6 @@
   }
 }
 
-body {
-  letter-spacing: var(--tracking-normal);
-  background-color: var(--background);
-  color: var(--foreground);
-  pointer-events: auto !important;
-}
-
-* {
-  border-color: var(--border);
-  box-sizing: border-box;
-}
-
-.cl-socialButtonsBlockButton:hover {
-  background-color: var(--color-accent);
-  filter: none !important;
-}
-
-.cl-formFieldInput {
-  @apply bg-card border-input focus-visible:ring-ring focus-visible:ring-1 focus-visible:ring-offset-0 focus-visible:ring-offset-background;
-}
-
 @media (max-width: 768px) {
   .cl-internal-6kys4v {
     height: auto !important;
@@ -211,29 +190,71 @@ body {
 }
 
 @layer base {
-  /* width & height of scrollbar */
+  body {
+    letter-spacing: var(--tracking-normal);
+    background-color: var(--background);
+    color: var(--foreground);
+    pointer-events: auto !important;
+  }
+
+  * {
+    border-color: var(--border);
+    box-sizing: border-box;
+  }
+
+  .cl-socialButtonsBlockButton:hover {
+    background-color: var(--color-accent);
+    filter: none !important;
+  }
+
+  .cl-formFieldInput {
+    @apply bg-card border-input focus-visible:ring-ring focus-visible:ring-1 focus-visible:ring-offset-0 focus-visible:ring-offset-background;
+  }
+
   ::-webkit-scrollbar {
     @apply w-4 h-4;
   }
 
-  /* Track (background of scrollbar) */
   ::-webkit-scrollbar-track {
     @apply bg-transparent;
   }
 
-  /* Thumb (the draggable part) */
   ::-webkit-scrollbar-thumb {
     @apply bg-muted rounded-full transition-colors;
   }
 
-  /* Hover state */
   ::-webkit-scrollbar-thumb:hover {
     @apply bg-muted-foreground/50;
   }
 
-  /* Firefox */
   * {
     scrollbar-width: auto;
     scrollbar-color: theme(colors.muted.DEFAULT) transparent;
+  }
+
+  .kanban-slide-transition {
+    transition:
+      transform 0.3s ease,
+      opacity 0.2s ease;
+  }
+
+  .kanban-card-enter {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  .kanban-card-enter-active {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .kanban-column-enter {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+
+  .kanban-column-enter-active {
+    opacity: 1;
+    transform: translateX(0);
   }
 }
