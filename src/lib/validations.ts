@@ -15,6 +15,10 @@ const errorMessages = {
   invalidUrl: "Invalid URL format",
 };
 
+export const LexicalEditorStateSchema = z.object({
+  root: z.looseObject({}),
+});
+
 // Base schema for common fields
 export const clerkUsersSchema = z.object({
   id: z.string(),
@@ -71,7 +75,7 @@ export const taskSchema = z
       .string()
       .min(1, errorMessages.required("Title"))
       .max(255, errorMessages.maxLength(255)),
-    description: z.string().max(4000, errorMessages.maxLength(4000)).optional(),
+    description: LexicalEditorStateSchema,
     projectId: z.guid(),
     priority: z.enum(TASK_PRIORITY_ENUM).optional(),
     startDate: z.date({
@@ -90,12 +94,12 @@ export const taskSchema = z
         return "Invalid date format.";
       },
     }),
-    estimatedHours: z
-      .number()
+    estimatedHours: z.coerce
+      .number<number>()
       .min(0, errorMessages.numMinimum(0))
       .max(1000, errorMessages.numMaximum(1000))
       .optional(),
-    assigneeId: z.string(),
+    assigneeId: z.string(errorMessages.required("Assignee")),
     createdById: z.string(),
     taskNumber: z.number().min(1, errorMessages.numMinimum(1)),
     order: z

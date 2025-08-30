@@ -3,6 +3,7 @@ import {
   boolean,
   index,
   integer,
+  jsonb,
   pgTable,
   primaryKey,
   text,
@@ -68,7 +69,7 @@ export const tasks = pgTable(
       .primaryKey()
       .generatedAlwaysAsIdentity({ startWith: 10000 }),
     title: varchar("title", { length: 255 }).notNull(),
-    description: text("description"),
+    description: jsonb("description"),
     projectId: uuid("project_id").references(() => projects.id, {
       onDelete: "cascade",
     }),
@@ -117,7 +118,7 @@ export const comments = pgTable(
   "comments",
   {
     id: uuid("id").primaryKey().defaultRandom(),
-    content: text("content").notNull(),
+    content: jsonb("content").notNull(),
     taskId: integer("task_id").references(() => tasks.id, {
       onDelete: "cascade",
     }),
