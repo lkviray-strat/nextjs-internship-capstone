@@ -4,7 +4,6 @@ import { NavigationBlocker } from "@/src/components/navigation-blocker";
 import { hasTrueValue } from "@/src/lib/utils";
 import { createTaskRequestSchema } from "@/src/lib/validations";
 import type { CreateTaskRequestInput, KanbanColumns } from "@/src/types";
-import { useFetch } from "@/src/use/hooks/use-fetch";
 import { useUser } from "@clerk/nextjs";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { TRPCClientError } from "@trpc/client";
@@ -13,12 +12,14 @@ import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
+import { initialValue } from "@/src/components/blocks/editor-00/editor";
 import { Button } from "@/src/components/ui/button";
 import { Form } from "@/src/components/ui/form";
 import { useTasks } from "@/src/use/hooks/use-tasks";
 import { TaskCreateAssign } from "./task-create-assign";
 import { TaskCreateDate } from "./task-create-date";
 import { TaskCreateDetails } from "./task-create-details";
+import { TaskCreateSelects } from "./task-create-selects";
 
 type TaskCreateFormProps = {
   setOpen: (open: boolean) => void;
@@ -27,7 +28,6 @@ type TaskCreateFormProps = {
 
 export function TaskCreateForm({ setOpen, column }: TaskCreateFormProps) {
   const taskHooks = useTasks();
-  const fetch = useFetch();
   const { user } = useUser();
 
   const { teamId, projectId } = useParams<{
@@ -39,21 +39,21 @@ export function TaskCreateForm({ setOpen, column }: TaskCreateFormProps) {
     resolver: zodResolver(createTaskRequestSchema),
     defaultValues: {
       title: "",
-      description: "",
+      description: initialValue,
       kanbanColumnId: column.id,
-      priority: "low",
       order: 0,
+      estimatedHours: 0,
       projectId: projectId,
       createdById: user?.id ?? "",
       assigneeId: undefined,
       startDate: undefined,
       endDate: undefined,
-      estimatedHours: undefined,
+      priority: "low",
       taskNumber: 1,
     },
   });
 
-  const isSubmitting = form.formState.isSubmitting;
+  const isSubmitting = taskHooks.isCreatingTask || form.formState.isSubmitting;
   const startDate = form.watch("startDate");
   const endDate = form.watch("endDate");
 
@@ -120,7 +120,6 @@ export function TaskCreateForm({ setOpen, column }: TaskCreateFormProps) {
     }
   }, [user, teamId, form, projectId]);
 
-  console.log(form.formState.isSubmitting);
   return (
     <Form {...form}>
       <NavigationBlocker block={hasTrueValue(form.formState.dirtyFields)} />
@@ -132,6 +131,9 @@ export function TaskCreateForm({ setOpen, column }: TaskCreateFormProps) {
       >
         <div className="flex flex-col gap-5">
           <TaskCreateDetails control={form.control} />
+          <div className="flex flex-col lphone:flex-row gap-5 w-full">
+            <TaskCreateSelects control={form.control} />
+          </div>
           <div className="flex flex-col lphone:flex-row gap-5">
             <TaskCreateDate
               control={form.control}
@@ -140,6 +142,7 @@ export function TaskCreateForm({ setOpen, column }: TaskCreateFormProps) {
             />
           </div>
           <TaskCreateAssign control={form.control} />
+
           <Button
             type="submit"
             disabled={isSubmitting}

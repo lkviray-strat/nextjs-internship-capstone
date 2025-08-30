@@ -54,7 +54,8 @@ export const taskRouter = createTRPCRouter({
       if (!perm) {
         throw new TRPCError({
           code: "FORBIDDEN",
-          message: "You do not have permission to create a task in this team.",
+          message:
+            "You do not have permission to create the task in this team.",
         });
       }
 
@@ -108,12 +109,18 @@ export const taskRouter = createTRPCRouter({
         resource: "task",
       });
 
+      const existingTask = await queries.tasks.getTasksById(input.id);
+      const ownsTask =
+        existingTask[0]?.createdById === ctx.auth.userId ||
+        existingTask[0]?.assigneeId === ctx.auth.userId;
       if (!perm) {
-        throw new TRPCError({
-          code: "FORBIDDEN",
-          message:
-            "You do not have permission to update a kanban column in this team.",
-        });
+        if (!ownsTask) {
+          throw new TRPCError({
+            code: "FORBIDDEN",
+            message:
+              "You do not have permission to update the task in this team.",
+          });
+        }
       }
 
       const task = await updateTaskAction(input);
@@ -161,16 +168,16 @@ export const taskRouter = createTRPCRouter({
         resource: "kanban_column",
       });
 
+      const existingTask = await queries.tasks.getTasksById(input.id);
+      const ownsTask =
+        existingTask[0]?.createdById === ctx.auth.userId ||
+        existingTask[0]?.assigneeId === ctx.auth.userId;
       if (!perm) {
-        const task = await queries.tasks.getTasksById(input.id);
-        const hasRelations =
-          ctx.auth.userId !== task[0]?.createdById ||
-          ctx.auth.userId !== task[0]?.assigneeId;
-        if (!hasRelations) {
+        if (!ownsTask) {
           throw new TRPCError({
             code: "FORBIDDEN",
             message:
-              "You do not have permission to delete a task in this team.",
+              "You do not have permission to delete the task in this team.",
           });
         }
       }

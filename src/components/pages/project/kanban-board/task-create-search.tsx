@@ -52,12 +52,9 @@ export function TaskCreateSearch({ field }: TaskCreateSearchProps) {
 
   if (!user || !teamId) return notFound();
 
-  const filteredUsers =
-    searchResults?.filter((member) => member.id !== user.id) || [];
-
   return (
     <CommandSearch
-      items={filteredUsers}
+      items={searchResults || []}
       isLoading={isLoading}
       fallback={<UserSearchSkeleton />}
       searchTerm={search}

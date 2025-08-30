@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { useClickAway } from "../hooks/use-clickaway";
 import { cn } from "../lib/utils";
 import { Command, CommandEmpty, CommandInput, CommandList } from "./ui/command";
+import { Input } from "./ui/input";
 
 interface CommandSearchProps<T> {
   items: T[];
@@ -81,46 +82,52 @@ export function CommandSearch<T>({
       )}
     >
       <Command className="border">
-        <CommandInput
-          tabIndex={0}
-          placeholder={placeholder}
-          value={searchTerm}
-          disabled={isAtLimit}
-          onFocus={() => {
-            setIsFocused(true);
-            if (searchTerm.length > 0) setOpen(true);
-          }}
-          onBlur={() => setIsFocused(false)}
-          onValueChange={(val) => {
-            onSearchChange(val);
-            setOpen(val.length > 0);
-            setHighlightedIndex(-1);
-          }}
-          onKeyDown={(e) => {
-            if (!open) return;
-
-            if (e.key === "ArrowDown") {
-              e.preventDefault();
-              setHighlightedIndex((prev) =>
-                prev < items.length - 1 ? prev + 1 : 0
-              );
-            }
-            if (e.key === "ArrowUp") {
-              e.preventDefault();
-              setHighlightedIndex((prev) =>
-                prev > 0 ? prev - 1 : items.length - 1
-              );
-            }
-            if (e.key === "Enter" && highlightedIndex >= 0) {
-              e.preventDefault();
-              handleItemSelect(items[highlightedIndex]);
-            }
-            if (e.key === "Escape") {
-              setOpen(false);
+        {isAtLimit ? (
+          <>
+            <Input disabled />
+          </>
+        ) : (
+          <CommandInput
+            tabIndex={0}
+            placeholder={placeholder}
+            value={searchTerm}
+            disabled={isAtLimit}
+            onFocus={() => {
+              setIsFocused(true);
+              if (searchTerm.length > 0) setOpen(true);
+            }}
+            onBlur={() => setIsFocused(false)}
+            onValueChange={(val) => {
+              onSearchChange(val);
+              setOpen(val.length > 0);
               setHighlightedIndex(-1);
-            }
-          }}
-        />
+            }}
+            onKeyDown={(e) => {
+              if (!open) return;
+
+              if (e.key === "ArrowDown") {
+                e.preventDefault();
+                setHighlightedIndex((prev) =>
+                  prev < items.length - 1 ? prev + 1 : 0
+                );
+              }
+              if (e.key === "ArrowUp") {
+                e.preventDefault();
+                setHighlightedIndex((prev) =>
+                  prev > 0 ? prev - 1 : items.length - 1
+                );
+              }
+              if (e.key === "Enter" && highlightedIndex >= 0) {
+                e.preventDefault();
+                handleItemSelect(items[highlightedIndex]);
+              }
+              if (e.key === "Escape") {
+                setOpen(false);
+                setHighlightedIndex(-1);
+              }
+            }}
+          />
+        )}
 
         {open && (
           <>
@@ -138,7 +145,6 @@ export function CommandSearch<T>({
               <>
                 {items.length > 0 ? (
                   <CommandList
-                    onSelect={(e) => e.preventDefault()}
                     className="
                       absolute left-0 top-11 w-full
                       max-h-64 overflow-y-auto rounded-md border 
@@ -154,6 +160,7 @@ export function CommandSearch<T>({
                         tabIndex={0}
                         onClick={(e) => {
                           e.preventDefault();
+                          e.stopPropagation();
                           handleItemSelect(item);
                         }}
                         className={cn(
