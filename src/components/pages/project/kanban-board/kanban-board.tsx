@@ -188,8 +188,8 @@ export function Kanban() {
                 </div>
                 {task.startDate && task.endDate && (
                   <p className="m-0 text-muted-foreground text-xs">
-                    {shortDateFormatter.format(task.startDate)} -{" "}
-                    {dateFormatter.format(task.endDate)}
+                    {shortDateFormatter.format(new Date(task.startDate))} -{" "}
+                    {dateFormatter.format(new Date(task.endDate))}
                   </p>
                 )}
               </KanbanCard>
