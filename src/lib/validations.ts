@@ -105,8 +105,7 @@ export const taskSchema = z
     order: z
       .number()
       .min(0, errorMessages.numMinimum(0))
-      .max(1000, errorMessages.numMaximum(1000))
-      .optional(),
+      .max(1000, errorMessages.numMaximum(1000)),
     kanbanColumnId: z.guid(),
     createdAt: z.date().optional(),
     updatedAt: z.date().optional(),

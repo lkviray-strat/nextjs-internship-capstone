@@ -69,7 +69,7 @@ export function TaskCreateSelects({ control }: TaskCreateSelectsProps) {
                 type="number"
                 min={0}
                 max={999}
-                step={1}
+                step="any"
                 placeholder="Est. hours"
               />
             </FormControl>

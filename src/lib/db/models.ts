@@ -84,7 +84,7 @@ export const tasks = pgTable(
       onDelete: "set null",
     }),
     taskNumber: integer("task_number").notNull(),
-    order: integer("order").notNull().default(0),
+    order: integer("order").notNull(),
     kanbanColumnId: uuid("kanban_column_id")
       .references(() => kanbanColumns.id, {
         onDelete: "cascade",

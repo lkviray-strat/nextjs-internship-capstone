@@ -218,6 +218,14 @@ export const queries = {
         .where(eq(tasks.kanbanColumnId, kanbanColumnId))
         .orderBy(asc(tasks.order));
     },
+    getTasksByProjectIdDescLimit: (projectId: string, limit = 1) => {
+      return db
+        .select()
+        .from(tasks)
+        .where(eq(tasks.projectId, projectId))
+        .orderBy(desc(tasks.createdAt))
+        .limit(limit);
+    },
   },
   comments: {
     getAllComments: () => {

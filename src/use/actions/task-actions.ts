@@ -20,17 +20,22 @@ export async function createTaskAction(task: CreateTaskRequestInput) {
         parsed.kanbanColumnId
       );
       if (nextTasks.length > 0) {
-        for (const col of nextTasks) {
-          if (col.order >= parsed.order) {
-            col.order++;
+        for (const task of nextTasks) {
+          if (task.order >= parsed.order) {
+            task.order++;
             await updateTaskAction({
-              id: col.id,
-              order: col.order,
+              id: task.id,
+              order: task.order,
             });
           }
         }
       }
     }
+
+    const latestTask = await queries.tasks.getTasksByProjectIdDescLimit(
+      parsed.projectId
+    );
+    if (latestTask) parsed.taskNumber = latestTask[0].taskNumber + 1;
 
     const result = await queries.tasks.createTask(parsed);
 
