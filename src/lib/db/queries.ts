@@ -429,7 +429,11 @@ export const queries = {
         with: {
           columns: {
             with: {
-              tasks: true,
+              tasks: {
+                with: {
+                  assignee: true,
+                },
+              },
             },
           },
         },
