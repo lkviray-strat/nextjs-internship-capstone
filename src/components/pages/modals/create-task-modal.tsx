@@ -36,7 +36,7 @@ export function CreateTaskModal({ column }: CreateTaskModalProps) {
           New Task
         </DropdownMenuItem>
       </DialogTrigger>
-      <DialogContent className="">
+      <DialogContent className="sm:max-w-[850px] overflow-y-scroll max-h-[calc(100vh-100px)]">
         <DialogHeader>
           <DialogTitle className="text-[24px] font-semibold">
             Create New Task

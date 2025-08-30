@@ -35,36 +35,36 @@ export function TaskAssigneeBadge({
   }
 
   return (
-    <div className="flex flex-row justify-between items-center w-fit bg-accent py-2 px-4 rounded-md">
-      <div className="flex flex-row gap-4">
-        <div className="relative size-10 rounded-full overflow-clip shrink-0">
-          <Avatar className="size-full">
-            <AvatarImage
-              src={user.profileImageUrl as string}
-              alt={`${user.firstName}'s Profile Picture`}
-              content={`${user.firstName} ${user.lastName}`}
-            />
-            <AvatarFallback>
-              {getUserInitials(user.firstName, user.lastName)}
-            </AvatarFallback>
-          </Avatar>
-        </div>
+    <div className="flex flex-row items-center h-full py-1.5">
+      <div className="flex flex-row justify-between items-center h-full w-fit bg-accent rounded-2xl py-1 px-2 gap-2">
+        <div className="flex flex-row gap-2 items-center justify-center">
+          <div className="flex size-6 rounded-full overflow-clip shrink-0">
+            <Avatar className="size-full">
+              <AvatarImage
+                src={user.profileImageUrl as string}
+                alt={`${user.firstName}'s Profile Picture`}
+                content={`${user.firstName} ${user.lastName}`}
+              />
+              <AvatarFallback className="!text-[12px]">
+                {getUserInitials(user.firstName, user.lastName)}
+              </AvatarFallback>
+            </Avatar>
+          </div>
 
-        <div className="overflow-ellipsis flex flex-col">
-          <span>
+          <span className="text-[15px]">
             {user.firstName} {user.lastName}
           </span>
         </div>
+        <Button
+          type="button"
+          onClick={removeHandler}
+          variant="ghostDestructive"
+          size="icon"
+          className="!rounded-full !size-fit !p-1"
+        >
+          <X className="size-[13px]" />
+        </Button>
       </div>
-      <Button
-        type="button"
-        onClick={removeHandler}
-        variant="ghostDestructive"
-        size="icon"
-        className="!rounded-full"
-      >
-        <X className="h-3 w-3" />
-      </Button>
     </div>
   );
 }

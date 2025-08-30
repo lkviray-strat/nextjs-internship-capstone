@@ -1,3 +1,4 @@
+import { Editor } from "@/src/components/blocks/editor-00/editor";
 import { RequiredLabel } from "@/src/components/required-label";
 import {
   FormControl,
@@ -7,26 +8,20 @@ import {
   FormMessage,
 } from "@/src/components/ui/form";
 import { Input } from "@/src/components/ui/input";
-import { Textarea } from "@/src/components/ui/textarea";
-import type { Path, useForm } from "react-hook-form";
+import type { CreateTaskRequestInput } from "@/src/types";
+import type { SerializedEditorState } from "lexical";
+import type { useForm } from "react-hook-form";
 
-type TaskFields = {
-  title: string;
-  description?: string;
+type TaskCreateDetailsProps = {
+  control: ReturnType<typeof useForm<CreateTaskRequestInput>>["control"];
 };
 
-type TaskCreateDetailsProps<T extends TaskFields> = {
-  control: ReturnType<typeof useForm<T>>["control"];
-};
-
-export function TaskCreateDetails<T extends TaskFields>({
-  control,
-}: TaskCreateDetailsProps<T>) {
+export function TaskCreateDetails({ control }: TaskCreateDetailsProps) {
   return (
     <>
       <FormField
         control={control}
-        name={"title" as Path<T>}
+        name="title"
         render={({ field }) => (
           <FormItem>
             <FormLabel>
@@ -44,15 +39,14 @@ export function TaskCreateDetails<T extends TaskFields>({
       />
       <FormField
         control={control}
-        name={"description" as Path<T>}
+        name="description"
         render={({ field }) => (
           <FormItem>
             <FormLabel>Description</FormLabel>
             <FormControl>
-              <Textarea
-                placeholder="Enter task description (e.g. This task involves creating a landing page)"
-                rows={4}
-                {...field}
+              <Editor
+                editorSerializedState={field.value as SerializedEditorState}
+                onSerializedChange={field.onChange}
               />
             </FormControl>
             <FormMessage />

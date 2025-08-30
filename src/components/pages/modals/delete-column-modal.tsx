@@ -22,12 +22,12 @@ type DeleteKanbanColumnModalProps = {
 };
 
 export function DeleteKanbanColumnModal({ id }: DeleteKanbanColumnModalProps) {
-  const params = useParams();
+  const params = useParams<{ teamId: string; projectId: string }>();
   const columnHooks = useKanbanColumns();
   const [open, setOpen] = useState(false);
 
-  const teamId = params.teamId!.toString();
-  const projectId = params.projectId!.toString();
+  const teamId = params.teamId;
+  const projectId = params.projectId;
 
   const handlePropagation = (e: Event | React.MouseEvent) => {
     e.stopPropagation();

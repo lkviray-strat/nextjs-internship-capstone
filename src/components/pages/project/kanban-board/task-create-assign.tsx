@@ -8,6 +8,8 @@ import {
 } from "@/src/components/ui/form";
 
 import type { CreateTaskRequestInput } from "@/src/types";
+import { Loader2 } from "lucide-react";
+import { Suspense } from "react";
 import type { useForm } from "react-hook-form";
 import { TaskAssigneeBadge } from "./task-assignee-badge";
 import { TaskCreateSearch } from "./task-create-search";
@@ -23,7 +25,7 @@ export function TaskCreateAssign({ control }: TaskCreateAssignProps) {
         control={control}
         name="assigneeId"
         render={({ field }) => (
-          <FormItem>
+          <FormItem className="sm:w-[400px]">
             <FormLabel>
               <RequiredLabel>Assignee</RequiredLabel>
             </FormLabel>
@@ -32,11 +34,13 @@ export function TaskCreateAssign({ control }: TaskCreateAssignProps) {
               <div className="relative">
                 <TaskCreateSearch field={field} />
                 {field.value && (
-                  <div className="absolute left-3 top-1/2">
-                    <TaskAssigneeBadge
-                      userId={field.value}
-                      removeHandler={() => field.onChange(null)}
-                    />
+                  <div className="absolute left-3 top-0 flex items-center bottom-0">
+                    <Suspense fallback={<Loader2 className="animate-spin" />}>
+                      <TaskAssigneeBadge
+                        userId={field.value}
+                        removeHandler={() => field.onChange(null)}
+                      />
+                    </Suspense>
                   </div>
                 )}
               </div>
