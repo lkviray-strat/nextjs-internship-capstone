@@ -211,6 +211,13 @@ export const queries = {
     deleteTask: (id: number) => {
       return db.delete(tasks).where(eq(tasks.id, id)).returning();
     },
+    getTasksByKanbanColumnIdAsc: (kanbanColumnId: string) => {
+      return db
+        .select()
+        .from(tasks)
+        .where(eq(tasks.kanbanColumnId, kanbanColumnId))
+        .orderBy(asc(tasks.order));
+    },
   },
   comments: {
     getAllComments: () => {
