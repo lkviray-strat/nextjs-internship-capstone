@@ -1,4 +1,5 @@
 import { useProjects } from "@/src/use/hooks/use-projects";
+import { TRPCClientError } from "@trpc/client";
 import { Trash } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import React, { useState } from "react";
@@ -73,7 +74,11 @@ export function DeleteProjectModal({
       setOpen(false);
       toast.success("Project deleted successfully");
     } catch (error) {
-      toast.error("Failed to delete project");
+      if (error instanceof Error || error instanceof TRPCClientError) {
+        toast.error(`Failed to delete project: ${error.message}`);
+      } else {
+        toast.error("Failed to delete project");
+      }
       setOpen(false);
       console.log(error);
     }

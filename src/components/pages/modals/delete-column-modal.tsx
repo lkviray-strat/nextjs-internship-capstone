@@ -1,4 +1,5 @@
 import { useKanbanColumns } from "@/src/use/hooks/use-kanban-columns";
+import { TRPCClientError } from "@trpc/client";
 import { Trash } from "lucide-react";
 import { useParams } from "next/navigation";
 import React, { useState } from "react";
@@ -53,7 +54,11 @@ export function DeleteKanbanColumnModal({ id }: DeleteKanbanColumnModalProps) {
       handleClose(e);
       toast.success("Column deleted successfully");
     } catch (error) {
-      toast.error("Failed to delete column");
+      if (error instanceof Error || error instanceof TRPCClientError) {
+        toast.error(`Failed to delete column: ${error.message}`);
+      } else {
+        toast.error("Failed to delete column");
+      }
       setOpen(false);
       console.log(error);
     }
