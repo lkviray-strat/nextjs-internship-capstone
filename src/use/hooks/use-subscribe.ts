@@ -1,5 +1,5 @@
 import { useTRPC } from "@/server/trpc/client";
-import type { KanbanColumns } from "@/src/types";
+import type { KanbanColumns, Tasks, User } from "@/src/types";
 import type { KanbanEvent } from "@/src/types/websocket";
 import { QueryClient, useQueryClient } from "@tanstack/react-query";
 import { useSubscription, type inferOutput } from "@trpc/tanstack-react-query";
@@ -126,73 +126,104 @@ function handleKanbanEvent(
 
       break;
     }
-    // case "task_created":
-    //   // Add to appropriate column
-    //   queryClient.setQueryData(
-    //     ["tasks", event.payload.columnId],
-    //     (old: any[] = []) => [...old, event.payload]
-    //   );
-    //   // Invalidate tasks query to ensure fresh data
-    //   utils.kanbanTasks.invalidate();
-    //   break;
 
-    // case "task_updated":
-    //   // Update specific task
-    //   queryClient.setQueryData(
-    //     ["task", event.payload.id],
-    //     event.payload
-    //   );
-    //   // Also update in the tasks list
-    //   queryClient.setQueryData(
-    //     ["tasks", event.payload.columnId],
-    //     (old: any[] = []) =>
-    //       old.map(task => task.id === event.payload.id ? event.payload : task)
-    //   );
-    //   break;
+    case "task_created": {
+      queryClient.setQueryData<KanbanBoardFilterOutput>(
+        trpc.kanbanBoards.getKanbanBoardByFilters.queryKey({
+          projectId: event.payload.projectId,
+          board: event.payload.boardId,
+        }),
+        (old) => {
+          if (!old) return old;
 
-    // case "task_deleted":
-    //   // Remove task from cache
-    //   queryClient.removeQueries(["task", event.payload.taskId]);
-    //   // Note: Need to know which column the task was in to remove from list
-    //   // You might want to include columnId in the delete payload
-    //   break;
+          const newTask = event.payload.task as Tasks & {
+            assignee: User | null;
+          };
+
+          return {
+            ...old,
+            columns: old.columns.map((col) =>
+              col.id === newTask.kanbanColumnId
+                ? {
+                    ...col,
+                    tasks: [...col.tasks, newTask].sort(
+                      (a, b) => a.order - b.order
+                    ),
+                  }
+                : col
+            ),
+          };
+        }
+      );
+      break;
+    }
+
+    case "task_updated": {
+      queryClient.setQueryData<KanbanBoardFilterOutput>(
+        trpc.kanbanBoards.getKanbanBoardByFilters.queryKey({
+          projectId: event.payload.projectId,
+          board: event.payload.boardId,
+        }),
+        (old) => {
+          if (!old) return old;
+
+          const updatedTask = event.payload.task as Tasks & {
+            assignee: User | null;
+          };
+
+          return {
+            ...old,
+            columns: old.columns.map((col) => {
+              if (col.id === updatedTask.kanbanColumnId) {
+                const withoutTask = col.tasks.filter(
+                  (t) => t.id !== updatedTask.id
+                );
+
+                return {
+                  ...col,
+                  tasks: [...withoutTask, updatedTask].sort(
+                    (a, b) => a.order - b.order
+                  ),
+                };
+              }
+
+              return {
+                ...col,
+                tasks: col.tasks.filter((t) => t.id !== updatedTask.id),
+              };
+            }),
+          };
+        }
+      );
+      break;
+    }
+
+    case "task_deleted": {
+      queryClient.setQueryData<KanbanBoardFilterOutput>(
+        trpc.kanbanBoards.getKanbanBoardByFilters.queryKey({
+          projectId: event.payload.projectId,
+          board: event.payload.boardId,
+        }),
+        (old) => {
+          if (!old) return old;
+
+          return {
+            ...old,
+            columns: old.columns.map((col) =>
+              col.id === event.payload.kanbanColumnId
+                ? {
+                    ...col,
+                    tasks: col.tasks.filter((t) => t.id !== event.payload.id),
+                  }
+                : col
+            ),
+          };
+        }
+      );
+      break;
+    }
     default:
       queryClient.invalidateQueries({ queryKey: trpc.kanbanColumns.pathKey() });
       queryClient.invalidateQueries({ queryKey: trpc.kanbanBoards.pathKey() });
   }
 }
-
-// // Optional: Specialized hooks for specific event types
-// export function useTaskSubscription(teamId: string, projectId?: string, taskId?: string) {
-//   const queryClient = useQueryClient();
-//   const utils = trpc.useUtils();
-
-//   trpc.kanbanSubscriptions.onTaskEvents.useSubscription(
-//     { teamId, projectId, taskId },
-//     {
-//       onData: (event) => {
-//         handleKanbanEvent(event, queryClient, utils);
-//       },
-//       onError: (err) => {
-//         console.error("Task subscription error:", err);
-//       }
-//     }
-//   );
-// }
-
-// export function useColumnSubscription(teamId: string, projectId?: string, columnId?: string) {
-//   const queryClient = useQueryClient();
-//   const utils = trpc.useUtils();
-
-//   trpc.kanbanSubscriptions.onColumnEvents.useSubscription(
-//     { teamId, projectId, columnId },
-//     {
-//       onData: (event) => {
-//         handleKanbanEvent(event, queryClient, utils);
-//       },
-//       onError: (err) => {
-//         console.error("Column subscription error:", err);
-//       }
-//     }
-//   );
-// }

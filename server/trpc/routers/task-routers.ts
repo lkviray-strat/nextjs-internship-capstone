@@ -5,6 +5,7 @@ import {
   createTaskRequestSchema,
   updateTaskRequestSchema,
 } from "@/src/lib/validations";
+import type { User } from "@/src/types";
 import {
   createTaskAction,
   deleteTaskAction,
@@ -61,12 +62,24 @@ export const taskRouter = createTRPCRouter({
 
       const task = await createTaskAction(input);
 
+      const kanbanColumn = await queries.kanbanColumns.getKanbanColumnById(
+        task.data[0].kanbanColumnId
+      );
+
+      let user = null;
+      if (task.data[0].assigneeId) {
+        user = (await queries.users.getUsersById(task.data[0].assigneeId)).at(
+          0
+        );
+      }
+
       await publishKanbanEvent({
         type: "task_created",
         payload: {
           teamId: input.teamId,
           projectId: input.projectId,
-          task: task.data[0],
+          boardId: kanbanColumn[0].boardId as string,
+          task: { ...task.data[0], assignee: user as User | null },
         },
       });
 
@@ -125,12 +138,24 @@ export const taskRouter = createTRPCRouter({
 
       const task = await updateTaskAction(input);
 
+      const kanbanColumn = await queries.kanbanColumns.getKanbanColumnById(
+        task.data[0].kanbanColumnId
+      );
+
+      let user = null;
+      if (task.data[0].assigneeId) {
+        user = (await queries.users.getUsersById(task.data[0].assigneeId)).at(
+          0
+        );
+      }
+
       await publishKanbanEvent({
         type: "task_updated",
         payload: {
           teamId: input.teamId,
           projectId: input.projectId,
-          task: task.data[0],
+          boardId: kanbanColumn[0].boardId as string,
+          task: { ...task.data[0], assignee: user as User | null },
         },
       });
 
@@ -184,13 +209,6 @@ export const taskRouter = createTRPCRouter({
 
       const task = await deleteTaskAction(input.id);
 
-      if (!task.data[0]) {
-        throw new TRPCError({
-          code: "NOT_FOUND",
-          message: "Task not found",
-        });
-      }
-
       const kanbanColumn = await queries.kanbanColumns.getKanbanColumnById(
         task.data[0].kanbanColumnId
       );
@@ -202,6 +220,7 @@ export const taskRouter = createTRPCRouter({
           projectId: input.projectId,
           id: task.data[0].id,
           boardId: kanbanColumn[0].boardId as string,
+          kanbanColumnId: kanbanColumn[0].id as string,
         },
       });
       return task;
