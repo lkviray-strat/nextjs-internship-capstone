@@ -1,5 +1,6 @@
 import type { ProjectStatusEnum } from "@/src/types";
 import { useProjects } from "@/src/use/hooks/use-projects";
+import { TRPCClientError } from "@trpc/client";
 import { Trash } from "lucide-react";
 import { useParams } from "next/navigation";
 import React, { useState } from "react";
@@ -73,7 +74,11 @@ export function ArchiveProjectModal({
       setOpen(false);
       toast.success("Project archived successfully");
     } catch (error) {
-      toast.error("Failed to archive project");
+      if (error instanceof Error || error instanceof TRPCClientError) {
+        toast.error(`Failed to archive project: ${error.message}`);
+      } else {
+        toast.error("Failed to archive project");
+      }
       setOpen(false);
       console.log(error);
     }
