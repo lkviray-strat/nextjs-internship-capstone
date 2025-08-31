@@ -209,7 +209,10 @@ export const KanbanCards = <T extends KanbanItemProps = KanbanItemProps>({
 
   return (
     <ScrollArea className="overflow-hidden">
-      <SortableContext items={items}>
+      <SortableContext
+        items={items}
+        strategy={verticalListSortingStrategy}
+      >
         <div
           className={cn("flex flex-grow flex-col gap-2 p-2", className)}
           {...props}
@@ -254,7 +257,7 @@ export const KanbanHeader = ({
           variant="ghost"
           size="icon"
           className="cursor-grab !rounded-full !size-fit p-1.5 hover:bg-muted"
-          style={{ touchAction: "none" }} // Prevent scrolling on touch devices
+          style={{ touchAction: "none" }}
         >
           <GripVertical className="size-5 text-muted-foreground" />
         </Button>
@@ -332,12 +335,14 @@ export const KanbanProvider = <
         columns[0]?.id;
 
       if (activeColumn !== overColumn) {
-        let newData = [...data];
+        const newData = [...data];
         const activeIndex = newData.findIndex((item) => item.id === active.id);
-        const overIndex = newData.findIndex((item) => item.id === over.id);
 
-        newData[activeIndex].kanbanColumnId = overColumn;
-        newData = arrayMove(newData, activeIndex, overIndex);
+        // Update the column ID optimistically
+        newData[activeIndex] = {
+          ...newData[activeIndex],
+          kanbanColumnId: overColumn,
+        };
 
         onDataChange?.(newData);
       }
@@ -365,8 +370,10 @@ export const KanbanProvider = <
       const oldIndex = newData.findIndex((item) => item.id === active.id);
       const newIndex = newData.findIndex((item) => item.id === over.id);
 
-      newData = arrayMove(newData, oldIndex, newIndex);
-      onDataChange?.(newData);
+      if (oldIndex !== -1 && newIndex !== -1) {
+        newData = arrayMove(newData, oldIndex, newIndex);
+        onDataChange?.(newData);
+      }
     }
 
     setActiveCardId(null);

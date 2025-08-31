@@ -10,12 +10,13 @@ export const kanbanSubscriptionRouter = createTRPCRouter({
         teamId: z.guid(),
       })
     )
-    .subscription(async function* ({ input, signal }) {
+    .subscription(async function* ({ input, signal, ctx }) {
       const events = subscribeKanbanEvents({ signal });
 
       for await (const event of events) {
         if (event.payload.teamId !== input.teamId) continue;
         if (event.payload.projectId !== input.projectId) continue;
+        if (event.clientId === ctx.clientId) continue;
 
         yield event;
       }

@@ -13,6 +13,7 @@ export type KanbanEventType = (typeof KANBAN_EVENT_TYPES)[number];
 export type KanbanEvent =
   | {
       type: "task_created";
+      clientId: string;
       payload: {
         task: WithRelations<
           TasksInsertRequest & { id: number },
@@ -25,6 +26,7 @@ export type KanbanEvent =
     }
   | {
       type: "task_updated";
+      clientId: string;
       payload: {
         task: WithRelations<
           TasksUpdateRequest & { id: number },
@@ -37,6 +39,7 @@ export type KanbanEvent =
     }
   | {
       type: "task_deleted";
+      clientId: string;
       payload: {
         id: number;
         boardId: string;
@@ -47,6 +50,7 @@ export type KanbanEvent =
     }
   | {
       type: "kanban_column_created";
+      clientId: string;
       payload: {
         kanbanColumn: KanbanColumnsInsertRequest;
         projectId: string;
@@ -55,6 +59,7 @@ export type KanbanEvent =
     }
   | {
       type: "kanban_column_updated";
+      clientId: string;
       payload: {
         kanbanColumn: KanbanColumnsUpdateRequest;
         projectId: string;
@@ -63,6 +68,7 @@ export type KanbanEvent =
     }
   | {
       type: "kanban_column_deleted";
+      clientId: string;
       payload: {
         id: string;
         projectId: string;

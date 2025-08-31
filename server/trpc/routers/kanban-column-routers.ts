@@ -65,6 +65,7 @@ export const kanbanColumnRouter = createTRPCRouter({
 
       await publishKanbanEvent({
         type: "kanban_column_created",
+        clientId: ctx.clientId,
         payload: {
           teamId: input.teamId,
           projectId: input.projectId,
@@ -124,6 +125,7 @@ export const kanbanColumnRouter = createTRPCRouter({
 
       await publishKanbanEvent({
         type: "kanban_column_updated",
+        clientId: ctx.clientId,
         payload: {
           teamId: input.teamId,
           projectId: input.projectId,
@@ -178,6 +180,7 @@ export const kanbanColumnRouter = createTRPCRouter({
 
       await publishKanbanEvent({
         type: "kanban_column_deleted",
+        clientId: ctx.clientId,
         payload: {
           teamId: input.teamId,
           projectId: input.projectId,
