@@ -17,7 +17,8 @@ import { useUIStore } from "@/src/stores/ui-store";
 import { useKanbanSubscription } from "@/src/use/hooks/use-subscribe";
 import { useTasks } from "@/src/use/hooks/use-tasks";
 import { useParams, useSearchParams } from "next/navigation";
-import { useCallback, useMemo } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { toast } from "sonner";
 import type { KanbanColumns, Tasks } from "../../../../types";
 import { useFetch } from "../../../../use/hooks/use-fetch";
 import { useKanbanColumns } from "../../../../use/hooks/use-kanban-columns";
@@ -59,83 +60,134 @@ export function Kanban() {
     board,
   });
 
+  // Local state for optimistic updates
+  const [optimisticColumns, setOptimisticColumns] = useState<KanbanColumns[]>(
+    []
+  );
+  const [optimisticTasks, setOptimisticTasks] = useState<Tasks[]>([]);
+
+  // Sync optimistic state with query data when it changes
+  useEffect(() => {
+    console.log("New Query Data:", {
+      columns: kanbanBoard?.columns,
+    });
+    if (kanbanBoard?.columns) {
+      const sortedColumns = kanbanBoard.columns
+        .sort((a, b) => a.order - b.order)
+        .map((column) => ({
+          ...column,
+          color: column.color || "#6B7280",
+        }));
+
+      const allTasks = kanbanBoard.columns.flatMap((column) =>
+        column.tasks.sort((a, b) => a.order - b.order)
+      );
+
+      setOptimisticColumns(sortedColumns);
+      setOptimisticTasks(allTasks);
+    }
+  }, [kanbanBoard]); // Sync when query data changes
+
   const columns = useMemo(() => {
     if (!kanbanBoard?.columns) return [];
-
-    return kanbanBoard.columns
-      .sort((a, b) => a.order - b.order)
-      .map((column) => ({
-        ...column,
-        color: column.color || "#6B7280",
-      }));
-  }, [kanbanBoard?.columns]);
+    return optimisticColumns.length > 0
+      ? optimisticColumns
+      : kanbanBoard.columns
+          .sort((a, b) => a.order - b.order)
+          .map((column) => ({
+            ...column,
+            color: column.color || "#6B7280",
+          }));
+  }, [kanbanBoard?.columns, optimisticColumns]);
 
   const tasks = useMemo(() => {
     if (!kanbanBoard?.columns) return [];
-
-    return kanbanBoard.columns.flatMap((column) =>
-      column.tasks
-        .sort((a, b) => a.order - b.order)
-        .map((task) => ({
-          ...task,
-        }))
-    );
-  }, [kanbanBoard?.columns]);
+    return optimisticTasks.length > 0
+      ? optimisticTasks
+      : kanbanBoard.columns.flatMap((column) =>
+          column.tasks
+            .sort((a, b) => a.order - b.order)
+            .map((task) => ({
+              ...task,
+            }))
+        );
+  }, [kanbanBoard?.columns, optimisticTasks]);
 
   const handleColumnReorder = useCallback(
-    (reorderedColumns: KanbanColumns[]) => {
-      const updatedColumns = reorderedColumns.map((column, index) => ({
-        ...column,
-        order: index,
-      }));
+    async (reorderedColumns: KanbanColumns[]) => {
+      // Optimistic update
+      setOptimisticColumns(reorderedColumns);
 
-      updatedColumns.forEach((column) => {
-        const current = { id: column.id, teamId, projectId };
-        kanbanColumnHooks.updateKanbanColumn({
-          ...current,
-          order: column.order,
-        });
-      });
+      try {
+        const updatedColumns = reorderedColumns.map((column, index) => ({
+          ...column,
+          order: index,
+        }));
+
+        for (const column of updatedColumns) {
+          const current = { id: column.id, teamId, projectId };
+          await kanbanColumnHooks.updateKanbanColumn({
+            ...current,
+            order: column.order,
+          });
+        }
+      } catch (error) {
+        // Revert optimistic update on error
+        setOptimisticColumns(kanbanBoard?.columns || []);
+        console.error("Failed to update column order:", error);
+      }
     },
-    [kanbanColumnHooks, projectId, teamId]
+    [kanbanColumnHooks, projectId, teamId, kanbanBoard?.columns]
   );
 
   const handleTaskReorder = useCallback(
-    (updatedTasks: Tasks[]) => {
-      const originalTasksMap = new Map(tasks.map((task) => [task.id, task]));
+    async (updatedTasks: Tasks[]) => {
+      // Optimistic update
+      setOptimisticTasks(updatedTasks);
 
-      updatedTasks.forEach((task, newIndex) => {
-        const originalTask = originalTasksMap.get(task.id);
+      try {
+        const originalTasksMap = new Map(tasks.map((task) => [task.id, task]));
 
-        if (!originalTask) return;
+        for (const task of updatedTasks) {
+          const originalTask = originalTasksMap.get(task.id);
+          if (!originalTask) continue;
 
-        const movedBetweenColumns =
-          originalTask.kanbanColumnId !== task.kanbanColumnId;
-        const movedWithinColumn = originalTask.order !== newIndex;
+          const movedBetweenColumns =
+            originalTask.kanbanColumnId !== task.kanbanColumnId;
+          const movedWithinColumn =
+            originalTask.order !==
+            updatedTasks.findIndex((t) => t.id === task.id);
 
-        if (movedBetweenColumns || movedWithinColumn) {
-          tasksHooks.updateTask({
-            id: Number(task.id),
-            order: newIndex,
-            kanbanColumnId: task.kanbanColumnId,
-            teamId,
-            projectId,
-            boardId: board,
-          });
+          if (movedBetweenColumns || movedWithinColumn) {
+            await tasksHooks.updateTask({
+              id: Number(task.id),
+              order: updatedTasks.findIndex((t) => t.id === task.id),
+              kanbanColumnId: task.kanbanColumnId,
+              teamId,
+              projectId,
+              boardId: board,
+            });
+          }
         }
-      });
+      } catch (error) {
+        // Revert optimistic update on error
+        setOptimisticTasks(tasks);
+        toast.error("Failed to update task");
+        console.log("Failed to update task order:", error);
+      }
     },
-    [tasksHooks, projectId, teamId, tasks]
+    [tasks, tasksHooks, teamId, projectId, board]
   );
 
   if (kanbanBoard?.columns.length === 0) return <KanbanColumnsEmpty />;
+
   return (
     <KanbanProvider
       columns={columns}
       data={tasks}
       onDataChange={handleTaskReorder}
       onColumnReorder={handleColumnReorder}
-      className="h-[calc(100vh-15rem)] w-full overflow-x-auto pb-3  px-4 sm:px-6 lg:px-8"
+      className="h-[calc(100vh-15rem)] w-full overflow-x-auto pb-3 px-4 sm:px-6 lg:px-8"
     >
       {(column) => (
         <KanbanBoard
@@ -152,7 +204,7 @@ export function Kanban() {
               <div className="flex text-[15px] py-2 items-center gap-2">
                 <div
                   className="h-3 w-3 rounded-full"
-                  style={{ backgroundColor: column.color }}
+                  style={{ backgroundColor: column.color || "transparent" }}
                 />
                 <span>{column.name}</span>
               </div>

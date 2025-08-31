@@ -75,6 +75,7 @@ export const taskRouter = createTRPCRouter({
 
       await publishKanbanEvent({
         type: "task_created",
+        clientId: ctx.clientId,
         payload: {
           teamId: input.teamId,
           projectId: input.projectId,
@@ -148,6 +149,7 @@ export const taskRouter = createTRPCRouter({
 
       await publishKanbanEvent({
         type: "task_updated",
+        clientId: ctx.clientId,
         payload: {
           teamId: input.teamId,
           projectId: input.projectId,
@@ -212,6 +214,7 @@ export const taskRouter = createTRPCRouter({
 
       await publishKanbanEvent({
         type: "task_deleted",
+        clientId: ctx.clientId,
         payload: {
           teamId: input.teamId,
           projectId: input.projectId,

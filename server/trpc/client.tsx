@@ -14,6 +14,7 @@ import { createTRPCContext } from "@trpc/tanstack-react-query";
 import { useState } from "react";
 import { useSSROnlySecret } from "ssr-only-secrets";
 import superjson from "superjson";
+import { getClientId } from "../websocket/ws-client-id";
 import { makeQueryClient } from "./query-client";
 
 export const { TRPCProvider, useTRPC } = createTRPCContext<AppRouter>();
@@ -50,7 +51,15 @@ function getUrl() {
   return `${base}/api/trpc`;
 }
 
-const wsClient = createWSClient({ url: getWsUrl() });
+const clientId = getClientId();
+
+const wsClient = createWSClient({
+  url: getWsUrl(),
+  connectionParams: {
+    clientId,
+  },
+});
+
 export function TRPCReactProvider(
   props: Readonly<{
     children: React.ReactNode;
@@ -82,6 +91,7 @@ export function TRPCReactProvider(
             headers() {
               const headers = new Headers();
               headers.set("x-trpc-source", "nextjs-react");
+              headers.set("x-client-id", clientId);
               if (value) {
                 headers.set("cookie", value);
               }
