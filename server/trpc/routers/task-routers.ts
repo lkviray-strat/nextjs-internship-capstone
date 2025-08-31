@@ -90,6 +90,7 @@ export const taskRouter = createTRPCRouter({
       updateTaskRequestSchema.extend({
         teamId: z.guid(),
         projectId: z.guid(),
+        boardId: z.guid(),
       })
     )
     .mutation(async ({ ctx, input }) => {
@@ -138,10 +139,6 @@ export const taskRouter = createTRPCRouter({
 
       const task = await updateTaskAction(input);
 
-      const kanbanColumn = await queries.kanbanColumns.getKanbanColumnById(
-        task.data[0].kanbanColumnId
-      );
-
       let user = null;
       if (task.data[0].assigneeId) {
         user = (await queries.users.getUsersById(task.data[0].assigneeId)).at(
@@ -154,7 +151,7 @@ export const taskRouter = createTRPCRouter({
         payload: {
           teamId: input.teamId,
           projectId: input.projectId,
-          boardId: kanbanColumn[0].boardId as string,
+          boardId: input.boardId,
           task: { ...task.data[0], assignee: user as User | null },
         },
       });

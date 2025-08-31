@@ -120,6 +120,7 @@ export function Kanban() {
             kanbanColumnId: task.kanbanColumnId,
             teamId,
             projectId,
+            boardId: board,
           });
         }
       });
