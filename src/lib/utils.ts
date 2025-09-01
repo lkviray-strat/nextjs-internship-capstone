@@ -1,5 +1,16 @@
 import { clsx, type ClassValue } from "clsx";
 import { formatDistanceToNow } from "date-fns";
+import {
+  $getRoot,
+  $isDecoratorNode,
+  $isElementNode,
+  $isTextNode,
+  ElementNode,
+  type EditorState,
+  type SerializedEditorState,
+  type SerializedElementNode,
+  type SerializedTextNode,
+} from "lexical";
 import { twMerge } from "tailwind-merge";
 import type {
   ProjectFilters,
@@ -78,6 +89,11 @@ export function getTimeLeft(endDate: string | Date, isAgo = false) {
 
   if (endDate > now) return capitalizeWords(raw) + " Left";
   return capitalizeWords(raw) + (isAgo ? " Ago" : " Behind");
+}
+
+export function getTimeAgo(date: string | Date) {
+  const raw = formatDistanceToNow(new Date(date));
+  return raw + " ago";
 }
 
 export function getTimeLastUpdated(endDate: string | Date) {
@@ -193,4 +209,82 @@ export function getContent(content: string): string {
     .slice(0, 2)
     .map((part) => part[0]?.toUpperCase() || "")
     .join("");
+}
+
+export function $isWhitespace(node: ElementNode): boolean {
+  for (const child of node.getChildren()) {
+    if (
+      ($isElementNode(child) && !$isWhitespace(child)) ||
+      ($isTextNode(child) && child.getTextContent().trim() !== "") ||
+      $isDecoratorNode(child) // decorator nodes are arbitrary
+    ) {
+      return false;
+    }
+  }
+  return true;
+}
+
+export function $isEmpty(editorState: EditorState | null) {
+  if (editorState === null) return true;
+  return editorState.read(() => {
+    const root = $getRoot();
+    const child = root.getFirstChild();
+
+    if (
+      child == null ||
+      ($isElementNode(child) && child.isEmpty() && root.getChildrenSize() === 1)
+    ) {
+      return true;
+    }
+
+    return $isWhitespace(root);
+  });
+}
+
+export function sanitizeSerializedEditorState(
+  state: SerializedEditorState
+): SerializedEditorState {
+  if (!state || !("root" in state)) return state;
+
+  const isEmptyNode = (node: any): boolean => {
+    if (node.type === "text") {
+      return node.text.trim() === "";
+    }
+    if (node.children && Array.isArray(node.children)) {
+      return node.children.every(isEmptyNode);
+    }
+    return false;
+  };
+
+  const sanitizeNode = (node: any): any => {
+    if (node == null) return node;
+
+    // Trim text content
+    if (node.type === "text") {
+      const textNode = node as SerializedTextNode;
+      return {
+        ...textNode,
+        text: textNode.text.trim(),
+      };
+    }
+
+    // Recurse into children
+    if (node.children && Array.isArray(node.children)) {
+      let children = node.children
+        .map(sanitizeNode)
+        .filter((child: any) => !isEmptyNode(child));
+
+      return {
+        ...node,
+        children,
+      } as SerializedElementNode;
+    }
+
+    return node;
+  };
+
+  return {
+    ...state,
+    root: sanitizeNode(state.root),
+  };
 }

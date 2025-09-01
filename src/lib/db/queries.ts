@@ -253,6 +253,14 @@ export const queries = {
     deleteComment: (id: string) => {
       return db.delete(comments).where(eq(comments.id, id)).returning();
     },
+    getCommentsByTaskIdWithAuthor: (taskId: number) => {
+      return db.query.comments.findMany({
+        where: eq(comments.taskId, taskId),
+        with: {
+          author: true,
+        },
+      });
+    },
   },
   projects: {
     getAllProjects: () => {

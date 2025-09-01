@@ -30,7 +30,7 @@ type TaskSheetProps = {
 
 export function TaskSheetDetails({ task, column }: TaskSheetProps) {
   return (
-    <div className="grid grid-cols-2 gap-x-5 gap-5 px-10 w-fit items-center text-[15px]">
+    <div className="grid grid-cols-2 gap-x-5 gap-5 px-5 sm:px-10 w-fit items-center text-[15px]">
       <TaskSheetItem
         label="Date Created"
         labelIcon={Calendar}

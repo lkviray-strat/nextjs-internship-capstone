@@ -1,7 +1,3 @@
-import {
-  Comment,
-  commentInitialValue,
-} from "@/src/components/blocks/editor-00/comment";
 import { Viewer } from "@/src/components/blocks/editor-00/viewer";
 import {
   Avatar,
@@ -24,10 +20,9 @@ import {
 } from "@/src/lib/utils";
 import type { Tasks, User } from "@/src/types";
 import { useFetch } from "@/src/use/hooks/use-fetch";
-import { useUser } from "@clerk/nextjs";
 import type { SerializedEditorState } from "lexical";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useState } from "react";
+import { TaskSheetComments } from "./task-sheet-comments";
 import { TaskSheetDetails } from "./task-sheet-details";
 
 type TaskSheetProps = {
@@ -42,11 +37,8 @@ export function TaskSheet({ task, column }: TaskSheetProps) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const user = useUser();
   const fetch = useFetch();
 
-  const [commentState, setCommentState] =
-    useState<SerializedEditorState>(commentInitialValue);
   const open = !!task;
 
   const handleClose = () => {
@@ -59,11 +51,7 @@ export function TaskSheet({ task, column }: TaskSheetProps) {
     task.createdById as string
   );
 
-  const { data: currentUser } = fetch.users.useGetUserById(
-    user.user?.id as string
-  );
-
-  if (!task && !taskCreatedBy && !currentUser) return null;
+  if (!task && !taskCreatedBy) return null;
 
   return (
     <Sheet
@@ -71,8 +59,8 @@ export function TaskSheet({ task, column }: TaskSheetProps) {
       onOpenChange={(isOpen) => isOpen || handleClose()}
     >
       <SheetTrigger asChild></SheetTrigger>
-      <SheetContent className="py-7 w-full sm:max-w-3/4 md:max-w-1/2 overflow-y-auto">
-        <SheetHeader className="px-9">
+      <SheetContent className="py-5 sm:py-7 w-full sm:max-w-3/4 md:max-w-1/2 overflow-y-auto">
+        <SheetHeader className="px-4 sm:px-9">
           <SheetTitle className="flex flex-col gap-1">
             <span className="text-[40px] font-semibold">
               {task.title}{" "}
@@ -115,7 +103,7 @@ export function TaskSheet({ task, column }: TaskSheetProps) {
             column={column}
           />
           <Separator />
-          <div className="flex flex-col gap-4 px-10">
+          <div className="flex flex-col gap-4 px-5 sm:px-10">
             <span className="text-[24px] font-semibold">Description</span>
             <div className="rounded-md w-full">
               <Viewer
@@ -126,32 +114,7 @@ export function TaskSheet({ task, column }: TaskSheetProps) {
             </div>
           </div>
           <Separator />
-          <div className="flex flex-col gap-4 px-10">
-            <span className="text-[24px] font-semibold">Comments</span>
-            <div className="flex gap-4 w-full">
-              <Avatar className="size-10 mt-2 shrink-0 hidden sm:block">
-                <AvatarImage
-                  src={currentUser[0]?.profileImageUrl as string}
-                  alt={`${currentUser[0]?.firstName}'s Profile Picture`}
-                  content={`${currentUser[0]?.firstName} ${currentUser[0]?.lastName}`}
-                />
-                {currentUser[0]?.firstName && currentUser[0]?.lastName && (
-                  <AvatarFallback className="!text-[12px]">
-                    {getUserInitials(
-                      currentUser[0]?.firstName,
-                      currentUser[0]?.lastName
-                    )}
-                  </AvatarFallback>
-                )}
-              </Avatar>
-              <div className="w-full">
-                <Comment
-                  editorSerializedState={commentState}
-                  onSerializedChange={setCommentState}
-                />
-              </div>
-            </div>
-          </div>
+          <TaskSheetComments taskId={task.id} />
         </div>
       </SheetContent>
     </Sheet>
