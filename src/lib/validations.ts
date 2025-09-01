@@ -127,10 +127,7 @@ export const taskSchema = z
 
 export const commentsSchema = z.object({
   id: z.guid(),
-  content: z
-    .string()
-    .min(1, errorMessages.required("Comment"))
-    .max(1500, errorMessages.maxLength(1500)),
+  content: LexicalEditorStateSchema,
   taskId: z.number(),
   authorId: z.string(),
   createdAt: z.date().optional(),
@@ -306,6 +303,7 @@ export const updateCommentRequestSchema = commentsSchema
   })
   .extend({
     id: commentsSchema.shape.id,
+    taskId: commentsSchema.shape.taskId,
   });
 
 export const updateProjectRequestSchema = projectsSchema

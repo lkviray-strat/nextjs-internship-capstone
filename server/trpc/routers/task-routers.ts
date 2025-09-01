@@ -189,7 +189,7 @@ export const taskRouter = createTRPCRouter({
 
       const perm = await hasPermission(ctx.auth.userId, input.teamId, {
         action: "delete",
-        resource: "kanban_column",
+        resource: "task",
       });
 
       const existingTask = await queries.tasks.getTasksById(input.id);

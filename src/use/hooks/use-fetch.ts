@@ -83,6 +83,13 @@ export function useFetch() {
         );
       },
     },
+    comments: {
+      useGetCommentsByTaskId: (taskId: number) => {
+        return useSuspenseQuery(
+          trpc.comments.getCommentsByTaskIdWithAuthor.queryOptions(taskId)
+        );
+      },
+    },
     projectTeams: {
       useGetProjectTeamsByProjectIdWithTeamMembers: (
         projectId: string,

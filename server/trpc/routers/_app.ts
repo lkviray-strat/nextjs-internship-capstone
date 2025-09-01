@@ -1,4 +1,5 @@
 import { createTRPCRouter } from "../init";
+import { commentRouter } from "./comment-routers";
 import { kanbanBoardRouter } from "./kanban-board-routers";
 import { kanbanColumnRouter } from "./kanban-column-routers";
 import { kanbanSubscriptionRouter } from "./kanban-subscription-routers.";
@@ -19,6 +20,7 @@ export const appRouter = createTRPCRouter({
   kanbanColumns: kanbanColumnRouter,
   kanbanSubscriptions: kanbanSubscriptionRouter,
   tasks: taskRouter,
+  comments: commentRouter,
   teamMembers: teamMemberRouter,
   projectTeams: projectTeamRouter,
 });
