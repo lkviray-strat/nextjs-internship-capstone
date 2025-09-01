@@ -1,11 +1,16 @@
 import { useTRPC } from "@/server/trpc/client";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import type { inferOutput } from "@trpc/tanstack-react-query";
 import { useState } from "react";
 
 export function useKanbanColumns() {
   const [kanbanColumnErrors, setKanbanColumnErrors] =
     useState<Record<string, string[]>>();
   const trpc = useTRPC();
+  const queryClient = useQueryClient();
+  type KanbanBoardFilterOutput = inferOutput<
+    typeof trpc.kanbanBoards.getKanbanBoardByFilters
+  >;
 
   const createKanbanColumn = useMutation(
     trpc.kanbanColumns.createKanbanColumn.mutationOptions({
@@ -27,17 +32,49 @@ export function useKanbanColumns() {
 
   const updateKanbanColumn = useMutation(
     trpc.kanbanColumns.updateKanbanColumn.mutationOptions({
-      onSuccess: async () => {
-        setKanbanColumnErrors({});
-      },
-      onError: (error) => {
-        try {
-          const parsed = JSON.parse(error.message) as {
-            fieldErrors?: Record<string, string[]>;
+      onMutate: async (updatedColumn) => {
+        const queryKey = trpc.kanbanBoards.getKanbanBoardByFilters.queryKey({
+          projectId: updatedColumn.projectId,
+          board: updatedColumn.boardId,
+        });
+
+        await queryClient.cancelQueries({
+          queryKey,
+        });
+
+        const previousBoard =
+          queryClient.getQueryData<KanbanBoardFilterOutput>(queryKey);
+
+        if (previousBoard) {
+          const updatedBoard = {
+            ...previousBoard,
+            columns: previousBoard.columns.map((column) =>
+              column.id === updatedColumn.id
+                ? { ...column, ...updatedColumn }
+                : column
+            ),
           };
-          setKanbanColumnErrors(parsed.fieldErrors);
-        } catch {
-          setKanbanColumnErrors({ global: [error.message] });
+
+          queryClient.setQueryData(queryKey, updatedBoard);
+        }
+
+        return { previousBoard, queryKey };
+      },
+      onError: (err, updatedColumn, context) => {
+        if (context?.previousBoard) {
+          queryClient.setQueryData(context.queryKey, context.previousBoard);
+        }
+        // Handle error
+      },
+      onSettled: (updatedColumn, error, data) => {
+        const queryKey = trpc.kanbanBoards.getKanbanBoardByFilters.queryKey({
+          projectId: data.projectId,
+          board: data.boardId,
+        });
+        if (updatedColumn) {
+          queryClient.invalidateQueries({
+            queryKey,
+          });
         }
       },
     })
