@@ -55,7 +55,7 @@ export const initialValue = {
   },
 } as unknown as SerializedEditorState;
 
-const editorConfig: InitialConfigType = {
+export const editorConfig: InitialConfigType = {
   namespace: "Editor",
   theme: editorTheme,
   nodes: [
