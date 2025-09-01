@@ -16,7 +16,10 @@ export function useKanbanSubscription(teamId: string, projectId: string) {
       { teamId, projectId },
       {
         enabled: Boolean(teamId && projectId),
-        onData: (data) => handleKanbanEvent(data, queryClient, trpc),
+        onData: (data) => {
+          const { id, data: event } = data;
+          handleKanbanEvent(id, event, queryClient, trpc);
+        },
         onError: (error) => {
           try {
             const parsed = JSON.parse(error.message) as {
@@ -47,6 +50,7 @@ export function useKanbanSubscription(teamId: string, projectId: string) {
 }
 
 function handleKanbanEvent(
+  id: string,
   event: KanbanEvent,
   queryClient: QueryClient,
   trpc: ReturnType<typeof useTRPC>
@@ -82,6 +86,7 @@ function handleKanbanEvent(
     }
 
     case "kanban_column_updated": {
+      if (event.clientId === id) return;
       queryClient.setQueryData<KanbanBoardFilterOutput>(
         trpc.kanbanBoards.getKanbanBoardByFilters.queryKey({
           projectId: event.payload.projectId,
@@ -159,6 +164,7 @@ function handleKanbanEvent(
     }
 
     case "task_updated": {
+      if (event.clientId === id) return;
       queryClient.setQueryData<KanbanBoardFilterOutput>(
         trpc.kanbanBoards.getKanbanBoardByFilters.queryKey({
           projectId: event.payload.projectId,

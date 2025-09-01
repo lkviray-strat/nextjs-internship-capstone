@@ -68,9 +68,6 @@ export function Kanban() {
 
   // Sync optimistic state with query data when it changes
   useEffect(() => {
-    console.log("New Query Data:", {
-      columns: kanbanBoard?.columns,
-    });
     if (kanbanBoard?.columns) {
       const sortedColumns = kanbanBoard.columns
         .sort((a, b) => a.order - b.order)
