@@ -31,17 +31,60 @@ export function useTasks() {
 
   const updateTask = useMutation(
     trpc.tasks.updateTask.mutationOptions({
-      onSuccess: async () => {
-        setTaskErrors({});
+      // Optimistic update implementation
+      onMutate: async (updatedTask) => {
+        const queryKey = trpc.kanbanBoards.getKanbanBoardByFilters.queryKey({
+          projectId: updatedTask.projectId,
+          board: updatedTask.boardId,
+        });
+        await queryClient.cancelQueries({ queryKey });
+
+        // Snapshot the previous value
+        const previousBoard = queryClient.getQueryData<KanbanBoardFilterOutput>(
+          ["kanbanBoard", updatedTask.projectId, updatedTask.boardId]
+        );
+
+        // Optimistically update to the new value
+        if (previousBoard) {
+          const updatedBoard = {
+            ...previousBoard,
+            columns: previousBoard.columns.map((column) => ({
+              ...column,
+              tasks: column.tasks.map((task) =>
+                task.id === updatedTask.id ? { ...task, ...updatedTask } : task
+              ),
+            })),
+          };
+
+          queryClient.setQueryData(queryKey, updatedBoard);
+        }
+
+        // Return context with the snapshotted value
+        return { previousBoard, queryKey };
       },
-      onError: (error) => {
+      // If the mutation fails, use the context we returned above
+      onError: (err, updatedTask, context) => {
+        if (context?.previousBoard) {
+          queryClient.setQueryData(context.queryKey, context.previousBoard);
+        }
+        // Error handling (keep your existing error handling)
         try {
-          const parsed = JSON.parse(error.message) as {
+          const parsed = JSON.parse(err.message) as {
             fieldErrors?: Record<string, string[]>;
           };
           setTaskErrors(parsed.fieldErrors);
         } catch {
-          setTaskErrors({ global: [error.message] });
+          setTaskErrors({ global: [err.message] });
+        }
+      },
+      // Always refetch after error or success to ensure sync with server
+      onSettled: (updatedTask, error, data) => {
+        const queryKey = trpc.kanbanBoards.getKanbanBoardByFilters.queryKey({
+          projectId: data.projectId,
+          board: data.boardId,
+        });
+        if (updatedTask) {
+          queryClient.invalidateQueries({ queryKey });
         }
       },
     })
