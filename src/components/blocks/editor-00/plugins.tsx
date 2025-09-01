@@ -8,7 +8,6 @@ import { ContentEditable } from "@/src/components/editor/editor-ui/content-edita
 import { ActionsPlugin } from "../../editor/plugins/actions/actions-plugin";
 import { ClearEditorActionPlugin } from "../../editor/plugins/actions/clear-editor-plugin";
 import { EditModeTogglePlugin } from "../../editor/plugins/actions/edit-mode-toggle-plugin";
-import { AutocompletePlugin } from "../../editor/plugins/autocomplete-plugin";
 import { CodeActionMenuPlugin } from "../../editor/plugins/code-action-menu-plugin";
 import { CodeHighlightPlugin } from "../../editor/plugins/code-highlight-plugin";
 import { AutoEmbedPlugin } from "../../editor/plugins/embeds/auto-embed-plugin";
@@ -79,7 +78,7 @@ export function Plugins() {
               >
                 <ContentEditable
                   placeholder={"Start typing ..."}
-                  className="ContentEditable__root relative block min-h-52 p-3 overflow-auto focus:outline-none"
+                  className="ContentEditable__root relative block min-h-52 max-h-64 p-3 overflow-auto focus:outline-none"
                 />
               </div>
             </div>
@@ -87,7 +86,6 @@ export function Plugins() {
           ErrorBoundary={LexicalErrorBoundary}
         />
         {/* editor plugins */}
-        <AutocompletePlugin />
         <AutoEmbedPlugin />
         <FigmaPlugin />
         <YouTubePlugin />
