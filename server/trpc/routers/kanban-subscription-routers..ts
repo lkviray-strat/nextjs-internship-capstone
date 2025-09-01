@@ -1,4 +1,5 @@
 import { subscribeKanbanEvents } from "@/server/redis/kanban-sub";
+import { tracked } from "@trpc/server";
 import z from "zod";
 import { createTRPCRouter, protectedProcedure } from "../init";
 
@@ -16,9 +17,7 @@ export const kanbanSubscriptionRouter = createTRPCRouter({
       for await (const event of events) {
         if (event.payload.teamId !== input.teamId) continue;
         if (event.payload.projectId !== input.projectId) continue;
-        if (event.clientId === ctx.clientId) continue;
-
-        yield event;
+        yield tracked(ctx.clientId, event);
       }
     }),
 });
