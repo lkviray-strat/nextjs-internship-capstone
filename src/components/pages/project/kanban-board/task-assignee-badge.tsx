@@ -60,7 +60,7 @@ export function TaskAssigneeBadge({
           onClick={removeHandler}
           variant="ghostDestructive"
           size="icon"
-          className="!rounded-full !size-fit !p-1"
+          className="!rounded-full !size-fit !p-1 text-foreground"
         >
           <X className="size-[13px]" />
         </Button>

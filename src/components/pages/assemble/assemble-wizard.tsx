@@ -40,7 +40,8 @@ export function AssembleWizard() {
   const isSubmitting =
     teamHooks.isCreatingTeam ||
     teamMemberHooks.isCreatingTeamMember ||
-    form.formState.isSubmitting;
+    form.formState.isSubmitting ||
+    form.formState.isSubmitted;
 
   function onReset() {
     form.reset();

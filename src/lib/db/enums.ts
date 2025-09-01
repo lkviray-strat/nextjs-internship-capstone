@@ -22,6 +22,16 @@ export const KANBAN_COLUMN_TW_COLORS: Record<
 
 export const TASK_PRIORITY_ENUM = ["low", "medium", "high", "urgent"] as const;
 
+export const TASK_PRIORITY_TW_COLORS: Record<
+  (typeof TASK_PRIORITY_ENUM)[number],
+  string
+> = {
+  low: "bg-green-200 text-green-900",
+  medium: "bg-yellow-200 text-yellow-900",
+  high: "bg-orange-200 text-orange-900",
+  urgent: "bg-red-200 text-red-900",
+};
+
 export const PROJECT_STATUS_ENUM = [
   "planning",
   "active",

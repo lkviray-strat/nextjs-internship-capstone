@@ -2,13 +2,7 @@
 
 import { KanbanColumnsEmpty } from "@/src/components/states/empty-states";
 import {
-  Avatar,
-  AvatarFallback,
-  AvatarImage,
-} from "@/src/components/ui/avatar";
-import {
   KanbanBoard,
-  KanbanCard,
   KanbanCards,
   KanbanHeader,
   KanbanProvider,
@@ -23,17 +17,8 @@ import type { KanbanColumns, Tasks } from "../../../../types";
 import { useFetch } from "../../../../use/hooks/use-fetch";
 import { useKanbanColumns } from "../../../../use/hooks/use-kanban-columns";
 import { KanbanColumnDropdown } from "./column-dropdown";
-
-const dateFormatter = new Intl.DateTimeFormat("en-US", {
-  month: "short",
-  day: "numeric",
-  year: "numeric",
-});
-
-const shortDateFormatter = new Intl.DateTimeFormat("en-US", {
-  month: "short",
-  day: "numeric",
-});
+import { TaskCard } from "./task-card";
+import { TaskSheet } from "./task-sheet";
 
 export function Kanban() {
   const fetch = useFetch();
@@ -54,19 +39,24 @@ export function Kanban() {
 
   const board =
     searchParams.get("board")?.toString() ?? project[0].defaultBoardId ?? "";
+  const taskId = searchParams.get("task")?.toString() ?? undefined;
 
   const { data: kanbanBoard } = fetch.kanbanBoards.useGetMyKanbanBoardByFilter({
     projectId,
     board,
   });
 
-  // Local state for optimistic updates
+  const [selectedTaskId, setSelectedTaskId] = useState(taskId);
+
   const [optimisticColumns, setOptimisticColumns] = useState<KanbanColumns[]>(
     []
   );
   const [optimisticTasks, setOptimisticTasks] = useState<Tasks[]>([]);
 
-  // Sync optimistic state with query data when it changes
+  useEffect(() => {
+    setSelectedTaskId(taskId);
+  }, [taskId]);
+
   useEffect(() => {
     if (kanbanBoard?.columns) {
       const sortedColumns = kanbanBoard.columns
@@ -83,7 +73,7 @@ export function Kanban() {
       setOptimisticColumns(sortedColumns);
       setOptimisticTasks(allTasks);
     }
-  }, [kanbanBoard]); // Sync when query data changes
+  }, [kanbanBoard]);
 
   const columns = useMemo(() => {
     if (!kanbanBoard?.columns) return [];
@@ -112,7 +102,6 @@ export function Kanban() {
 
   const handleColumnReorder = useCallback(
     async (reorderedColumns: KanbanColumns[]) => {
-      // Optimistic update
       setOptimisticColumns(reorderedColumns);
 
       try {
@@ -129,7 +118,6 @@ export function Kanban() {
           });
         }
       } catch (error) {
-        // Revert optimistic update on error
         setOptimisticColumns(kanbanBoard?.columns || []);
         console.error("Failed to update column order:", error);
       }
@@ -139,7 +127,6 @@ export function Kanban() {
 
   const handleTaskReorder = useCallback(
     async (updatedTasks: Tasks[]) => {
-      // Optimistic update
       setOptimisticTasks(updatedTasks);
 
       try {
@@ -167,7 +154,6 @@ export function Kanban() {
           }
         }
       } catch (error) {
-        // Revert optimistic update on error
         setOptimisticTasks(tasks);
         toast.error("Failed to update task");
         console.log("Failed to update task order:", error);
@@ -178,75 +164,63 @@ export function Kanban() {
 
   if (kanbanBoard?.columns.length === 0) return <KanbanColumnsEmpty />;
 
+  const task = kanbanBoard?.columns
+    .map((col) => col.tasks)
+    .flat()
+    .find((t) => t.id.toString() === selectedTaskId);
+  const column = kanbanBoard?.columns.find(
+    (col) => col.id === task?.kanbanColumnId
+  );
+
   return (
-    <KanbanProvider
-      columns={columns}
-      data={tasks}
-      onDataChange={handleTaskReorder}
-      onColumnReorder={handleColumnReorder}
-      className="h-[calc(100vh-15rem)] w-full overflow-x-auto pb-3 px-4 sm:px-6 lg:px-8"
-    >
-      {(column) => (
-        <KanbanBoard
-          id={column.id}
-          key={column.id}
-          isColumnDraggable={isEditingMode}
-        >
-          <KanbanHeader
-            className="p-2 px-3"
-            columnId={column.id}
+    <>
+      <KanbanProvider
+        columns={columns}
+        data={tasks}
+        onDataChange={handleTaskReorder}
+        onColumnReorder={handleColumnReorder}
+        className="h-[calc(100vh-15rem)] w-full overflow-x-auto pb-3 px-4 sm:px-6 lg:px-8"
+      >
+        {(column) => (
+          <KanbanBoard
+            id={column.id}
+            key={column.id}
             isColumnDraggable={isEditingMode}
           >
-            <div className="flex flex-row justify-between items-center w-full">
-              <div className="flex text-[15px] py-2 items-center gap-2">
-                <div
-                  className="h-3 w-3 rounded-full"
-                  style={{ backgroundColor: column.color || "transparent" }}
-                />
-                <span>{column.name}</span>
-              </div>
-              {!isEditingMode && <KanbanColumnDropdown column={column} />}
-            </div>
-          </KanbanHeader>
-          <KanbanCards id={column.id}>
-            {(task) => (
-              <KanbanCard
-                id={task.id}
-                key={task.id}
-                title={task.title}
-                kanbanColumnId={column.id}
-              >
-                <div className="flex items-start justify-between gap-2">
-                  <div className="flex flex-col gap-1">
-                    <p className="m-0 flex-1 font-medium text-sm">
-                      {task.title}
-                    </p>
-                  </div>
-                  {task.assignee && (
-                    <Avatar
-                      className="h-4 w-4 shrink-0"
-                      content={`${task.assignee.firstName} ${task.assignee.lastName}`}
-                    >
-                      <AvatarImage
-                        src={task.assignee.profileImageUrl as string}
-                      />
-                      <AvatarFallback>
-                        {`${task.assignee.firstName}${task.assignee.lastName}`}
-                      </AvatarFallback>
-                    </Avatar>
-                  )}
+            <KanbanHeader
+              className="p-2 px-3"
+              columnId={column.id}
+              isColumnDraggable={isEditingMode}
+            >
+              <div className="flex flex-row justify-between items-center w-full">
+                <div className="flex text-[15px] py-2 items-center gap-2">
+                  <div
+                    className="size-3.5 rounded-full border-1 border-black"
+                    style={{ backgroundColor: column.color || "#FFFFFF" }}
+                  />
+                  <span>{column.name}</span>
                 </div>
-                {task.startDate && task.endDate && (
-                  <p className="m-0 text-muted-foreground text-xs">
-                    {shortDateFormatter.format(new Date(task.startDate))} -{" "}
-                    {dateFormatter.format(new Date(task.endDate))}
-                  </p>
-                )}
-              </KanbanCard>
-            )}
-          </KanbanCards>
-        </KanbanBoard>
+                {!isEditingMode && <KanbanColumnDropdown column={column} />}
+              </div>
+            </KanbanHeader>
+            <KanbanCards id={column.id}>
+              {(task) => (
+                <TaskCard
+                  key={task.id}
+                  task={task}
+                  columnId={column.id}
+                />
+              )}
+            </KanbanCards>
+          </KanbanBoard>
+        )}
+      </KanbanProvider>
+      {task && column && (
+        <TaskSheet
+          task={task}
+          column={{ name: column.name, color: column.color || "#FFFFFF" }}
+        />
       )}
-    </KanbanProvider>
+    </>
   );
 }
