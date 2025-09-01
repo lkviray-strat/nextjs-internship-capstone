@@ -35,7 +35,7 @@ export async function createTaskAction(task: CreateTaskRequestInput) {
     const latestTask = await queries.tasks.getTasksByProjectIdDescLimit(
       parsed.projectId
     );
-    if (latestTask) parsed.taskNumber = latestTask[0].taskNumber + 1;
+    if (latestTask.length > 0) parsed.taskNumber = latestTask[0].taskNumber + 1;
 
     const result = await queries.tasks.createTask(parsed);
 

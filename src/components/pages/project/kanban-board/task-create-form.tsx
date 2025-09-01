@@ -77,7 +77,6 @@ export function TaskCreateForm({ setOpen, column }: TaskCreateFormProps) {
     if (isSubmitting) return;
 
     try {
-      console.log(projectId);
       await taskHooks.createTask({
         ...values,
         teamId,
@@ -131,6 +130,8 @@ export function TaskCreateForm({ setOpen, column }: TaskCreateFormProps) {
       >
         <div className="flex flex-col gap-5">
           <TaskCreateDetails control={form.control} />
+          <TaskCreateAssign control={form.control} />
+
           <div className="flex flex-col lphone:flex-row gap-5 w-full">
             <TaskCreateSelects control={form.control} />
           </div>
@@ -141,7 +142,6 @@ export function TaskCreateForm({ setOpen, column }: TaskCreateFormProps) {
               endDate={endDate}
             />
           </div>
-          <TaskCreateAssign control={form.control} />
 
           <Button
             type="submit"

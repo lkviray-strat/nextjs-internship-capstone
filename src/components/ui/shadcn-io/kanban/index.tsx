@@ -17,6 +17,7 @@ import {
   DragOverlay,
   KeyboardSensor,
   MouseSensor,
+  PointerSensor,
   TouchSensor,
   useDroppable,
   useSensor,
@@ -135,6 +136,7 @@ export const KanbanBoard = ({
 export type KanbanCardProps<T extends KanbanItemProps = KanbanItemProps> = T & {
   children?: ReactNode;
   className?: string;
+  onClick?: () => void;
 };
 
 export const KanbanCard = <T extends KanbanItemProps = KanbanItemProps>({
@@ -142,6 +144,7 @@ export const KanbanCard = <T extends KanbanItemProps = KanbanItemProps>({
   title,
   children,
   className,
+  onClick,
 }: KanbanCardProps<T>) => {
   const {
     attributes,
@@ -165,10 +168,11 @@ export const KanbanCard = <T extends KanbanItemProps = KanbanItemProps>({
         {...listeners}
         {...attributes}
         ref={setNodeRef}
+        onClick={onClick}
       >
         <Card
           className={cn(
-            "cursor-grab gap-4 rounded-md p-3 shadow-sm",
+            "cursor-pointer gap-4 rounded-md p-3 shadow-sm",
             isDragging && "pointer-events-none cursor-grabbing opacity-30",
             className
           )}
@@ -300,8 +304,9 @@ export const KanbanProvider = <
   const [activeColumnId, setActiveColumnId] = useState<string | null>(null);
 
   const sensors = useSensors(
-    useSensor(MouseSensor),
-    useSensor(TouchSensor),
+    useSensor(MouseSensor, { activationConstraint: { distance: 5 } }),
+    useSensor(TouchSensor, { activationConstraint: { distance: 5 } }),
+    useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
     useSensor(KeyboardSensor)
   );
 
