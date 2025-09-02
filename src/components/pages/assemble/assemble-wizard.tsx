@@ -101,13 +101,14 @@ export function AssembleWizard() {
         toast.error(error.message);
         console.log("Submission error:", error);
       } else {
-        toast.error("Unknown Error. Failed to create project");
+        toast.error("Unknown Error. Failed to create team");
         console.log("Submission error:", error);
       }
     }
   }
 
   function onError(error: unknown) {
+    toast.error("Unknown Error. Failed to create team");
     console.log("Submission error:", error);
   }
 

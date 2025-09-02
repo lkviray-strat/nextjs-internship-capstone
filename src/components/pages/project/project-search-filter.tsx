@@ -4,6 +4,7 @@ import { Search } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 import { FormProvider, useForm } from "react-hook-form";
+import { toast } from "sonner";
 import {
   projectFiltersToSearchParams,
   searchParamsToProjectFilters,
@@ -39,6 +40,7 @@ export function ProjectSearchFilter() {
   }
 
   function onError(error: unknown) {
+    toast.error("Unknown Error. Failed to filter project");
     console.log("Submission error:", error);
   }
 

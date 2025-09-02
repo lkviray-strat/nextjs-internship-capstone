@@ -58,6 +58,7 @@ export function KanbanColumnUpdateForm({
   }
 
   function onError(error: unknown) {
+    toast.error("Unknown Error. Failed to update column");
     console.log("Submission error:", error);
   }
 

@@ -58,6 +58,7 @@ export function ProjectCreateForm({ setOpen }: ProjectCreateForm) {
   }
 
   function onError(error: unknown) {
+    toast.error("Unknown Error. Failed to create project");
     console.log("Submission error:", error);
   }
 
