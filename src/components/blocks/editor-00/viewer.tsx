@@ -10,6 +10,8 @@ import { editorConfig } from "./editor";
 export function Viewer({
   editorState,
   editorSerializedState,
+  onChange,
+  onSerializedChange,
 }: {
   editorState?: EditorState;
   editorSerializedState?: SerializedEditorState;
@@ -52,7 +54,13 @@ export function Viewer({
         }
         ErrorBoundary={LexicalErrorBoundary}
       />
-      <OnChangePlugin onChange={() => {}} />
+      <OnChangePlugin
+        ignoreSelectionChange={true}
+        onChange={(editorState) => {
+          onChange?.(editorState);
+          onSerializedChange?.(editorState.toJSON());
+        }}
+      />
     </LexicalComposer>
   );
 }
