@@ -48,6 +48,8 @@ export function ProjectHeader({ showOptions = true }: ProjectHeaderProps) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const isArchived = project.data[0].status === "archived";
+
   return (
     <div className="flex flex-col items-end gap-4">
       <div className="flex w-full flex-col sm:flex-row justify-center items-start sm:justify-between sm:items-center gap-3 -mt-4 px-4 sm:px-6 lg:px-8">
@@ -88,26 +90,32 @@ export function ProjectHeader({ showOptions = true }: ProjectHeaderProps) {
           </div>
         )}
       </div>
-      <div className="flex border-y-1 py-3 w-full flex-col sm:flex-row justify-end gap-3 px-4 sm:px-6 lg:px-8">
-        <ProjectHeaderSelect
-          kanbanBoards={kanbanBoards.data}
-          project={project.data[0]}
-        />
-        <Button
-          variant="outline"
-          onClick={handleEditingMode}
-        >
-          {isEditingMode ? (
-            <span className="text-yellow-500 flex gap-2 items-center ">
-              <GripVertical /> Dragging Mode
-            </span>
-          ) : (
-            <>
-              <View /> Viewing Mode
-            </>
-          )}
-        </Button>
-        {kanbanBoards.data.length > 0 && <CreateColumnModal />}
+      <div className="relative w-full">
+        {isArchived && (
+          <div className="absolute inset-0 bg-black/70 flex items-center justify-center cursor-not-allowed text-xl font-semibold text-gray-600 pointer-events-auto"></div>
+        )}
+        <div className="flex border-y-1 py-3 w-full flex-col sm:flex-row justify-end gap-3 px-4 sm:px-6 lg:px-8">
+          <ProjectHeaderSelect
+            kanbanBoards={kanbanBoards.data}
+            project={project.data[0]}
+          />
+
+          <Button
+            variant="outline"
+            onClick={handleEditingMode}
+          >
+            {isEditingMode ? (
+              <span className="text-yellow-500 flex gap-2 items-center ">
+                <GripVertical /> Dragging Mode
+              </span>
+            ) : (
+              <>
+                <View /> Viewing Mode
+              </>
+            )}
+          </Button>
+          {kanbanBoards.data.length > 0 && <CreateColumnModal />}
+        </div>
       </div>
     </div>
   );

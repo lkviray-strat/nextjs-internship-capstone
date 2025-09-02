@@ -101,6 +101,11 @@ export function getTimeLastUpdated(endDate: string | Date) {
   return "Last updated " + raw + " ago";
 }
 
+export function getTimeCreated(createdAt: string | Date) {
+  const raw = formatDistanceToNow(new Date(createdAt));
+  return "Created " + raw + " ago";
+}
+
 export function searchParamsToProjectFilters(
   searchParams: URLSearchParams
 ): Omit<ProjectFilters, "teamId"> {

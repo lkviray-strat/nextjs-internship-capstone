@@ -4,9 +4,11 @@ import {
   AvatarFallback,
   AvatarImage,
 } from "@/src/components/ui/avatar";
+import { Button } from "@/src/components/ui/button";
 import { Separator } from "@/src/components/ui/separator";
 import {
   Sheet,
+  SheetClose,
   SheetContent,
   SheetDescription,
   SheetHeader,
@@ -14,16 +16,18 @@ import {
   SheetTrigger,
 } from "@/src/components/ui/sheet";
 import {
-  getTimeLastUpdated,
+  getTimeCreated,
   getUserInitials,
   type WithRelations,
 } from "@/src/lib/utils";
 import type { Tasks, User } from "@/src/types";
 import { useFetch } from "@/src/use/hooks/use-fetch";
 import type { SerializedEditorState } from "lexical";
+import { X } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { TaskSheetComments } from "./task-sheet-comments";
 import { TaskSheetDetails } from "./task-sheet-details";
+import { TaskSheetDropdown } from "./task-sheet-dropdown";
 
 type TaskSheetProps = {
   task: WithRelations<Tasks, { assignee: User | null }>;
@@ -59,9 +63,9 @@ export function TaskSheet({ task, column }: TaskSheetProps) {
       onOpenChange={(isOpen) => isOpen || handleClose()}
     >
       <SheetTrigger asChild></SheetTrigger>
-      <SheetContent className="py-5 sm:py-7 w-full sm:max-w-3/4 md:max-w-1/2 overflow-y-auto">
-        <SheetHeader className="px-4 sm:px-9">
-          <SheetTitle className="flex flex-col gap-1">
+      <SheetContent className="py-5 sm:pb-7 w-full sm:max-w-3/4 md:max-w-1/2 overflow-y-auto">
+        <SheetHeader className="flex flex-col sm:flex-row px-4 sm:px-9 w-full items-start justify-between">
+          <SheetTitle className="flex flex-col gap-1 order-2 sm:order-1 w-full">
             <span className="text-[40px] font-semibold">
               {task.title}{" "}
               <span className="text-muted-foreground ml-1">
@@ -90,11 +94,23 @@ export function TaskSheet({ task, column }: TaskSheetProps) {
               {taskCreatedBy[0]?.firstName} {taskCreatedBy[0]?.lastName}
               <span className="text-muted-foreground">&nbsp;•&nbsp;</span>
               <span className="text-muted-foreground">
-                {getTimeLastUpdated(task.updatedAt)}
+                {getTimeCreated(task.createdAt)}
               </span>
             </div>
           </SheetTitle>
           <SheetDescription></SheetDescription>
+          <div className="flex gap-1 sm:gap-2 order-1 sm:order-2 mb-3 sm:mb-0">
+            <TaskSheetDropdown task={task} />
+            <SheetClose asChild>
+              <Button
+                variant="ghostDestructive"
+                size="icon"
+                className="rounded-full mt-2"
+              >
+                <X className="size-5" />
+              </Button>
+            </SheetClose>
+          </div>
         </SheetHeader>
 
         <div className="flex flex-col gap-8">
@@ -107,6 +123,7 @@ export function TaskSheet({ task, column }: TaskSheetProps) {
             <span className="text-[24px] font-semibold">Description</span>
             <div className="rounded-md w-full -mt-2">
               <Viewer
+                key={JSON.stringify(task.description)}
                 editorSerializedState={
                   task.description as SerializedEditorState
                 }

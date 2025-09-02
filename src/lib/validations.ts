@@ -83,7 +83,7 @@ export const taskSchema = z
         if (date.input === undefined) {
           return "Start date is required.";
         }
-        return "Invalid date format.";
+        return date.message;
       },
     }),
     endDate: z.date({
@@ -91,7 +91,7 @@ export const taskSchema = z
         if (date.input === undefined) {
           return "End date is required.";
         }
-        return "Invalid date format.";
+        return date.message;
       },
     }),
     estimatedHours: z.coerce
@@ -148,7 +148,7 @@ export const projectsSchema = z
         if (date.input === undefined) {
           return "Start date is required.";
         }
-        return "Invalid date format.";
+        return date.message;
       },
     }),
     endDate: z.date({
@@ -156,7 +156,7 @@ export const projectsSchema = z
         if (date.input === undefined) {
           return "End date is required.";
         }
-        return "Invalid date format.";
+        return date.message;
       },
     }),
     defaultBoardId: z.guid().nullable(),
@@ -293,6 +293,8 @@ export const updateTaskRequestSchema = taskSchema
   })
   .extend({
     id: taskSchema.shape.id,
+    createdById: taskSchema.shape.createdById,
+    assigneeId: taskSchema.shape.assigneeId,
   });
 
 export const updateCommentRequestSchema = commentsSchema

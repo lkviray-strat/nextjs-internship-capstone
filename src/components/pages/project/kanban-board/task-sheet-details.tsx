@@ -32,11 +32,11 @@ export function TaskSheetDetails({ task, column }: TaskSheetProps) {
   return (
     <div className="grid grid-cols-2 gap-x-5 gap-5 px-5 sm:px-10 w-fit items-center text-[15px]">
       <TaskSheetItem
-        label="Date Created"
+        label="Start Date"
         labelIcon={Calendar}
       >
         {task.startDate
-          ? dateFormatter.format(new Date(task.createdAt))
+          ? dateFormatter.format(new Date(task.startDate))
           : "Unknown"}
       </TaskSheetItem>
 

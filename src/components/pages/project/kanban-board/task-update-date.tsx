@@ -9,21 +9,21 @@ import {
   FormMessage,
 } from "@/src/components/ui/form";
 import { Input } from "@/src/components/ui/input";
-import type { CreateTaskRequestInput } from "@/src/types";
+import type { UpdateTaskRequestInput } from "@/src/types";
 import { format } from "date-fns";
 import type { useForm } from "react-hook-form";
 
-type TaskCreateDateProps = {
+type TaskUpdateDateProps = {
   startDate: Date;
   endDate: Date;
-  control: ReturnType<typeof useForm<CreateTaskRequestInput>>["control"];
+  control: ReturnType<typeof useForm<UpdateTaskRequestInput>>["control"];
 };
 
-export function TaskCreateDate({
+export function TaskUpdateDate({
   control,
   startDate,
   endDate,
-}: TaskCreateDateProps) {
+}: TaskUpdateDateProps) {
   return (
     <div className="flex flex-col lphone:flex-row gap-5">
       <FormField

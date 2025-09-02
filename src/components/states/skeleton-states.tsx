@@ -84,7 +84,7 @@ export function CommentsSkeleton() {
           key={index}
           className="flex gap-4 w-full h-fit"
         >
-          <Skeleton className="size-10 shrink-0" />
+          <Skeleton className="size-10 rounded-full shrink-0" />
           <div className="flex flex-col w-full mt-1 gap-1">
             <Skeleton className="w-1/4 h-3" />
             <Skeleton className="w-3/4 h-3" />

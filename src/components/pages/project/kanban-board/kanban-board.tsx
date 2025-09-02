@@ -150,6 +150,8 @@ export function Kanban() {
               teamId,
               projectId,
               boardId: board,
+              assigneeId: task.assigneeId as string,
+              createdById: task.createdById as string,
             });
           }
         }
@@ -172,8 +174,13 @@ export function Kanban() {
     (col) => col.id === task?.kanbanColumnId
   );
 
+  const isArchived = project?.[0]?.status === "archived";
+
   return (
-    <>
+    <div className="relative">
+      {isArchived && (
+        <div className="absolute inset-0 bg-black/70 flex items-center justify-center cursor-not-allowed text-xl font-semibold text-gray-600 pointer-events-auto"></div>
+      )}
       <KanbanProvider
         columns={columns}
         data={tasks}
@@ -221,6 +228,6 @@ export function Kanban() {
           column={{ name: column.name, color: column.color || "#FFFFFF" }}
         />
       )}
-    </>
+    </div>
   );
 }
