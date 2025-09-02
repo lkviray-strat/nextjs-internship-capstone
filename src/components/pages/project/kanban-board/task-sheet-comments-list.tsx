@@ -1,3 +1,5 @@
+import { CommentsEmpty } from "@/src/components/states/empty-states";
+import { CommentsError } from "@/src/components/states/error-states";
 import { useFetch } from "@/src/use/hooks/use-fetch";
 import { useEffect } from "react";
 import { TaskSheetCommentsCard } from "./task-sheet-comments-card";
@@ -24,8 +26,8 @@ export function TaskSheetCommentsList({
     }
   }, [commentCount, setCommentCount]);
 
-  if (isError) return null;
-  if (comments.length === 0) return null;
+  if (isError) return <CommentsError />;
+  if (comments.length === 0) return <CommentsEmpty />;
 
   return (
     <>
