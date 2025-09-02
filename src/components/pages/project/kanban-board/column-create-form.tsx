@@ -19,7 +19,6 @@ import { Button } from "@/src/components/ui/button";
 import { Form } from "@/src/components/ui/form";
 import Color from "color";
 import { KanbanColumnCreateDetails } from "./column-create-details";
-import type { projects } from "@/src/lib/db/models";
 
 type KanbanColumnCreateFormProps = {
   setOpen: (open: boolean) => void;
@@ -67,6 +66,7 @@ export function KanbanColumnCreateForm({
   }
 
   function onError(error: unknown) {
+    toast.error("Unknown Error. Failed to create column");
     console.log("Submission error:", error);
   }
 

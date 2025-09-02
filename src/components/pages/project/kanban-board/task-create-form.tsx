@@ -70,6 +70,7 @@ export function TaskCreateForm({ setOpen, column }: TaskCreateFormProps) {
   }
 
   function onError(error: unknown) {
+    toast.error("Unknown Error. Failed to create task");
     console.log("Submission error:", error);
   }
 

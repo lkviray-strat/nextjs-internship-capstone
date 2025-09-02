@@ -64,6 +64,7 @@ export function ProjectUpdateForm() {
   }
 
   function onError(error: unknown) {
+    toast.error("Unknown Error. Failed to update project");
     console.log("Submission error:", error);
   }
 
