@@ -90,6 +90,13 @@ export function useFetch() {
         );
       },
     },
+    teamMembers: {
+      useGetMyTeamMembers: (teamId: string) => {
+        return useSuspenseQuery(
+          trpc.teamMembers.getMyTeamMembers.queryOptions({ teamId })
+        );
+      },
+    },
     projectTeams: {
       useGetProjectTeamsByProjectIdWithTeamMembers: (
         projectId: string,
