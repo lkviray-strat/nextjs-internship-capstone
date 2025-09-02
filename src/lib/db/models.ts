@@ -70,13 +70,15 @@ export const tasks = pgTable(
       .generatedAlwaysAsIdentity({ startWith: 10000 }),
     title: varchar("title", { length: 255 }).notNull(),
     description: jsonb("description"),
-    projectId: uuid("project_id").references(() => projects.id, {
-      onDelete: "cascade",
-    }),
+    projectId: uuid("project_id")
+      .references(() => projects.id, {
+        onDelete: "cascade",
+      })
+      .notNull(),
     priority: taskPriorityEnum("priority").notNull().default("low"),
-    startDate: timestamp("start_date"),
-    endDate: timestamp("end_date"),
-    estimatedHours: integer("estimated_hours"),
+    startDate: timestamp("start_date").notNull(),
+    endDate: timestamp("end_date").notNull(),
+    estimatedHours: integer("estimated_hours").notNull(),
     assigneeId: varchar("assignee_id").references(() => users.id, {
       onDelete: "set null",
     }),

@@ -29,7 +29,7 @@ export function KanbanColumnCreateForm({
 }: KanbanColumnCreateFormProps) {
   const columnHooks = useKanbanColumns();
   const fetch = useFetch();
-  const { currentBoardId } = useBoardStore();
+  const { currentBoardIds } = useBoardStore();
   const { user } = useUser();
   const { teamId, projectId } = useParams<{
     teamId: string;
@@ -106,12 +106,12 @@ export function KanbanColumnCreateForm({
   }
 
   useEffect(() => {
-    if (currentBoardId) {
-      form.setValue("boardId", currentBoardId);
+    if (currentBoardIds[projectId]) {
+      form.setValue("boardId", currentBoardIds[projectId]);
     } else {
       form.setValue("boardId", projects[0].defaultBoardId ?? "");
     }
-  }, [user, teamId, form, currentBoardId, projects]);
+  }, [user, teamId, form, currentBoardIds, projects, projectId]);
 
   return (
     <Form {...form}>

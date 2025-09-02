@@ -6,6 +6,7 @@ import {
 import { KanbanCard } from "@/src/components/ui/shadcn-io/kanban";
 import {
   dateFormatter,
+  getUserInitials,
   shortDateFormatter,
   type MakeSomeRequired,
   type WithRelations,
@@ -52,7 +53,10 @@ export function TaskCard({ task, columnId }: TaskCardProps) {
           >
             <AvatarImage src={task.assignee.profileImageUrl as string} />
             <AvatarFallback>
-              {`${task.assignee.firstName}${task.assignee.lastName}`}
+              {getUserInitials(
+                task.assignee.firstName!,
+                task.assignee.lastName!
+              )}
             </AvatarFallback>
           </Avatar>
         )}
