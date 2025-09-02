@@ -9,6 +9,7 @@ import {
 } from "@/src/components/ui/dropdown-menu";
 import type { Tasks } from "@/src/types";
 import { MoreHorizontal } from "lucide-react";
+import { DeleteTaskModal } from "../../modals/delete-task-modal";
 import { UpdateTaskModal } from "../../modals/update-task-modal";
 
 type TaskSheetDropdownProps = {
@@ -33,13 +34,14 @@ export function TaskSheetDropdown({ task }: TaskSheetDropdownProps) {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent
-        align="end"
-        side="bottom"
+        align="start"
+        side="right"
         onClick={handlePropagation}
       >
         <DropdownMenuGroup>
           <UpdateTaskModal task={task} />
         </DropdownMenuGroup>
+        <DeleteTaskModal id={task.id} />
       </DropdownMenuContent>
     </DropdownMenu>
   );
