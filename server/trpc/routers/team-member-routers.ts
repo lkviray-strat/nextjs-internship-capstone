@@ -1,3 +1,4 @@
+import { queries } from "@/src/lib/db/queries";
 import { hasPermission } from "@/src/lib/permissions";
 import {
   createTeamMemberRequestSchema,
@@ -13,6 +14,28 @@ import z from "zod";
 import { createTRPCRouter, protectedProcedure } from "../init";
 
 export const teamMemberRouter = createTRPCRouter({
+  getMyTeamMembers: protectedProcedure
+    .input(
+      z.object({
+        teamId: z.guid(),
+      })
+    )
+    .query(async ({ ctx, input }) => {
+      const teamMember = await queries.teamMembers.getTeamMembersByIds(
+        ctx.auth.userId,
+        input.teamId
+      );
+
+      if (teamMember.length === 0) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "You do not belong to this team",
+        });
+      }
+
+      return await queries.teamMembers.getTeamMembersByTeamId(input.teamId);
+    }),
+
   createTeamMember: protectedProcedure
     .input(createTeamMemberRequestSchema)
     .mutation(async ({ ctx, input }) => {
@@ -33,12 +56,15 @@ export const teamMemberRouter = createTRPCRouter({
   updateTeamMember: protectedProcedure
     .input(updateTeamMemberRequestSchema)
     .mutation(async ({ ctx, input }) => {
-      const user = ctx.auth.userId === input.userId;
+      const teamMember = await queries.teamMembers.getTeamMembersByIds(
+        ctx.auth.userId,
+        input.teamId
+      );
 
-      if (!user) {
+      if (teamMember.length === 0) {
         throw new TRPCError({
-          code: "FORBIDDEN",
-          message: "You are not allowed to update a team member for this user.",
+          code: "NOT_FOUND",
+          message: "You do not belong to this team",
         });
       }
 
@@ -65,12 +91,15 @@ export const teamMemberRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ ctx, input }) => {
-      const user = ctx.auth.userId === input.userId;
+      const teamMember = await queries.teamMembers.getTeamMembersByIds(
+        ctx.auth.userId,
+        input.teamId
+      );
 
-      if (!user) {
+      if (teamMember.length === 0) {
         throw new TRPCError({
-          code: "FORBIDDEN",
-          message: "You are not allowed to delete a team member for this user.",
+          code: "NOT_FOUND",
+          message: "You do not belong to this team",
         });
       }
 

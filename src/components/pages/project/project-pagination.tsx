@@ -1,3 +1,6 @@
+"use client";
+
+import { usePathname } from "next/navigation";
 import { projectFiltersToSearchParams } from "../../../lib/utils";
 import type { ProjectFilters } from "../../../types";
 import {
@@ -20,13 +23,14 @@ export function ProjectPagination({
   totalPages,
 }: ProjectPaginationProps) {
   const { page, ...otherFilters } = filters;
+  const pathname = usePathname();
 
-  const buildQueryString = (targetPage: number) => {
+  const buildHref = (targetPage: number) => {
     const params = projectFiltersToSearchParams({
       ...otherFilters,
       page: targetPage,
     });
-    return params.toString();
+    return `${pathname}?${params.toString()}`;
   };
 
   return (
@@ -35,29 +39,30 @@ export function ProjectPagination({
         {page > 1 && (
           <>
             <PaginationItem>
-              <PaginationPrevious
-                href={`/projects?${buildQueryString(page - 1)}`}
-              />
+              <PaginationPrevious href={buildHref(page - 1)} />
             </PaginationItem>
+
             {page > 2 && (
               <PaginationItem>
                 <PaginationEllipsis />
               </PaginationItem>
             )}
+
             <PaginationItem>
               <PaginationLink
                 isActive={false}
-                href={`/projects?${buildQueryString(page - 1)}`}
+                href={buildHref(page - 1)}
               >
                 {page - 1}
               </PaginationLink>
             </PaginationItem>
           </>
         )}
+
         <PaginationItem>
           <PaginationLink
             isActive
-            href={`/projects?${buildQueryString(page)}`}
+            href={buildHref(page)}
           >
             {page}
           </PaginationLink>
@@ -66,7 +71,7 @@ export function ProjectPagination({
         {page < totalPages && (
           <>
             <PaginationItem>
-              <PaginationLink href={`/projects?${buildQueryString(page + 1)}`}>
+              <PaginationLink href={buildHref(page + 1)}>
                 {page + 1}
               </PaginationLink>
             </PaginationItem>
@@ -78,9 +83,7 @@ export function ProjectPagination({
             )}
 
             <PaginationItem>
-              <PaginationNext
-                href={`/projects?${buildQueryString(page + 1)}`}
-              />
+              <PaginationNext href={buildHref(page + 1)} />
             </PaginationItem>
           </>
         )}
