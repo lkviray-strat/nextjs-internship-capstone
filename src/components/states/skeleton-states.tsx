@@ -75,3 +75,22 @@ export function ProjectGridSkeleton() {
     </>
   );
 }
+
+export function CommentsSkeleton() {
+  return (
+    <>
+      {Array.from({ length: 3 }).map((_, index) => (
+        <div
+          key={index}
+          className="flex gap-4 w-full h-fit"
+        >
+          <Skeleton className="size-10 shrink-0" />
+          <div className="flex flex-col w-full mt-1 gap-1">
+            <Skeleton className="w-1/4 h-3" />
+            <Skeleton className="w-3/4 h-3" />
+          </div>
+        </div>
+      ))}
+    </>
+  );
+}
