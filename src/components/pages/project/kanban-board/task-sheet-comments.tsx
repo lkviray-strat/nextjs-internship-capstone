@@ -1,3 +1,4 @@
+import { CommentsSkeleton } from "@/src/components/states/skeleton-states";
 import { Suspense, useState } from "react";
 import { CommentCreateForm } from "./comment-create-form";
 import { TaskSheetCommentsList } from "./task-sheet-comments-list";
@@ -16,8 +17,8 @@ export function TaskSheetComments({ taskId }: TaskSheetCommentsProps) {
         {commentCount > 0 && <span className="ml-2">({commentCount})</span>}
       </span>
       <CommentCreateForm taskId={taskId} />
-      <div className="flex flex-col gap-5 mt-2">
-        <Suspense fallback={<div>Loading comments...</div>}>
+      <div className="flex flex-col gap-6 mt-5">
+        <Suspense fallback={<CommentsSkeleton />}>
           <TaskSheetCommentsList
             taskId={taskId}
             setCommentCount={setCommentCount}

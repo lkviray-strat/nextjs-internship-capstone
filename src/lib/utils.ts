@@ -246,6 +246,7 @@ export function sanitizeSerializedEditorState(
 ): SerializedEditorState {
   if (!state || !("root" in state)) return state;
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const isEmptyNode = (node: any): boolean => {
     if (node.type === "text") {
       return node.text.trim() === "";
@@ -256,6 +257,7 @@ export function sanitizeSerializedEditorState(
     return false;
   };
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const sanitizeNode = (node: any): any => {
     if (node == null) return node;
 
@@ -270,8 +272,9 @@ export function sanitizeSerializedEditorState(
 
     // Recurse into children
     if (node.children && Array.isArray(node.children)) {
-      let children = node.children
+      const children = node.children
         .map(sanitizeNode)
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         .filter((child: any) => !isEmptyNode(child));
 
       return {

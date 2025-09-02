@@ -105,7 +105,7 @@ export function TaskSheet({ task, column }: TaskSheetProps) {
           <Separator />
           <div className="flex flex-col gap-4 px-5 sm:px-10">
             <span className="text-[24px] font-semibold">Description</span>
-            <div className="rounded-md w-full">
+            <div className="rounded-md w-full -mt-2">
               <Viewer
                 editorSerializedState={
                   task.description as SerializedEditorState

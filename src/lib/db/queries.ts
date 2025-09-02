@@ -259,6 +259,7 @@ export const queries = {
         with: {
           author: true,
         },
+        orderBy: asc(comments.createdAt),
       });
     },
   },

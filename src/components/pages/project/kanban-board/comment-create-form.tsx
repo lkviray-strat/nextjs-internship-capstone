@@ -77,6 +77,7 @@ export function CommentCreateForm({ taskId }: CommentCreateFormProps) {
   }
 
   function onError(error: unknown) {
+    toast.error("Unknown Error. Failed to create comment");
     console.log("Submission error:", error);
   }
 
@@ -154,6 +155,7 @@ export function CommentCreateForm({ taskId }: CommentCreateFormProps) {
                     <Comment
                       key={nextId}
                       onChange={setEditorState}
+                      isSubmitting={isSubmitting}
                       editorSerializedState={
                         field.value as SerializedEditorState
                       }

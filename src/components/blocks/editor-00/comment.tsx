@@ -94,7 +94,7 @@ export function Comment({
                     >
                       <ContentEditable
                         placeholder={"Write a comment..."}
-                        className="ContentEditable__root relative block h-28 p-3 overflow-auto focus:outline-none"
+                        className="ContentEditable__root relative block h-20 p-3 overflow-auto focus:outline-none"
                       />
                     </div>
                   </div>
