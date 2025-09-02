@@ -10,8 +10,9 @@ import {
 import { useUIStore } from "@/src/stores/ui-store";
 import { useKanbanSubscription } from "@/src/use/hooks/use-subscribe";
 import { useTasks } from "@/src/use/hooks/use-tasks";
+import { Loader2 } from "lucide-react";
 import { useParams, useSearchParams } from "next/navigation";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { Suspense, useCallback, useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import type { KanbanColumns, Tasks } from "../../../../types";
 import { useFetch } from "../../../../use/hooks/use-fetch";
@@ -177,14 +178,14 @@ export function Kanban() {
   return (
     <div className="relative">
       {isArchived && (
-        <div className="absolute inset-0 bg-black/70 flex items-center justify-center cursor-not-allowed text-xl font-semibold text-gray-600 pointer-events-auto"></div>
+        <div className="absolute z-10 inset-0 bg-black/70 flex items-center justify-center cursor-not-allowed text-xl font-semibold text-gray-600 pointer-events-auto"></div>
       )}
       <KanbanProvider
         columns={columns}
         data={tasks}
         onDataChange={handleTaskReorder}
         onColumnReorder={handleColumnReorder}
-        className="h-[calc(100vh-15rem)] w-full overflow-x-auto pb-3 px-4 sm:px-6 lg:px-8"
+        className="h-[calc(100vh-15rem)] -z-[10] w-full overflow-x-auto pb-3 px-4 sm:px-6 lg:px-8"
       >
         {(column) => (
           <KanbanBoard
@@ -221,10 +222,12 @@ export function Kanban() {
         )}
       </KanbanProvider>
       {task && column && (
-        <TaskSheet
-          task={task}
-          column={{ name: column.name, color: column.color || "#FFFFFF" }}
-        />
+        <Suspense fallback={<Loader2 className="absolute inset-0 m-auto" />}>
+          <TaskSheet
+            task={task}
+            column={{ name: column.name, color: column.color || "#FFFFFF" }}
+          />
+        </Suspense>
       )}
     </div>
   );
