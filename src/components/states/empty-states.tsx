@@ -50,3 +50,16 @@ export function KanbanColumnsEmpty() {
     </div>
   );
 }
+
+export function CommentsEmpty() {
+  return (
+    <div className="flex mt-8 text-center flex-col items-center justify-center gap-1">
+      <h1 className="text-[18px] sm:text-[20px] font-semibold text-muted-foreground ">
+        No Comments Found
+      </h1>
+      <p className="text-[12px] sm:text-[14px] mb-7 text-muted-foreground">
+        Start the conversation by adding a comment.
+      </p>
+    </div>
+  );
+}

@@ -34,3 +34,17 @@ export function ProjectGridError(e: TRPCClientErrorLike<AppRouter>) {
     </div>
   );
 }
+
+export function CommentsError() {
+  return (
+    <div className="flex mt-8 text-center flex-col items-center justify-center gap-1">
+      <h1 className="text-[18px] sm:text-[20px] font-semibold text-red-500">
+        Error Loading Comments
+      </h1>
+      <p className="text-[12px] sm:text-[14px] max-w-[400px] mb-7 text-red-500">
+        An unexpected error occurred while loading comments. Please try again
+        later or contact support.
+      </p>
+    </div>
+  );
+}
