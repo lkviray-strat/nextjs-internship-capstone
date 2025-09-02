@@ -18,6 +18,7 @@ import {
 import {
   getTimeCreated,
   getUserInitials,
+  sanitizeSerializedEditorState,
   type WithRelations,
 } from "@/src/lib/utils";
 import type { Tasks, User } from "@/src/types";
@@ -44,6 +45,10 @@ export function TaskSheet({ task, column }: TaskSheetProps) {
   const fetch = useFetch();
 
   const open = !!task;
+  const sanitized = sanitizeSerializedEditorState(
+    task.description as SerializedEditorState
+  );
+  const isEditorEmpty = sanitized.root.children.length === 0;
 
   const handleClose = () => {
     const params = new URLSearchParams(searchParams.toString());
@@ -122,12 +127,18 @@ export function TaskSheet({ task, column }: TaskSheetProps) {
           <div className="flex flex-col gap-4 px-5 sm:px-10">
             <span className="text-[24px] font-semibold">Description</span>
             <div className="rounded-md w-full -mt-2">
-              <Viewer
-                key={JSON.stringify(task.description)}
-                editorSerializedState={
-                  task.description as SerializedEditorState
-                }
-              />
+              {isEditorEmpty ? (
+                <p className="text-muted-foreground italic">
+                  No description available
+                </p>
+              ) : (
+                <Viewer
+                  key={JSON.stringify(task.description)}
+                  editorSerializedState={
+                    task.description as SerializedEditorState
+                  }
+                />
+              )}
             </div>
           </div>
           <Separator />

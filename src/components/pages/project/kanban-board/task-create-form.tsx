@@ -44,7 +44,7 @@ export function TaskCreateForm({ setOpen, column }: TaskCreateFormProps) {
       order: 0,
       estimatedHours: 0,
       projectId: projectId,
-      createdById: user?.id ?? "",
+      createdById: user?.id || "",
       assigneeId: undefined,
       startDate: undefined,
       endDate: undefined,
@@ -78,6 +78,7 @@ export function TaskCreateForm({ setOpen, column }: TaskCreateFormProps) {
     if (isSubmitting) return;
 
     try {
+      console.log("Submitting task:", values);
       await taskHooks.createTask({
         ...values,
         teamId,

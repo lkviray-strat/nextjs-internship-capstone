@@ -150,8 +150,6 @@ export function Kanban() {
               teamId,
               projectId,
               boardId: board,
-              assigneeId: task.assigneeId as string,
-              createdById: task.createdById as string,
             });
           }
         }

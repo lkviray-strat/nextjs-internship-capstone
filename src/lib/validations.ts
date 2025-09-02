@@ -97,8 +97,7 @@ export const taskSchema = z
     estimatedHours: z.coerce
       .number<number>()
       .min(0, errorMessages.numMinimum(0))
-      .max(1000, errorMessages.numMaximum(1000))
-      .optional(),
+      .max(1000, errorMessages.numMaximum(1000)),
     assigneeId: z.string(errorMessages.required("Assignee")),
     createdById: z.string(),
     taskNumber: z.number().min(1, errorMessages.numMinimum(1)),
@@ -293,8 +292,6 @@ export const updateTaskRequestSchema = taskSchema
   })
   .extend({
     id: taskSchema.shape.id,
-    createdById: taskSchema.shape.createdById,
-    assigneeId: taskSchema.shape.assigneeId,
   });
 
 export const updateCommentRequestSchema = commentsSchema

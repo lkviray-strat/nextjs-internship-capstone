@@ -2,7 +2,6 @@
 
 import { NavigationBlocker } from "@/src/components/navigation-blocker";
 import {
-  $isEmpty,
   getUserInitials,
   hasTrueValue,
   sanitizeSerializedEditorState,
@@ -34,7 +33,7 @@ import {
   FormMessage,
 } from "@/src/components/ui/form";
 import { useComments } from "@/src/use/hooks/use-comments";
-import type { EditorState, SerializedEditorState } from "lexical";
+import type { SerializedEditorState } from "lexical";
 
 type CommentCreateFormProps = {
   taskId: number;
@@ -45,7 +44,6 @@ export function CommentCreateForm({ taskId }: CommentCreateFormProps) {
   const { user } = useUser();
 
   const [nextId, setNextId] = useState<string>("");
-  const [editorState, setEditorState] = useState<EditorState | null>(null);
 
   const { teamId, projectId } = useParams<{
     teamId: string;
@@ -82,12 +80,13 @@ export function CommentCreateForm({ taskId }: CommentCreateFormProps) {
   }
 
   async function onSubmit(values: CreateCommentRequestInput) {
-    if (editorState && (isSubmitting || $isEmpty(editorState))) return;
+    if (isSubmitting) return;
 
     try {
       const sanitized = sanitizeSerializedEditorState(
         values.content as SerializedEditorState
       );
+      if (sanitized.root.children.length === 0) return;
       await commentHooks.createComment({
         ...values,
         teamId,
@@ -154,7 +153,6 @@ export function CommentCreateForm({ taskId }: CommentCreateFormProps) {
                   <FormControl>
                     <Comment
                       key={nextId}
-                      onChange={setEditorState}
                       isSubmitting={isSubmitting}
                       editorSerializedState={
                         field.value as SerializedEditorState
