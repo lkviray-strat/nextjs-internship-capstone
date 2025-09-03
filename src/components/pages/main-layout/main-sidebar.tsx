@@ -1,13 +1,6 @@
 "use client";
 
-import {
-  BarChart3,
-  Calendar,
-  FolderOpen,
-  Home,
-  Settings,
-  Users,
-} from "lucide-react";
+import { FolderOpen, Home, Settings, Users } from "lucide-react";
 
 import {
   Sidebar,
@@ -32,8 +25,6 @@ const navigation = [
   { name: "Dashboard", href: "dashboard", icon: Home },
   { name: "Projects", href: "projects", icon: FolderOpen },
   { name: "Team", href: "team", icon: Users },
-  { name: "Analytics", href: "analytics", icon: BarChart3 },
-  { name: "Calendar", href: "calendar", icon: Calendar },
   { name: "Settings", href: "settings", icon: Settings },
 ];
 

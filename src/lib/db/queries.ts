@@ -16,6 +16,7 @@ import type {
   TaskPriorityEnum,
   TasksInsertRequest,
   TasksUpdateRequest,
+  TeamMemberFilters,
   TeamMembersInsertRequest,
   TeamMembersUpdateRequest,
   TeamsInsertRequest,
@@ -34,6 +35,7 @@ import {
   lte,
   notInArray,
   or,
+  SQL,
 } from "drizzle-orm";
 import { db } from ".";
 import {
@@ -321,10 +323,10 @@ export const queries = {
         },
       });
     },
-    async getProjectsByFilters(projectFilters: ProjectFilters) {
+    getProjectsByFilters: async (projectFilters: ProjectFilters) => {
       const { teamId, search, page, status, start, end, order } =
         projectFilters;
-      const PROJECTS_PER_PAGE = 10;
+      const PROJECTS_PER_PAGE = 6;
       const filters = [];
 
       if (status && status.length > 0) {
@@ -602,6 +604,71 @@ export const queries = {
         and(eq(teamMembers.teamId, teamId), eq(teamMembers.roleId, roleId))
       );
     },
+    getTeamMembersByFilter: async (teamMemberFilters: TeamMemberFilters) => {
+      const { teamId, search, page, name, dateAdded, lastActive, role } =
+        teamMemberFilters;
+      const MEMBERS_PER_PAGE = 8;
+
+      const whereConditions: (SQL | undefined)[] = [
+        eq(teamMembers.teamId, teamId),
+      ];
+
+      if (search) {
+        whereConditions.push(
+          or(
+            ilike(users.firstName, `%${search}%`),
+            ilike(users.lastName, `%${search}%`),
+            ilike(users.email, `%${search}%`)
+          )
+        );
+      }
+
+      const defaultOrderBy = asc(roles.priority);
+
+      let orderByClause: SQL | undefined;
+      if (role) {
+        orderByClause =
+          role === "asc" ? asc(roles.priority) : desc(roles.priority);
+      } else if (lastActive) {
+        orderByClause =
+          lastActive === "asc" ? asc(users.lastSeen) : desc(users.lastSeen);
+      } else if (name) {
+        orderByClause =
+          name === "asc" ? asc(users.firstName) : desc(users.firstName);
+      } else if (dateAdded) {
+        orderByClause =
+          dateAdded === "asc"
+            ? asc(teamMembers.createdAt)
+            : desc(teamMembers.createdAt);
+      }
+
+      const members = await db
+        .select({
+          member: teamMembers,
+          user: users,
+          role: roles,
+        })
+        .from(teamMembers)
+        .innerJoin(users, eq(users.id, teamMembers.userId))
+        .leftJoin(roles, eq(roles.id, teamMembers.roleId))
+        .where(and(...(whereConditions.filter(Boolean) as SQL[])))
+        .limit(MEMBERS_PER_PAGE)
+        .offset((page - 1) * MEMBERS_PER_PAGE)
+        .orderBy(orderByClause ?? defaultOrderBy);
+
+      const pagesCount = await db.$count(
+        teamMembers,
+        and(...(whereConditions.filter(Boolean) as SQL[]))
+      );
+
+      return {
+        members,
+        pagination: {
+          pagesCount,
+          perPage: MEMBERS_PER_PAGE,
+        },
+      };
+    },
   },
   projectTeams: {
     getAllProjectTeams: () => {
@@ -733,6 +800,14 @@ export const queries = {
         .select()
         .from(roles)
         .orderBy(desc(roles.priority))
+        .limit(limit)
+        .offset(offset);
+    },
+    getRoleByAscLimitOffset: (limit = 1, offset = 0) => {
+      return db
+        .select()
+        .from(roles)
+        .orderBy(asc(roles.priority))
         .limit(limit)
         .offset(offset);
     },

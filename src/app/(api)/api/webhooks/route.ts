@@ -3,6 +3,7 @@ import {
   createUserAction,
   deleteUserAction,
   updateUserAction,
+  updateUserSessionAction,
 } from "@/src/use/actions/user-actions";
 import { verifyWebhook, type WebhookEvent } from "@clerk/nextjs/webhooks";
 import { NextRequest } from "next/server";
@@ -37,9 +38,36 @@ export async function POST(req: NextRequest) {
         const res = await deleteUserAction(evt.data.id as string);
         if (!res?.success) {
           logWebhookEvent("error", "deleting user:", res?.error);
-          return new Response("Error deleting user", { status: 200 }); // No retry if user not found
+          return new Response("Error deleting user", { status: 200 });
         }
         logWebhookEvent("success", "User deleted with ID:", evt.data.id);
+        break;
+      }
+
+      case "session.created": {
+        const res = await updateUserSessionAction({
+          ...evt.data,
+          isActive: true,
+        });
+        if (!res?.success) {
+          logWebhookEvent("error", "updating user:", res?.error);
+          return new Response("Error updating user", { status: 400 });
+        }
+        logWebhookEvent("success", "Session updated with ID:", evt.data.id);
+        break;
+      }
+
+      case "session.removed":
+      case "session.ended": {
+        const res = await updateUserSessionAction({
+          ...evt.data,
+          isActive: false,
+        });
+        if (!res?.success) {
+          logWebhookEvent("error", "updating user:", res?.error);
+          return new Response("Error updating user", { status: 200 });
+        }
+        logWebhookEvent("success", "Session updated with ID:", evt.data.id);
         break;
       }
     }

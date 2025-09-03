@@ -127,6 +127,13 @@
       "when": 1756804780298,
       "tag": "20250902091940_past_skullbuster",
       "breakpoints": true
+    },
+    {
+      "idx": 18,
+      "version": "7",
+      "when": 1756880936728,
+      "tag": "20250903062856_demonic_paladin",
+      "breakpoints": true
     }
   ]
 }

@@ -2,7 +2,11 @@
 
 import { useTRPC } from "@/server/trpc/client";
 import { useDebounce } from "@/src/hooks/use-debounce";
-import type { KanbanBoardFilters, ProjectFiltersInput } from "@/src/types";
+import type {
+  KanbanBoardFiltersInput,
+  ProjectFiltersInput,
+  TeamMemberFiltersInput,
+} from "@/src/types";
 import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
 
 export function useFetch() {
@@ -63,9 +67,17 @@ export function useFetch() {
       },
     },
     roles: {
+      useGetAllRoles: () => {
+        return useSuspenseQuery(trpc.roles.getAllRoles.queryOptions());
+      },
       useGetRoleByDescLimitOffset: (limit?: number, offset?: number) => {
         return useSuspenseQuery(
           trpc.roles.getRoleByDescLimitOffset.queryOptions({ limit, offset })
+        );
+      },
+      useGetRoleByAscLimitOffset: (limit?: number, offset?: number) => {
+        return useSuspenseQuery(
+          trpc.roles.getRoleByAscLimitOffset.queryOptions({ limit, offset })
         );
       },
     },
@@ -75,7 +87,9 @@ export function useFetch() {
           trpc.kanbanBoards.getKanbanBoardsByProjectId.queryOptions(id)
         );
       },
-      useGetMyKanbanBoardByFilter: (kanbanBoardFilters: KanbanBoardFilters) => {
+      useGetMyKanbanBoardByFilter: (
+        kanbanBoardFilters: KanbanBoardFiltersInput
+      ) => {
         return useSuspenseQuery(
           trpc.kanbanBoards.getKanbanBoardByFilters.queryOptions(
             kanbanBoardFilters
@@ -94,6 +108,15 @@ export function useFetch() {
       useGetMyTeamMembers: (teamId: string) => {
         return useSuspenseQuery(
           trpc.teamMembers.getMyTeamMembers.queryOptions({ teamId })
+        );
+      },
+      useGetTeamMembersByFilter: (
+        teamMemberFilters: TeamMemberFiltersInput
+      ) => {
+        return useQuery(
+          trpc.teamMembers.getTeamMembersByFilter.queryOptions(
+            teamMemberFilters
+          )
         );
       },
     },

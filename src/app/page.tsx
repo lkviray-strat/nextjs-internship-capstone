@@ -16,7 +16,11 @@ export default async function HomePage() {
   const existingTeam = await queries.teams.getTeamsByLeaderId(id as string);
 
   const buttonHref = (path: string) =>
-    isUserLoggedIn ? `/${existingTeam[0]?.id}/${path}` : "/sign-in";
+    isUserLoggedIn
+      ? existingTeam.length > 0
+        ? `/${existingTeam[0]?.id}/${path}`
+        : `/assemble`
+      : "/sign-in";
 
   return (
     <div className="relative min-h-screen">

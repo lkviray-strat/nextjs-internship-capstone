@@ -16,6 +16,7 @@ import type {
   ProjectFilters,
   ProjectStatusEnum,
   ProjectTeamsWithTeamMembersResult,
+  TeamMemberFilters,
 } from "../types";
 
 export function cn(...inputs: ClassValue[]) {
@@ -83,6 +84,11 @@ export function capitalizeWords(str: string) {
     .join(" ");
 }
 
+export function getTimeDistanceRaw(date: string | Date) {
+  let raw = formatDistanceToNow(new Date(date));
+  raw = raw.replace(/^(about |over |less than |almost )/, "");
+  return raw;
+}
 export function getTimeLeft(endDate: string | Date, isAgo = false) {
   const raw = formatDistanceToNow(new Date(endDate));
   const now = new Date();
@@ -92,17 +98,17 @@ export function getTimeLeft(endDate: string | Date, isAgo = false) {
 }
 
 export function getTimeAgo(date: string | Date) {
-  const raw = formatDistanceToNow(new Date(date));
+  const raw = getTimeDistanceRaw(date);
   return raw + " ago";
 }
 
 export function getTimeLastUpdated(endDate: string | Date) {
-  const raw = formatDistanceToNow(new Date(endDate));
+  const raw = getTimeDistanceRaw(endDate);
   return "Last updated " + raw + " ago";
 }
 
 export function getTimeCreated(createdAt: string | Date) {
-  const raw = formatDistanceToNow(new Date(createdAt));
+  const raw = getTimeDistanceRaw(createdAt);
   return "Created " + raw + " ago";
 }
 
@@ -149,6 +155,40 @@ export function projectFiltersToSearchParams(
     );
   if (projectFilters.end)
     params.set("end", String(Math.floor(projectFilters.end.getTime() / 1000)));
+
+  return params;
+}
+
+export function searchParamsToTeamMemberFilters(
+  searchParams: URLSearchParams
+): Omit<TeamMemberFilters, "teamId"> {
+  const search = searchParams.get("search") || "";
+  const page = searchParams.get("page");
+  const role = searchParams.get("role");
+  const name = searchParams.get("name");
+  const dateAdded = searchParams.get("dateAdded");
+  const lastActive = searchParams.get("lastActive");
+
+  return {
+    search,
+    page: Number(page) || 1,
+    name: name ? (name as "asc" | "desc") : undefined,
+    role: role ? (role as "asc" | "desc") : undefined,
+    dateAdded: dateAdded ? (dateAdded as "asc" | "desc") : undefined,
+    lastActive: lastActive ? (lastActive as "asc" | "desc") : undefined,
+  };
+}
+
+export function teamMemberFiltersToSearchParams(
+  filters: Omit<TeamMemberFilters, "teamId">
+): URLSearchParams {
+  const params = new URLSearchParams();
+
+  if (filters.search) params.set("search", filters.search);
+  if (filters.page > 1) params.set("page", String(filters.page));
+  if (filters.role) params.set("role", filters.role);
+  if (filters.dateAdded) params.set("dateAdded", String(filters.dateAdded));
+  if (filters.lastActive) params.set("lastActive", String(filters.lastActive));
 
   return params;
 }

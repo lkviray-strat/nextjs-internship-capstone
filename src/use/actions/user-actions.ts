@@ -2,14 +2,18 @@
 
 import { queries } from "@/src/lib/db/queries";
 import { sentenceCase } from "@/src/lib/utils";
-import { clerkUsersSchema } from "@/src/lib/validations";
+import {
+  clerkUsersSchema,
+  updateUserSessionSchema,
+} from "@/src/lib/validations";
 import type {
   ClerkUsersInput,
+  ClerkUsersSessionInput,
   CreateTeamRequestInput,
   UpdateTeamMemberRequestInput,
   UpdateTeamRequestInput,
 } from "@/src/types";
-import type { UserJSON } from "@clerk/nextjs/server";
+import type { SessionJSON, UserJSON } from "@clerk/nextjs/server";
 import z, { ZodError } from "zod";
 import {
   createTeamAction,
@@ -63,6 +67,29 @@ export async function updateUserAction(clerkUser: UserJSON) {
 
     const parsed = await clerkUsersSchema.parseAsync(userRequest);
     const result = await queries.users.updateUser(clerkUser.id, parsed);
+
+    return { success: true, data: result };
+  } catch (error) {
+    if (error instanceof ZodError) {
+      return { success: false, error: z.flattenError(error).fieldErrors };
+    }
+    console.error("Error updating user:", error);
+    return { success: false, error };
+  }
+}
+
+export async function updateUserSessionAction(
+  clerkSession: SessionJSON & { isActive: boolean }
+) {
+  try {
+    const userRequest: ClerkUsersSessionInput = {
+      id: clerkSession.user_id,
+      isActive: clerkSession.isActive,
+      lastSeen: new Date(clerkSession.last_active_at ?? Date.now()),
+    };
+
+    const parsed = await updateUserSessionSchema.parseAsync(userRequest);
+    const result = await queries.users.updateUser(clerkSession.user_id, parsed);
 
     return { success: true, data: result };
   } catch (error) {
