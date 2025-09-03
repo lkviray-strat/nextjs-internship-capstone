@@ -16,6 +16,17 @@ import z from "zod";
 import { createTRPCRouter, protectedProcedure } from "../init";
 
 export const projectRouter = createTRPCRouter({
+  getActiveProjects: protectedProcedure
+    .input(
+      z.object({
+        teamId: z.guid(),
+      })
+    )
+    .query(async ({ input }) => {
+      return await queries.projects.getProjectsByTeamIdNotArchived(
+        input.teamId
+      );
+    }),
   getMyCurrentProject: protectedProcedure
     .input(
       z.object({

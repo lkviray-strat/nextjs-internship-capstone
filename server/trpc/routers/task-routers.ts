@@ -16,6 +16,12 @@ import z from "zod";
 import { createTRPCRouter, protectedProcedure } from "../init";
 
 export const taskRouter = createTRPCRouter({
+  getCompletedTasks: protectedProcedure.query(async ({ ctx }) => {
+    return await queries.tasks.getTasksCompletedByUserId(ctx.auth.userId);
+  }),
+  getPendingTasks: protectedProcedure.query(async ({ ctx }) => {
+    return await queries.tasks.getTasksPendingByUserId(ctx.auth.userId);
+  }),
   createTask: protectedProcedure
     .input(
       createTaskRequestSchema.extend({

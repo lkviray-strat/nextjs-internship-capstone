@@ -4,6 +4,22 @@ import z from "zod";
 import { createTRPCRouter, protectedProcedure } from "../init";
 
 export const projectTeamRouter = createTRPCRouter({
+  getProjectTeamsByTeamId: protectedProcedure
+    .input(z.object({ teamId: z.guid() }))
+    .query(async ({ input }) => {
+      const projectTeams = await queries.projectTeams.getProjectTeamsByTeamId(
+        input.teamId
+      );
+
+      if (projectTeams.length === 0) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Project teams not found",
+        });
+      }
+
+      return projectTeams;
+    }),
   getProjectTeamsByProjectIdWithTeamMembers: protectedProcedure
     .input(z.object({ projectId: z.guid(), teamId: z.guid() }))
     .query(async ({ ctx, input }) => {

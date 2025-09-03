@@ -29,7 +29,6 @@ export function ProjectHeaderSelect({
   const boardParam = searchParams.get("board");
   const currentBoardId = currentBoardIds[project.id] ?? project.defaultBoardId;
 
-  // Set initial board
   useEffect(() => {
     if (boardParam) {
       setCurrentBoardId(project.id, boardParam);

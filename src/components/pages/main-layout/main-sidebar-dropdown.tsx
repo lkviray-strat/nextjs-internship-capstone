@@ -7,18 +7,22 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/src/components/ui/dropdown-menu";
+import type { WithRelations } from "@/src/lib/utils";
 import {
   DropdownMenuGroup,
   DropdownMenuLabel,
 } from "@radix-ui/react-dropdown-menu";
 import { ChevronDown, Plus, Users } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
-import type { Teams } from "../../../types";
+import type { TeamMembers } from "../../../types";
 import { buttonVariants } from "../../ui/button";
 import { SidebarMenuButton } from "../../ui/sidebar";
 
 type MainSidebarDropdownProps = {
-  teams: Teams[];
+  teams: WithRelations<
+    TeamMembers,
+    { team: { id: string; name: string } | null }
+  >[];
   isOpen?: boolean;
 };
 
@@ -29,7 +33,7 @@ export function MainSidebarDropdown({
   const { teamId } = useParams<{ teamId: string }>();
   const router = useRouter();
 
-  const selectedTeam = teams.find((team) => team.id === teamId);
+  const selectedTeam = teams.find((team) => team.team?.id === teamId);
 
   return (
     <DropdownMenu>
@@ -42,7 +46,7 @@ export function MainSidebarDropdown({
         >
           {isOpen ? (
             <>
-              {selectedTeam ? selectedTeam.name : "Select Team"}
+              {selectedTeam ? selectedTeam.team?.name : "Select Team"}
               <ChevronDown className="ml-auto" />
             </>
           ) : (
@@ -61,13 +65,13 @@ export function MainSidebarDropdown({
         <DropdownMenuGroup className="space-y-1">
           {teams.map((team) => (
             <DropdownMenuItem
-              key={team.id}
-              className={`${team.id === teamId ? "bg-accent" : ""} !px-3.5 line-clamp-1 text-[16px]`}
+              key={team.team?.id}
+              className={`${team.team?.id === teamId ? "bg-accent" : ""} !px-3.5 line-clamp-1 text-[16px]`}
               onSelect={() => {
-                router.push(`/${team.id}/dashboard`);
+                router.push(`/${team.team?.id}/dashboard`);
               }}
             >
-              {team.name}
+              {team.team?.name}
             </DropdownMenuItem>
           ))}
         </DropdownMenuGroup>
