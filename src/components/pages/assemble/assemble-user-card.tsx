@@ -39,7 +39,7 @@ export function AssembleUserCard({ userId, removeHandler }: AssembleUserCard) {
               src={user.profileImageUrl as string}
               alt={`${user.firstName}'s Profile Picture`}
             />
-            <AvatarFallback>
+            <AvatarFallback className={user.email}>
               {getUserInitials(user.firstName, user.lastName)}
             </AvatarFallback>
           </Avatar>

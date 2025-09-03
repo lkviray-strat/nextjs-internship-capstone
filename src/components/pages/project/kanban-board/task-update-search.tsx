@@ -28,7 +28,7 @@ function SearchRender({ member }: { member: User }) {
             src={member.profileImageUrl as string}
             alt={`${member.firstName}'s Profile Picture`}
           />
-          <AvatarFallback>
+          <AvatarFallback content={member.email}>
             {getUserInitials(member.firstName!, member.lastName!)}
           </AvatarFallback>
         </Avatar>

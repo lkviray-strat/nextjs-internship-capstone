@@ -47,12 +47,9 @@ export function TaskCard({ task, columnId }: TaskCardProps) {
           </p>
         </div>
         {task.assignee && (
-          <Avatar
-            className="h-6 w-6 shrink-0"
-            content={`${task.assignee.firstName} ${task.assignee.lastName}`}
-          >
+          <Avatar className="h-6 w-6 shrink-0">
             <AvatarImage src={task.assignee.profileImageUrl as string} />
-            <AvatarFallback>
+            <AvatarFallback content={task.assignee.email}>
               {getUserInitials(
                 task.assignee.firstName!,
                 task.assignee.lastName!

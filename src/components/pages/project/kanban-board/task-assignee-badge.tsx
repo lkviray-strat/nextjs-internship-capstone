@@ -43,9 +43,11 @@ export function TaskAssigneeBadge({
               <AvatarImage
                 src={user.profileImageUrl as string}
                 alt={`${user.firstName}'s Profile Picture`}
-                content={`${user.firstName} ${user.lastName}`}
               />
-              <AvatarFallback className="!text-[12px]">
+              <AvatarFallback
+                content={user.email}
+                className="!text-[12px]"
+              >
                 {getUserInitials(user.firstName, user.lastName)}
               </AvatarFallback>
             </Avatar>

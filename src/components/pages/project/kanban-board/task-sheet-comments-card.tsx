@@ -38,10 +38,12 @@ export function TaskSheetCommentsCard({ comment }: TaskSheetCommentsCardProps) {
         <AvatarImage
           src={author?.profileImageUrl as string}
           alt={`${author?.firstName}'s Profile Picture`}
-          content={`${author?.firstName} ${author?.lastName}`}
         />
         {author?.firstName && author?.lastName && (
-          <AvatarFallback className="!text-[12px]">
+          <AvatarFallback
+            content={author.email}
+            className="!text-[12px]"
+          >
             {getUserInitials(author?.firstName, author?.lastName)}
           </AvatarFallback>
         )}
