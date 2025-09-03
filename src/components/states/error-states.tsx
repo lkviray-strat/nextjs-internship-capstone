@@ -1,6 +1,7 @@
 import type { AppRouter } from "@/src/types";
 import type { TRPCClientErrorLike } from "@trpc/client";
-import { FolderX } from "lucide-react";
+import { FolderX, UserX } from "lucide-react";
+import { TableCell, TableRow } from "../ui/table";
 
 export function DashboardRecentProjectsError() {
   return (
@@ -46,5 +47,26 @@ export function CommentsError() {
         later or contact support.
       </p>
     </div>
+  );
+}
+
+export function TeamTableError() {
+  return (
+    <TableRow>
+      <TableCell colSpan={5}>
+        <div className="flex h-full w-[230px] mt-18 m-auto text-red-500 text-center flex-col items-center justify-center gap-1">
+          <UserX
+            className="size-12 sm:size-20"
+            strokeWidth={1}
+          />
+          <h1 className="text-[18px] sm:text-[20px] font-semibold text-red-500">
+            No Team Members
+          </h1>
+          <p className="text-[12px] sm:text-[14px] mb-7 text-red-500">
+            Add team members to collaborate on projects.
+          </p>
+        </div>
+      </TableCell>
+    </TableRow>
   );
 }

@@ -1,4 +1,5 @@
 import { Skeleton } from "../ui/skeleton";
+import { TableCell, TableRow } from "../ui/table";
 
 export function RecentProjectsSkeleton() {
   return (
@@ -90,6 +91,33 @@ export function CommentsSkeleton() {
             <Skeleton className="w-3/4 h-3" />
           </div>
         </div>
+      ))}
+    </>
+  );
+}
+
+export function TeamTableSkeleton() {
+  return (
+    <>
+      {Array.from({ length: 7 }).map((_, index) => (
+        <TableRow key={index}>
+          <TableCell className="flex gap-4 pl-3 py-3">
+            <Skeleton className="size-10 rounded-full shrink-0" />
+            <div className="flex flex-col w-full gap-1 justify-center">
+              <Skeleton className="w-2/5 h-4" />
+              <Skeleton className="w-3/4 h-4" />
+            </div>
+          </TableCell>
+          <TableCell>
+            <Skeleton className="w-2/4 h-1 px-3 py-3" />
+          </TableCell>
+          <TableCell>
+            <Skeleton className="w-2/4 h-1 px-3 py-3" />
+          </TableCell>
+          <TableCell>
+            <Skeleton className="w-2/4 h-1 px-3 py-3" />
+          </TableCell>
+        </TableRow>
       ))}
     </>
   );

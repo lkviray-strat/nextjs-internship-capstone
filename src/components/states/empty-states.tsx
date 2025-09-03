@@ -1,4 +1,5 @@
 import { Columns, FolderPlus, Users2 } from "lucide-react";
+import { TableCell, TableRow } from "../ui/table";
 
 export function DashboardRecentProjectsEmpty() {
   return (
@@ -78,5 +79,26 @@ export function TeamMemberSearchEmpty() {
         Search for users by name or email to add them to your team.
       </p>
     </div>
+  );
+}
+
+export function TeamTableEmpty() {
+  return (
+    <TableRow>
+      <TableCell colSpan={5}>
+        <div className="flex h-full w-[230px] mt-18 m-auto text-center flex-col items-center justify-center gap-1">
+          <Users2
+            className="size-12 sm:size-20"
+            strokeWidth={1}
+          />
+          <h1 className="text-[18px] sm:text-[20px] font-semibold text-muted-foreground ">
+            No Team Members
+          </h1>
+          <p className="text-[12px] sm:text-[14px] mb-7 text-muted-foreground">
+            Adjust your search to find users by name or email.
+          </p>
+        </div>
+      </TableCell>
+    </TableRow>
   );
 }

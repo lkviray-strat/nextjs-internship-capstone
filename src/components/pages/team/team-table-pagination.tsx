@@ -1,8 +1,8 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { projectFiltersToSearchParams } from "../../../lib/utils";
-import type { ProjectFilters } from "../../../types";
+import { teamMemberFiltersToSearchParams } from "../../../lib/utils";
+import type { TeamMemberFilters } from "../../../types";
 import {
   Pagination,
   PaginationContent,
@@ -13,20 +13,20 @@ import {
   PaginationPrevious,
 } from "../../ui/pagination";
 
-type ProjectPaginationProps = {
-  filters: Omit<ProjectFilters, "teamId">;
+type TeamTablePaginationProps = {
+  filters: Omit<TeamMemberFilters, "teamId">;
   totalPages: number;
 };
 
-export function ProjectPagination({
+export function TeamTablePagination({
   filters,
   totalPages,
-}: ProjectPaginationProps) {
+}: TeamTablePaginationProps) {
   const { page, ...otherFilters } = filters;
   const pathname = usePathname();
 
   const buildHref = (targetPage: number) => {
-    const params = projectFiltersToSearchParams({
+    const params = teamMemberFiltersToSearchParams({
       ...otherFilters,
       page: targetPage,
     });

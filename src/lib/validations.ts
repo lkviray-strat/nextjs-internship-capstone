@@ -52,6 +52,8 @@ export const clerkUsersSchema = z.object({
       },
       { message: "Profile image URL must point to an image." }
     ),
+  isActive: z.boolean().default(false).optional(),
+  lastSeen: z.date().optional(),
   createdAt: z.date().optional(),
   updatedAt: z.date().optional(),
 });
@@ -274,6 +276,16 @@ export const createProjectTeamRequestSchema = projectTeamsSchema.omit({
 });
 
 // Schemas for update operations
+export const updateUserSessionSchema = clerkUsersSchema
+  .partial()
+  .omit({
+    createdAt: true,
+    updatedAt: true,
+  })
+  .extend({
+    id: clerkUsersSchema.shape.id,
+  });
+
 export const updateTeamRequestSchema = teamsSchema
   .partial()
   .omit({
@@ -430,4 +442,14 @@ export const projectFiltersSchema = z.object({
 export const kanbanBoardFiltersSchema = z.object({
   projectId: z.guid(),
   board: z.guid(),
+});
+
+export const teamMemberFiltersSchema = z.object({
+  teamId: z.guid(),
+  search: z.string().max(100, errorMessages.maxLength(100)).default(""),
+  page: z.number().min(1).default(1),
+  name: z.enum(["asc", "desc"]).optional(),
+  dateAdded: z.enum(["asc", "desc"]).optional(),
+  lastActive: z.enum(["asc", "desc"]).optional(),
+  role: z.enum(["asc", "desc"]).optional(),
 });

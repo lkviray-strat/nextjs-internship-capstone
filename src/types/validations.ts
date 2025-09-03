@@ -27,6 +27,9 @@ export type CreateProjectTeamRequestInput = z.infer<
   typeof validations.createProjectTeamRequestSchema
 >;
 
+export type ClerkUsersSessionInput = z.infer<
+  typeof validations.updateUserSessionSchema
+>;
 export type UpdateTeamRequestInput = z.infer<
   typeof validations.updateTeamRequestSchema
 >;
@@ -75,4 +78,12 @@ export type CreateFullWizardRequestInput = z.infer<
 
 export type ProjectFiltersInput = z.infer<
   typeof validations.projectFiltersSchema
+>;
+
+export type KanbanBoardFiltersInput = z.infer<
+  typeof validations.kanbanBoardFiltersSchema
+>;
+
+export type TeamMemberFiltersInput = z.infer<
+  typeof validations.teamMemberFiltersSchema
 >;
