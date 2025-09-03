@@ -17,7 +17,7 @@ export const kanbanSubscriptionRouter = createTRPCRouter({
       for await (const event of events) {
         if (event.payload.teamId !== input.teamId) continue;
         if (event.payload.projectId !== input.projectId) continue;
-        yield tracked(ctx.clientId, event);
+        yield tracked(ctx.clientId ?? "", event);
       }
     }),
 });
