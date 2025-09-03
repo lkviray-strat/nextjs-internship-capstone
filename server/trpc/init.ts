@@ -2,13 +2,13 @@ import { db } from "@/src/lib/db";
 import type { Context } from "@/src/types";
 import { auth } from "@clerk/nextjs/server";
 import { initTRPC, TRPCError } from "@trpc/server";
-import type { CreateNextContextOptions } from "@trpc/server/adapters/next";
+import type { FetchCreateContextFnOptions } from "@trpc/server/adapters/fetch";
 import type { CreateWSSContextFnOptions } from "@trpc/server/adapters/ws";
 import { cache } from "react";
 import superjson from "superjson";
 
 export const createTRPCContext = cache(
-  async (opts: CreateNextContextOptions) => {
+  async (opts: FetchCreateContextFnOptions) => {
     const headersList = new Headers(opts.req.headers as HeadersInit);
     const clientId = headersList.get("x-client-id");
 
@@ -25,10 +25,15 @@ export const createTRPCContext = cache(
   }
 );
 
+export const createCallerContext = async () => {
+  const clerkAuth = await auth();
+  return { db, auth: clerkAuth, clientId: null };
+};
+
 export const createWSContext = async (opts: CreateWSSContextFnOptions) => {
   const clientId = opts.info.connectionParams?.clientId;
 
-  return { db, auth: null, clientId };
+  return { db, auth: null, clientId: clientId ?? "" };
 };
 
 const t = initTRPC.context<Context>().create({

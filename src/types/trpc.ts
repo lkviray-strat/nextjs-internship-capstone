@@ -7,6 +7,6 @@ export type AppRouter = typeof appRouter;
 export type Context = {
   db: typeof db;
   auth: Awaited<ReturnType<typeof auth>> | null;
-  clientId: string;
+  clientId: string | null;
 };
 export type RouterOutput = inferRouterOutputs<AppRouter>;

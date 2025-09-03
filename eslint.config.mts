@@ -13,7 +13,11 @@ const compat = new FlatCompat({
 
 const eslintConfig = [
   {
-    ignores: ["src/lib/db/__test__/.queries-test.example.ts"],
+    ignores: [
+      "src/lib/db/__test__/.queries-test.example.ts",
+      "src/components/editor/**",
+      "src/components/blocks/**",
+    ],
     files: ["**/*.{js,ts,jsx,tsx}"],
     languageOptions: {
       parser: tseslint.parser,
