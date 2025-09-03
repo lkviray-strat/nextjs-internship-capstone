@@ -1,8 +1,11 @@
 import type { ProjectStatusEnum, UpdateProjectRequestInput } from "@/src/types";
+import { useUser } from "@clerk/nextjs";
+import { useParams } from "next/navigation";
 import { useState, type Dispatch, type SetStateAction } from "react";
 import type { Path, useForm } from "react-hook-form";
 import { PROJECT_STATUS_UPDATE_ENUM } from "../../../lib/db/enums";
 import { snakeToTitleCase } from "../../../lib/utils";
+import { PermissionGate } from "../../permission-gate";
 import { Button } from "../../ui/button";
 import {
   FormControl,
@@ -34,6 +37,8 @@ export function ProjectUpdateStatus<T extends ProjectStatus>({
   onSubmit,
   control,
 }: ProjectUpdateStatusProps<T>) {
+  const { user } = useUser();
+  const { teamId } = useParams<{ teamId: string }>();
   const [statusDisable, setStatusDisable] = useState(true);
 
   const handleDisable = (
@@ -48,7 +53,7 @@ export function ProjectUpdateStatus<T extends ProjectStatus>({
   return (
     <FormField
       control={control}
-      name={"status" as Path<T>} // ✅ ensures TS knows it's a valid field
+      name={"status" as Path<T>}
       render={({ field }) => (
         <FormItem className="project-setting-grid">
           <FormLabel className="text-sm flex flex-col items-start gap-1">
@@ -83,18 +88,24 @@ export function ProjectUpdateStatus<T extends ProjectStatus>({
                   ))}
                 </SelectContent>
               </Select>
-              <Button
-                disabled={isSubmitting}
-                type="button"
-                variant="link"
-                onClick={() =>
-                  handleDisable(statusDisable, setStatusDisable, {
-                    status: field.value as ProjectStatusEnum | undefined,
-                  })
-                }
+              <PermissionGate
+                userId={user?.id ?? ""}
+                teamId={teamId ?? ""}
+                permissions={["update:project"]}
               >
-                {statusDisable ? "Edit" : "Save"}
-              </Button>
+                <Button
+                  disabled={isSubmitting}
+                  type="button"
+                  variant="link"
+                  onClick={() =>
+                    handleDisable(statusDisable, setStatusDisable, {
+                      status: field.value as ProjectStatusEnum | undefined,
+                    })
+                  }
+                >
+                  {statusDisable ? "Edit" : "Save"}
+                </Button>
+              </PermissionGate>
             </div>
             <FormMessage />
           </div>

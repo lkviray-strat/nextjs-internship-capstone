@@ -1,4 +1,5 @@
 import { Viewer } from "@/src/components/blocks/editor-00/viewer";
+import { PermissionGate } from "@/src/components/permission-gate";
 import {
   Avatar,
   AvatarFallback,
@@ -15,6 +16,7 @@ import { useUser } from "@clerk/nextjs";
 import { isBefore } from "date-fns";
 import type { SerializedEditorState } from "lexical";
 import { X } from "lucide-react";
+import { useParams } from "next/navigation";
 import { useState } from "react";
 import { CommentUpdateForm } from "./comment-update-form";
 import { TaskSheetCommentsDropdown } from "./task-sheet-comments-dropdown";
@@ -25,11 +27,11 @@ type TaskSheetCommentsCardProps = {
 
 export function TaskSheetCommentsCard({ comment }: TaskSheetCommentsCardProps) {
   const { user } = useUser();
+  const { teamId } = useParams<{ teamId: string }>();
   const { author } = comment;
   const createdAt = new Date(comment.createdAt);
   const updatedAt = new Date(comment.updatedAt);
   const isEdited = isBefore(updatedAt, createdAt);
-  const ownsComment = user?.id === author?.id;
   const [updateMode, setUpdateMode] = useState(false);
 
   return (
@@ -60,7 +62,7 @@ export function TaskSheetCommentsCard({ comment }: TaskSheetCommentsCardProps) {
               {`${getTimeAgo(comment.createdAt)} ${isEdited ? "(Edited)" : ""}`}{" "}
             </span>
           </span>
-          {ownsComment && updateMode ? (
+          {updateMode ? (
             <Button
               variant="ghostDestructive"
               size="icon"
@@ -70,10 +72,17 @@ export function TaskSheetCommentsCard({ comment }: TaskSheetCommentsCardProps) {
               <X />
             </Button>
           ) : (
-            <TaskSheetCommentsDropdown
-              id={comment.id}
-              setUpdateMode={setUpdateMode}
-            />
+            <PermissionGate
+              userId={user?.id ?? ""}
+              teamId={teamId ?? ""}
+              ownerIds={[comment.authorId ?? ""]}
+              permissions={["update:comment", "delete:comment"]}
+            >
+              <TaskSheetCommentsDropdown
+                id={comment.id}
+                setUpdateMode={setUpdateMode}
+              />
+            </PermissionGate>
           )}
         </span>
         <div className="text-foreground/80">

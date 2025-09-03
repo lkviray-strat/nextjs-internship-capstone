@@ -2,6 +2,7 @@
 
 import { hasTrueValue } from "@/src/lib/utils";
 import { useFetch } from "@/src/use/hooks/use-fetch";
+import { useUser } from "@clerk/nextjs";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { TRPCClientError } from "@trpc/client";
 import { useParams, useRouter } from "next/navigation";
@@ -14,6 +15,7 @@ import { useProjects } from "../../../use/hooks/use-projects";
 import { ClientOnly } from "../../client-only";
 import { Loader } from "../../loader";
 import { NavigationBlocker } from "../../navigation-blocker";
+import { PermissionGate } from "../../permission-gate";
 import { Form } from "../../ui/form";
 import { ProjectUpdateDanger } from "./project-update-danger";
 import { ProjectUpdateDates } from "./project-update-date";
@@ -21,6 +23,7 @@ import { ProjectUpdateDetails } from "./project-update-details";
 import { ProjectUpdateStatus } from "./project-update-status";
 
 export function ProjectUpdateForm() {
+  const { user } = useUser();
   const projectHooks = useProjects();
   const router = useRouter();
   const fetch = useFetch();
@@ -146,36 +149,42 @@ export function ProjectUpdateForm() {
             </div>
           </fieldset>
 
-          {isProjectArchived ? (
-            <div className="flex flex-col gap-3">
-              <ProjectUpdateDanger
-                modal={false}
-                label="Restore this project"
-                description="Restoring an archived project will move it back to your
+          <PermissionGate
+            userId={user?.id ?? ""}
+            teamId={teamId ?? ""}
+            permissions={["delete:project"]}
+          >
+            {isProjectArchived ? (
+              <div className="flex flex-col gap-3">
+                <ProjectUpdateDanger
+                  modal={false}
+                  label="Restore this project"
+                  description="Restoring an archived project will move it back to your
                     active projects list. You can always archive it again later
                     if needed. No data will be lost, and this action is
                     reversible at any time."
-                onSubmit={handleRestore}
-                isSubmitting={isSubmitting}
-                variant="default"
-              />
-              <ProjectUpdateDanger
-                id={projectId}
-                label="Delete this project"
-                description=" Deleting a project will permanently remove it from your
+                  onSubmit={handleRestore}
+                  isSubmitting={isSubmitting}
+                  variant="default"
+                />
+                <ProjectUpdateDanger
+                  id={projectId}
+                  label="Delete this project"
+                  description=" Deleting a project will permanently remove it from your
                     account and cannot be undone. All associated data will be
                     lost. Please confirm that you want to delete this project."
-                variant="destructive"
+                  variant="destructive"
+                />
+              </div>
+            ) : (
+              <ProjectUpdateDanger
+                id={projectId}
+                label="Archive this project?"
+                description="Archiving a project will remove it from your active projects list. You can still view archived projects, and restore them. This action does not delete any data and can be reversed at any time."
+                variant="archive"
               />
-            </div>
-          ) : (
-            <ProjectUpdateDanger
-              id={projectId}
-              label="Archive this project?"
-              description="Archiving a project will remove it from your active projects list. You can still view archived projects, and restore them. This action does not delete any data and can be reversed at any time."
-              variant="archive"
-            />
-          )}
+            )}
+          </PermissionGate>
         </form>
       </Form>
     </ClientOnly>

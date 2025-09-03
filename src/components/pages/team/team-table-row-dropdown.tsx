@@ -10,6 +10,7 @@ import {
 import type { RouterOutput } from "@/src/types";
 import { useUser } from "@clerk/nextjs";
 import { MoreHorizontal } from "lucide-react";
+import { PermissionGate } from "../../permission-gate";
 import { DeleteTeamMemberModal } from "../modals/delete-team-member-modal";
 import { UpdateTeamPermissionModal } from "../modals/update-team-permission-modal";
 import { UpdateTeamTransferModal } from "../modals/update-team-transfer-modal";
@@ -56,15 +57,24 @@ export function TeamTableRowDropdown({ member }: TeamTableRowDropdownProps) {
             />
           ) : (
             <>
-              <UpdateTeamPermissionModal member={member} />
-              <UpdateTeamTransferModal
-                userId={teamMember.userId as string}
-                teamId={teamMember.teamId as string}
-              />
-              <DeleteTeamMemberModal
-                userId={teamMember.userId as string}
-                teamId={teamMember.teamId as string}
-              />
+              <PermissionGate
+                userId={currentUser.id ?? ""}
+                teamId={teamMember.teamId ?? ""}
+                permissions={["update:team_member"]}
+              >
+                <UpdateTeamPermissionModal member={member} />
+                <UpdateTeamTransferModal
+                  userId={teamMember.userId as string}
+                  teamId={teamMember.teamId as string}
+                />
+              </PermissionGate>
+
+              {role?.priority !== 0 && (
+                <DeleteTeamMemberModal
+                  userId={teamMember.userId as string}
+                  teamId={teamMember.teamId as string}
+                />
+              )}
             </>
           )}
         </DropdownMenuGroup>

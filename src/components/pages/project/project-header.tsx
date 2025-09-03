@@ -4,11 +4,13 @@ import { PROJECT_STATUS_TW_COLORS } from "@/src/lib/db/enums";
 import { extractEveryMember, extractNonNullableFrom } from "@/src/lib/utils";
 import { useUIStore } from "@/src/stores/ui-store";
 import { useFetch } from "@/src/use/hooks/use-fetch";
+import { useUser } from "@clerk/nextjs";
 import { GripVertical, Settings, View } from "lucide-react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useEffect } from "react";
 import { AvatarGroup } from "../../avatar-group";
+import { PermissionGate } from "../../permission-gate";
 import { TooltipHover } from "../../tooltip-hover";
 import { Button, buttonVariants } from "../../ui/button";
 import { CreateColumnModal } from "../modals/create-column-modal";
@@ -22,6 +24,7 @@ type ProjectHeaderProps = {
 };
 
 export function ProjectHeader({ showOptions = true }: ProjectHeaderProps) {
+  const { user } = useUser();
   const { projectId, teamId } = useParams<{
     projectId: string;
     teamId: string;
@@ -78,15 +81,24 @@ export function ProjectHeader({ showOptions = true }: ProjectHeaderProps) {
 
         {showOptions && (
           <div className="flex items-center gap-3 shrink-0 sm:pl-10">
-            <AvatarGroup users={filteredMembers} />
-            <Link
-              href={`${projectId}/settings`}
-              className={`${buttonVariants({ variant: "secondary" })} >`}
-            >
-              <Settings className="size-5" />
-              Settings
+            <Link href={`/${teamId}/team`}>
+              <AvatarGroup users={filteredMembers} />
             </Link>
-            <ProjectHeaderDropdown project={project.data[0]} />
+            <PermissionGate
+              userId={user?.id ?? ""}
+              teamId={teamId ?? ""}
+              permissions={["update:project", "delete:project"]}
+            >
+              <Link
+                href={`${projectId}/settings`}
+                className={`${buttonVariants({ variant: "secondary" })} >`}
+              >
+                <Settings className="size-5" />
+                Settings
+              </Link>
+
+              <ProjectHeaderDropdown project={project.data[0]} />
+            </PermissionGate>
           </div>
         )}
       </div>
@@ -100,21 +112,27 @@ export function ProjectHeader({ showOptions = true }: ProjectHeaderProps) {
             project={project.data[0]}
           />
 
-          <Button
-            variant="outline"
-            onClick={handleEditingMode}
+          <PermissionGate
+            userId={user?.id ?? ""}
+            teamId={teamId ?? ""}
+            permissions={["update:kanban_column", "create:kanban_column"]}
           >
-            {isEditingMode ? (
-              <span className="text-yellow-500 flex gap-2 items-center ">
-                <GripVertical /> Dragging Mode
-              </span>
-            ) : (
-              <>
-                <View /> Viewing Mode
-              </>
-            )}
-          </Button>
-          {kanbanBoards.data.length > 0 && <CreateColumnModal />}
+            <Button
+              variant="outline"
+              onClick={handleEditingMode}
+            >
+              {isEditingMode ? (
+                <span className="text-yellow-500 flex gap-2 items-center ">
+                  <GripVertical /> Dragging Mode
+                </span>
+              ) : (
+                <>
+                  <View /> Viewing Mode
+                </>
+              )}
+            </Button>
+            {kanbanBoards.data.length > 0 && <CreateColumnModal />}
+          </PermissionGate>
         </div>
       </div>
     </div>
