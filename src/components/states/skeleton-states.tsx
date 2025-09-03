@@ -122,3 +122,28 @@ export function TeamTableSkeleton() {
     </>
   );
 }
+
+export function DashboardStatsSkeleton() {
+  return (
+    <>
+      {Array.from({ length: 4 }).map((_, index) => (
+        <div
+          key={index}
+          className="bg-card overflow-hidden rounded-lg border p-6"
+        >
+          <div className="flex items-center">
+            <div className="shrink-0">
+              <Skeleton className="size-10 bg-accent rounded-lg" />
+            </div>
+            <div className="ml-5 w-0 flex-1">
+              <dl className="flex flex-col gap-3">
+                <Skeleton className="w-3/4 h-3 mb-2" />
+                <Skeleton className="w-1/4 h-3" />
+              </dl>
+            </div>
+          </div>
+        </div>
+      ))}
+    </>
+  );
+}

@@ -1,8 +1,11 @@
 import type { UpdateProjectRequestInput } from "@/src/types";
+import { useUser } from "@clerk/nextjs";
 import { format } from "date-fns";
+import { useParams } from "next/navigation";
 import { useState, type Dispatch, type SetStateAction } from "react";
 import type { Path, useForm } from "react-hook-form";
 import { CalendarPicker } from "../../calendar-picker";
+import { PermissionGate } from "../../permission-gate";
 import { Button } from "../../ui/button";
 import { Calendar } from "../../ui/calendar";
 import {
@@ -34,6 +37,8 @@ export function ProjectUpdateDates<T extends ProjectDates>({
   startDate,
   endDate,
 }: ProjectUpdateDatesProps<T>) {
+  const { user } = useUser();
+  const { teamId } = useParams<{ teamId: string }>();
   const [startDateDisable, setStartDateDisable] = useState(true);
   const [endDateDisable, setEndDateDisable] = useState(true);
 
@@ -84,18 +89,25 @@ export function ProjectUpdateDates<T extends ProjectDates>({
                     <Calendar autoFocus />
                   </CalendarPicker>
                 </FormControl>
-                <Button
-                  disabled={isSubmitting}
-                  type="button"
-                  variant="link"
-                  onClick={() =>
-                    handleDisable(startDateDisable, setStartDateDisable, {
-                      startDate: field.value,
-                    })
-                  }
+
+                <PermissionGate
+                  userId={user?.id ?? ""}
+                  teamId={teamId ?? ""}
+                  permissions={["update:project"]}
                 >
-                  {startDateDisable ? "Edit" : "Save"}
-                </Button>
+                  <Button
+                    disabled={isSubmitting}
+                    type="button"
+                    variant="link"
+                    onClick={() =>
+                      handleDisable(startDateDisable, setStartDateDisable, {
+                        startDate: field.value,
+                      })
+                    }
+                  >
+                    {startDateDisable ? "Edit" : "Save"}
+                  </Button>
+                </PermissionGate>
               </div>
 
               <FormMessage />
@@ -139,18 +151,24 @@ export function ProjectUpdateDates<T extends ProjectDates>({
                     <Calendar autoFocus />
                   </CalendarPicker>
                 </FormControl>
-                <Button
-                  disabled={isSubmitting}
-                  type="button"
-                  variant="link"
-                  onClick={() =>
-                    handleDisable(endDateDisable, setEndDateDisable, {
-                      endDate: field.value,
-                    })
-                  }
+                <PermissionGate
+                  userId={user?.id ?? ""}
+                  teamId={teamId ?? ""}
+                  permissions={["update:project"]}
                 >
-                  {endDateDisable ? "Edit" : "Save"}
-                </Button>
+                  <Button
+                    disabled={isSubmitting}
+                    type="button"
+                    variant="link"
+                    onClick={() =>
+                      handleDisable(endDateDisable, setEndDateDisable, {
+                        endDate: field.value,
+                      })
+                    }
+                  >
+                    {endDateDisable ? "Edit" : "Save"}
+                  </Button>
+                </PermissionGate>
               </div>
               <FormMessage />
             </div>

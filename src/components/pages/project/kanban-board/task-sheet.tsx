@@ -1,4 +1,5 @@
 import { Viewer } from "@/src/components/blocks/editor-00/viewer";
+import { PermissionGate } from "@/src/components/permission-gate";
 import {
   Avatar,
   AvatarFallback,
@@ -23,9 +24,15 @@ import {
 } from "@/src/lib/utils";
 import type { Tasks, User } from "@/src/types";
 import { useFetch } from "@/src/use/hooks/use-fetch";
+import { useUser } from "@clerk/nextjs";
 import type { SerializedEditorState } from "lexical";
 import { X } from "lucide-react";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import {
+  useParams,
+  usePathname,
+  useRouter,
+  useSearchParams,
+} from "next/navigation";
 import { TaskSheetComments } from "./task-sheet-comments";
 import { TaskSheetDetails } from "./task-sheet-details";
 import { TaskSheetDropdown } from "./task-sheet-dropdown";
@@ -39,6 +46,9 @@ type TaskSheetProps = {
 };
 
 export function TaskSheet({ task, column }: TaskSheetProps) {
+  const { user } = useUser();
+  const { teamId } = useParams<{ teamId: string }>();
+
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -107,7 +117,14 @@ export function TaskSheet({ task, column }: TaskSheetProps) {
           </SheetTitle>
           <SheetDescription></SheetDescription>
           <div className="flex gap-1 sm:gap-2 order-1 sm:order-2 mb-3 sm:mb-0">
-            <TaskSheetDropdown task={task} />
+            <PermissionGate
+              userId={user?.id ?? ""}
+              teamId={teamId ?? ""}
+              permissions={["update:task"]}
+              ownerIds={[task.createdById ?? "", task.assigneeId ?? ""]}
+            >
+              <TaskSheetDropdown task={task} />
+            </PermissionGate>
             <SheetClose asChild>
               <Button
                 variant="ghostDestructive"

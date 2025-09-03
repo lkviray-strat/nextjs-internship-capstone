@@ -1,6 +1,9 @@
 import type { UpdateProjectRequestInput } from "@/src/types";
+import { useUser } from "@clerk/nextjs";
+import { useParams } from "next/navigation";
 import { useState, type Dispatch, type SetStateAction } from "react";
 import type { Path, useForm } from "react-hook-form";
+import { PermissionGate } from "../../permission-gate";
 import { Button } from "../../ui/button";
 import {
   FormControl,
@@ -28,6 +31,8 @@ export function ProjectUpdateDetails<T extends ProjectFields>({
   onSubmit,
   control,
 }: ProjectUpdateDetailsProps<T>) {
+  const { user } = useUser();
+  const { teamId } = useParams<{ teamId: string }>();
   const [nameDisable, setNameDisable] = useState(true);
   const [descriptionDisable, setDescriptionDisable] = useState(true);
 
@@ -63,18 +68,24 @@ export function ProjectUpdateDetails<T extends ProjectFields>({
                     {...field}
                   />
                 </FormControl>
-                <Button
-                  disabled={isSubmitting}
-                  type="button"
-                  variant="link"
-                  onClick={() =>
-                    handleDisable(nameDisable, setNameDisable, {
-                      name: field.value,
-                    })
-                  }
+                <PermissionGate
+                  userId={user?.id ?? ""}
+                  teamId={teamId ?? ""}
+                  permissions={["update:project"]}
                 >
-                  {nameDisable ? "Edit" : "Save"}
-                </Button>
+                  <Button
+                    disabled={isSubmitting}
+                    type="button"
+                    variant="link"
+                    onClick={() =>
+                      handleDisable(nameDisable, setNameDisable, {
+                        name: field.value,
+                      })
+                    }
+                  >
+                    {nameDisable ? "Edit" : "Save"}
+                  </Button>
+                </PermissionGate>
               </div>
 
               <FormMessage />
@@ -104,18 +115,24 @@ export function ProjectUpdateDetails<T extends ProjectFields>({
                     {...field}
                   />
                 </FormControl>
-                <Button
-                  disabled={isSubmitting}
-                  type="button"
-                  variant="link"
-                  onClick={() =>
-                    handleDisable(descriptionDisable, setDescriptionDisable, {
-                      description: field.value,
-                    })
-                  }
+                <PermissionGate
+                  userId={user?.id ?? ""}
+                  teamId={teamId ?? ""}
+                  permissions={["update:project"]}
                 >
-                  {descriptionDisable ? "Edit" : "Save"}
-                </Button>
+                  <Button
+                    disabled={isSubmitting}
+                    type="button"
+                    variant="link"
+                    onClick={() =>
+                      handleDisable(descriptionDisable, setDescriptionDisable, {
+                        description: field.value,
+                      })
+                    }
+                  >
+                    {descriptionDisable ? "Edit" : "Save"}
+                  </Button>
+                </PermissionGate>
               </div>
             </div>
           </FormItem>

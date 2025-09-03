@@ -1,8 +1,17 @@
 import { CreateProjectModal } from "@/src/components/pages/modals/create-project-modal";
 import { ProjectGrid } from "@/src/components/pages/project/project-grid";
 import { ProjectSearchFilter } from "@/src/components/pages/project/project-search-filter";
+import { PermissionGate } from "@/src/components/permission-gate";
+import { auth } from "@clerk/nextjs/server";
 
-export default function ProjectsPage() {
+type ProjectsPageProps = {
+  params: Promise<{ teamId: string }>;
+};
+
+export default async function ProjectsPage({ params }: ProjectsPageProps) {
+  const { teamId } = await params;
+  const { userId } = await auth();
+
   return (
     <div className="sm:space-y-6 px-4 sm:px-6 lg:px-8">
       <div className="flex flex-col sm:flex-row justify-between items-center">
@@ -11,7 +20,13 @@ export default function ProjectsPage() {
           <p className="mt-2">Manage and organize your team projects</p>
         </div>
         <div className="hidden sm:block">
-          <CreateProjectModal />
+          <PermissionGate
+            teamId={teamId ?? ""}
+            userId={userId ?? ""}
+            permissions={["create:project"]}
+          >
+            <CreateProjectModal />
+          </PermissionGate>
         </div>
       </div>
 

@@ -47,7 +47,12 @@ export const authorizations = {
     permissions: [
       ...viewPermissions,
       ...createPermissions,
-      ...updatePermissions,
+      "update:project",
+      "update:team",
+      "update:task",
+      "update:kanban_column",
+      "update:kanban_board",
+      "update:comment",
       "delete:team_member",
       "delete:task",
       "delete:kanban_column",

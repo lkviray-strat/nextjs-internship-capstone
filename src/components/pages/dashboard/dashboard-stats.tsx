@@ -43,8 +43,8 @@ export function DashboardStats() {
         >
           <div className="flex items-center">
             <div className="shrink-0">
-              <div className="w-8 h-8 bg-accent rounded-lg flex items-center justify-center">
-                <stat.icon size={20} />
+              <div className="size-10 bg-accent rounded-lg flex items-center justify-center">
+                <stat.icon size={30} />
               </div>
             </div>
             <div className="ml-5 w-0 flex-1">

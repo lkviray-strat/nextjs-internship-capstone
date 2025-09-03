@@ -13,6 +13,7 @@ import { useUser } from "@clerk/nextjs";
 import { Loader2 } from "lucide-react";
 import { notFound, useParams, useSearchParams } from "next/navigation";
 import { Suspense, useEffect } from "react";
+import { PermissionGate } from "../../permission-gate";
 import { TeamTableEmpty } from "../../states/empty-states";
 import { TeamTableError } from "../../states/error-states";
 import { TeamTableSkeleton } from "../../states/skeleton-states";
@@ -173,7 +174,13 @@ export function TeamTableRowList({
             </TableCell>
             <TableCell className="px-4 py-3 text-right">
               <Suspense fallback={<Loader2 className="animate-spin" />}>
-                <TeamTableRowDropdown member={member} />
+                <PermissionGate
+                  userId={currentUser?.id ?? ""}
+                  teamId={teamId ?? ""}
+                  permissions={["delete:team_member"]}
+                >
+                  <TeamTableRowDropdown member={member} />
+                </PermissionGate>
               </Suspense>
             </TableCell>
           </TableRow>
