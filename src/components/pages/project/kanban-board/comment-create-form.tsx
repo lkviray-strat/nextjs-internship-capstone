@@ -144,7 +144,10 @@ export function CommentCreateForm({ taskId }: CommentCreateFormProps) {
                     content={`${user?.firstName} ${user?.lastName}`}
                   />
                   {user?.firstName && user?.lastName && (
-                    <AvatarFallback className="!text-[12px]">
+                    <AvatarFallback
+                      content={`${user.primaryEmailAddress}`}
+                      className="!text-[12px]"
+                    >
                       {getUserInitials(user?.firstName, user?.lastName)}
                     </AvatarFallback>
                   )}

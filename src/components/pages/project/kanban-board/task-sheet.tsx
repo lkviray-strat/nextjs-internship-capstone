@@ -83,11 +83,13 @@ export function TaskSheet({ task, column }: TaskSheetProps) {
                   <AvatarImage
                     src={taskCreatedBy[0]?.profileImageUrl as string}
                     alt={`${taskCreatedBy[0]?.firstName}'s Profile Picture`}
-                    content={`${taskCreatedBy[0]?.firstName} ${taskCreatedBy[0]?.lastName}`}
                   />
                   {taskCreatedBy[0]?.firstName &&
                     taskCreatedBy[0]?.lastName && (
-                      <AvatarFallback className="!text-[12px]">
+                      <AvatarFallback
+                        className="!text-[12px]"
+                        content={taskCreatedBy[0]?.email}
+                      >
                         {getUserInitials(
                           taskCreatedBy[0]?.firstName,
                           taskCreatedBy[0]?.lastName
