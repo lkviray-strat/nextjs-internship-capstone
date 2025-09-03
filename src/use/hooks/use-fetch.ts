@@ -65,6 +65,11 @@ export function useFetch() {
           trpc.projects.getProjectsByFilters.queryOptions(projectFilters)
         );
       },
+      useGetActiveProjects: (teamId: string) => {
+        return useSuspenseQuery(
+          trpc.projects.getActiveProjects.queryOptions({ teamId })
+        );
+      },
     },
     roles: {
       useGetAllRoles: () => {
@@ -79,6 +84,14 @@ export function useFetch() {
         return useSuspenseQuery(
           trpc.roles.getRoleByAscLimitOffset.queryOptions({ limit, offset })
         );
+      },
+    },
+    tasks: {
+      useGetCompletedTasks: () => {
+        return useSuspenseQuery(trpc.tasks.getCompletedTasks.queryOptions());
+      },
+      useGetPendingTasks: () => {
+        return useSuspenseQuery(trpc.tasks.getPendingTasks.queryOptions());
       },
     },
     kanbanBoards: {
@@ -105,6 +118,9 @@ export function useFetch() {
       },
     },
     teamMembers: {
+      useGetMyTeams: () => {
+        return useSuspenseQuery(trpc.teamMembers.getMyTeams.queryOptions());
+      },
       useGetMyTeamMembers: (teamId: string) => {
         return useSuspenseQuery(
           trpc.teamMembers.getMyTeamMembers.queryOptions({ teamId })
@@ -121,6 +137,11 @@ export function useFetch() {
       },
     },
     projectTeams: {
+      useGetProjectTeamsByTeamId: (teamId: string) => {
+        return useSuspenseQuery(
+          trpc.projectTeams.getProjectTeamsByTeamId.queryOptions({ teamId })
+        );
+      },
       useGetProjectTeamsByProjectIdWithTeamMembers: (
         projectId: string,
         teamId: string

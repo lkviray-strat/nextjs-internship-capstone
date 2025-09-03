@@ -16,6 +16,11 @@ import z from "zod";
 import { createTRPCRouter, protectedProcedure } from "../init";
 
 export const teamMemberRouter = createTRPCRouter({
+  getMyTeams: protectedProcedure.query(async ({ ctx }) => {
+    return await queries.teamMembers.getTeamMembersByUserIdWithTeams(
+      ctx.auth.userId
+    );
+  }),
   getMyTeamMembers: protectedProcedure
     .input(
       z.object({

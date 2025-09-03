@@ -33,8 +33,10 @@ import {
   ilike,
   inArray,
   lte,
+  ne,
   notInArray,
   or,
+  sql,
   SQL,
 } from "drizzle-orm";
 import { db } from ".";
@@ -228,6 +230,46 @@ export const queries = {
         .orderBy(desc(tasks.createdAt))
         .limit(limit);
     },
+    getTasksCompletedByUserId: (userId: string) => {
+      return db
+        .select()
+        .from(tasks)
+        .innerJoin(kanbanColumns, eq(tasks.kanbanColumnId, kanbanColumns.id))
+        .innerJoin(kanbanBoards, eq(kanbanColumns.boardId, kanbanBoards.id))
+        .where(
+          and(
+            eq(tasks.assigneeId, userId),
+            eq(
+              kanbanColumns.order,
+              sql<number>`(
+            SELECT MAX(c2."order")
+            FROM ${kanbanColumns} c2
+            WHERE c2."board_id" = ${kanbanBoards.id}
+          )`
+            )
+          )
+        );
+    },
+    getTasksPendingByUserId: (userId: string) => {
+      return db
+        .select()
+        .from(tasks)
+        .innerJoin(kanbanColumns, eq(tasks.kanbanColumnId, kanbanColumns.id))
+        .innerJoin(kanbanBoards, eq(kanbanColumns.boardId, kanbanBoards.id))
+        .where(
+          and(
+            eq(tasks.assigneeId, userId),
+            ne(
+              kanbanColumns.order,
+              sql<number>`(
+            SELECT MAX(c2."order")
+            FROM ${kanbanColumns} c2
+            WHERE c2."board_id" = ${kanbanBoards.id}
+          )`
+            )
+          )
+        );
+    },
   },
   comments: {
     getAllComments: () => {
@@ -322,6 +364,15 @@ export const queries = {
           },
         },
       });
+    },
+    getProjectsByTeamIdNotArchived: (teamId: string) => {
+      return db.$count(
+        projects,
+        and(
+          eq(projects.createdByTeamId, teamId),
+          notInArray(projects.status, ["archived"])
+        )
+      );
     },
     getProjectsByFilters: async (projectFilters: ProjectFilters) => {
       const { teamId, search, page, status, start, end, order } =
@@ -581,6 +632,22 @@ export const queries = {
           and(eq(teamMembers.userId, userId), eq(teamMembers.teamId, teamId))
         )
         .returning();
+    },
+    getTeamMembersByUserIdWithTeams: (userId: string) => {
+      return db.query.teamMembers.findMany({
+        where: (teamMembers, { eq }) => eq(teamMembers.userId, userId),
+        with: {
+          team: {
+            columns: {
+              id: true,
+              name: true,
+            },
+          },
+        },
+      });
+    },
+    getTeamMembersCountByTeamId: (teamId: string) => {
+      return db.$count(teamMembers, eq(teamMembers.teamId, teamId));
     },
     getTeamMembersByIdsWithTeamWithLeaderId: (
       userId: string,

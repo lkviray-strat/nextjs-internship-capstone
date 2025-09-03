@@ -1,5 +1,6 @@
 "use client";
 
+import { useQuickActions } from "@/src/hooks/use-quickactions";
 import { Loader2, Plus } from "lucide-react";
 import { Suspense, useState } from "react";
 import { Button } from "../../ui/button";
@@ -16,6 +17,8 @@ import { TeamMemberCreateForm } from "../team/team-member-create-form";
 export function CreateTeamMemberModal() {
   const [open, setOpen] = useState(false);
   const [count, setCount] = useState(0);
+
+  useQuickActions(setOpen);
 
   return (
     <Dialog

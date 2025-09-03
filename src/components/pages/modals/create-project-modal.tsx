@@ -1,5 +1,6 @@
 "use client";
 
+import { useQuickActions } from "@/src/hooks/use-quickactions";
 import { Plus } from "lucide-react";
 import { useState } from "react";
 import { Button } from "../../ui/button";
@@ -15,6 +16,8 @@ import { ProjectCreateForm } from "../project/project-create-form";
 
 export function CreateProjectModal() {
   const [open, setOpen] = useState(false);
+
+  useQuickActions(setOpen);
 
   return (
     <Dialog
