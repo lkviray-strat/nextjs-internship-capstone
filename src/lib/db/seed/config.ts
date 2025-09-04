@@ -32,8 +32,6 @@ const allPermissions = generatePermissions(actions, resources);
 
 const viewPermissions = generatePermissions(["view"], resources);
 const createPermissions = generatePermissions(["create"], resources);
-const updatePermissions = generatePermissions(["update"], resources);
-const deletePermissions = generatePermissions(["delete"], resources);
 
 export const authorizations = {
   owner: {
@@ -68,6 +66,7 @@ export const authorizations = {
       "create:team",
       "create:task",
       "create:comment",
+      "update:task",
     ],
   },
   viewer: {
