@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import Link from "next/link";
 import { PROJECT_STATUS_TW_COLORS } from "../../../lib/db/enums";
 import {

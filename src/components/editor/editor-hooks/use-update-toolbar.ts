@@ -1,40 +1,41 @@
-import { useEffect } from "react"
-import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext"
+/* eslint-disable react-hooks/exhaustive-deps */
+import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 import {
   $getSelection,
-  BaseSelection,
+  type BaseSelection,
   COMMAND_PRIORITY_CRITICAL,
   SELECTION_CHANGE_COMMAND,
-} from "lexical"
+} from "lexical";
+import { useEffect } from "react";
 
-import { useToolbarContext } from "@/src/components/editor/context/toolbar-context"
+import { useToolbarContext } from "@/src/components/editor/context/toolbar-context";
 
 export function useUpdateToolbarHandler(
   callback: (selection: BaseSelection) => void
 ) {
-  const [editor] = useLexicalComposerContext()
-  const { activeEditor } = useToolbarContext()
+  const [editor] = useLexicalComposerContext();
+  const { activeEditor } = useToolbarContext();
 
   useEffect(() => {
     return activeEditor.registerCommand(
       SELECTION_CHANGE_COMMAND,
       () => {
-        const selection = $getSelection()
+        const selection = $getSelection();
         if (selection) {
-          callback(selection)
+          callback(selection);
         }
-        return false
+        return false;
       },
       COMMAND_PRIORITY_CRITICAL
-    )
-  }, [editor, callback])
+    );
+  }, [editor, callback]);
 
   useEffect(() => {
     activeEditor.getEditorState().read(() => {
-      const selection = $getSelection()
+      const selection = $getSelection();
       if (selection) {
-        callback(selection)
+        callback(selection);
       }
-    })
-  }, [activeEditor, callback])
+    });
+  }, [activeEditor, callback]);
 }

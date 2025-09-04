@@ -1,4 +1,5 @@
-"use client"
+/* eslint-disable @typescript-eslint/no-unused-vars */
+"use client";
 
 /**
  * Copyright (c) Meta Platforms, Inc. and affiliates.
@@ -7,53 +8,53 @@
  * LICENSE file in the root directory of this source tree.
  *
  */
-import { JSX, useMemo, useState } from "react"
 import {
   AutoEmbedOption,
-  EmbedConfig,
-  EmbedMatchResult,
+  type EmbedConfig,
+  type EmbedMatchResult,
   LexicalAutoEmbedPlugin,
   URL_MATCHER,
-} from "@lexical/react/LexicalAutoEmbedPlugin"
-import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext"
-import { PopoverPortal } from "@radix-ui/react-popover"
-import type { LexicalEditor } from "lexical"
-import { FigmaIcon, TwitterIcon, YoutubeIcon } from "lucide-react"
+} from "@lexical/react/LexicalAutoEmbedPlugin";
+import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
+import { PopoverPortal } from "@radix-ui/react-popover";
+import type { LexicalEditor } from "lexical";
+import { FigmaIcon, TwitterIcon, YoutubeIcon } from "lucide-react";
+import { type JSX, useMemo, useState } from "react";
 
-import { useEditorModal } from "@/src/components/editor/editor-hooks/use-modal"
-import { INSERT_FIGMA_COMMAND } from "@/src/components/editor/plugins/embeds/figma-plugin"
-import { INSERT_TWEET_COMMAND } from "@/src/components/editor/plugins/embeds/twitter-plugin"
-import { INSERT_YOUTUBE_COMMAND } from "@/src/components/editor/plugins/embeds/youtube-plugin"
-import { Button } from "@/src/components/ui/button"
+import { useEditorModal } from "@/src/components/editor/editor-hooks/use-modal";
+import { INSERT_FIGMA_COMMAND } from "@/src/components/editor/plugins/embeds/figma-plugin";
+import { INSERT_TWEET_COMMAND } from "@/src/components/editor/plugins/embeds/twitter-plugin";
+import { INSERT_YOUTUBE_COMMAND } from "@/src/components/editor/plugins/embeds/youtube-plugin";
+import { Button } from "@/src/components/ui/button";
 import {
   Command,
   CommandGroup,
   CommandItem,
   CommandList,
-} from "@/src/components/ui/command"
-import { DialogFooter } from "@/src/components/ui/dialog"
-import { Input } from "@/src/components/ui/input"
+} from "@/src/components/ui/command";
+import { DialogFooter } from "@/src/components/ui/dialog";
+import { Input } from "@/src/components/ui/input";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/src/components/ui/popover"
+} from "@/src/components/ui/popover";
 
 export interface CustomEmbedConfig extends EmbedConfig {
   // Human readable name of the embeded content e.g. Tweet or Google Map.
-  contentName: string
+  contentName: string;
 
   // Icon for display.
-  icon?: JSX.Element
+  icon?: JSX.Element;
 
   // An example of a matching url https://twitter.com/jack/status/20
-  exampleUrl: string
+  exampleUrl: string;
 
   // For extra searching.
-  keywords: Array<string>
+  keywords: Array<string>;
 
   // Embed a Figma Project.
-  description?: string
+  description?: string;
 }
 
 export const YoutubeEmbedConfig: CustomEmbedConfig = {
@@ -65,7 +66,7 @@ export const YoutubeEmbedConfig: CustomEmbedConfig = {
   icon: <YoutubeIcon className="size-4" />,
 
   insertNode: (editor: LexicalEditor, result: EmbedMatchResult) => {
-    editor.dispatchCommand(INSERT_YOUTUBE_COMMAND, result.id)
+    editor.dispatchCommand(INSERT_YOUTUBE_COMMAND, result.id);
   },
 
   keywords: ["youtube", "video"],
@@ -73,22 +74,22 @@ export const YoutubeEmbedConfig: CustomEmbedConfig = {
   // Determine if a given URL is a match and return url data.
   parseUrl: async (url: string) => {
     const match =
-      /^.*(youtu\.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/.exec(url)
+      /^.*(youtu\.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/.exec(url);
 
-    const id = match ? (match?.[2].length === 11 ? match[2] : null) : null
+    const id = match ? (match?.[2].length === 11 ? match[2] : null) : null;
 
     if (id != null) {
       return {
         id,
         url,
-      }
+      };
     }
 
-    return null
+    return null;
   },
 
   type: "youtube-video",
-}
+};
 
 export const TwitterEmbedConfig: CustomEmbedConfig = {
   // e.g. Tweet or Google Map.
@@ -101,7 +102,7 @@ export const TwitterEmbedConfig: CustomEmbedConfig = {
 
   // Create the Lexical embed node from the url data.
   insertNode: (editor: LexicalEditor, result: EmbedMatchResult) => {
-    editor.dispatchCommand(INSERT_TWEET_COMMAND, result.id)
+    editor.dispatchCommand(INSERT_TWEET_COMMAND, result.id);
   },
 
   // For extra searching.
@@ -110,20 +111,22 @@ export const TwitterEmbedConfig: CustomEmbedConfig = {
   // Determine if a given URL is a match and return url data.
   parseUrl: (text: string) => {
     const match =
-      /^https:\/\/(twitter|x)\.com\/(#!\/)?(\w+)\/status(es)*\/(\d+)/.exec(text)
+      /^https:\/\/(twitter|x)\.com\/(#!\/)?(\w+)\/status(es)*\/(\d+)/.exec(
+        text
+      );
 
     if (match != null) {
       return {
         id: match[5],
         url: match[1],
-      }
+      };
     }
 
-    return null
+    return null;
   },
 
   type: "tweet",
-}
+};
 
 export const FigmaEmbedConfig: CustomEmbedConfig = {
   contentName: "Figma Document",
@@ -133,7 +136,7 @@ export const FigmaEmbedConfig: CustomEmbedConfig = {
   icon: <FigmaIcon className="size-4" />,
 
   insertNode: (editor: LexicalEditor, result: EmbedMatchResult) => {
-    editor.dispatchCommand(INSERT_FIGMA_COMMAND, result.id)
+    editor.dispatchCommand(INSERT_FIGMA_COMMAND, result.id);
   },
 
   keywords: ["figma", "figma.com", "mock-up"],
@@ -143,71 +146,71 @@ export const FigmaEmbedConfig: CustomEmbedConfig = {
     const match =
       /https:\/\/([\w.-]+\.)?figma.com\/(file|proto)\/([0-9a-zA-Z]{22,128})(?:\/.*)?$/.exec(
         text
-      )
+      );
 
     if (match != null) {
       return {
         id: match[3],
         url: match[0],
-      }
+      };
     }
 
-    return null
+    return null;
   },
 
   type: "figma",
-}
+};
 
 export const EmbedConfigs = [
   TwitterEmbedConfig,
   YoutubeEmbedConfig,
   FigmaEmbedConfig,
-]
+];
 
 const debounce = (callback: (text: string) => void, delay: number) => {
-  let timeoutId: number
+  let timeoutId: number;
   return (text: string) => {
-    window.clearTimeout(timeoutId)
+    window.clearTimeout(timeoutId);
     timeoutId = window.setTimeout(() => {
-      callback(text)
-    }, delay)
-  }
-}
+      callback(text);
+    }, delay);
+  };
+};
 
 export function AutoEmbedDialog({
   embedConfig,
   onClose,
 }: {
-  embedConfig: CustomEmbedConfig
-  onClose: () => void
+  embedConfig: CustomEmbedConfig;
+  onClose: () => void;
 }): JSX.Element {
-  const [text, setText] = useState("")
-  const [editor] = useLexicalComposerContext()
-  const [embedResult, setEmbedResult] = useState<EmbedMatchResult | null>(null)
+  const [text, setText] = useState("");
+  const [editor] = useLexicalComposerContext();
+  const [embedResult, setEmbedResult] = useState<EmbedMatchResult | null>(null);
 
   const validateText = useMemo(
     () =>
       debounce((inputText: string) => {
-        const urlMatch = URL_MATCHER.exec(inputText)
+        const urlMatch = URL_MATCHER.exec(inputText);
         if (embedConfig != null && inputText != null && urlMatch != null) {
           Promise.resolve(embedConfig.parseUrl(inputText)).then(
             (parseResult) => {
-              setEmbedResult(parseResult)
+              setEmbedResult(parseResult);
             }
-          )
+          );
         } else if (embedResult != null) {
-          setEmbedResult(null)
+          setEmbedResult(null);
         }
       }, 200),
     [embedConfig, embedResult]
-  )
+  );
 
   const onClick = () => {
     if (embedResult != null) {
-      embedConfig.insertNode(editor, embedResult)
-      onClose()
+      embedConfig.insertNode(editor, embedResult);
+      onClose();
     }
-  }
+  };
 
   return (
     <div className="">
@@ -218,9 +221,9 @@ export function AutoEmbedDialog({
           value={text}
           data-test-id={`${embedConfig.type}-embed-modal-url`}
           onChange={(e) => {
-            const { value } = e.target
-            setText(value)
-            validateText(value)
+            const { value } = e.target;
+            setText(value);
+            validateText(value);
           }}
         />
         <DialogFooter>
@@ -234,17 +237,20 @@ export function AutoEmbedDialog({
         </DialogFooter>
       </div>
     </div>
-  )
+  );
 }
 
 export function AutoEmbedPlugin(): JSX.Element {
-  const [modal, showModal] = useEditorModal()
+  const [modal, showModal] = useEditorModal();
 
   const openEmbedModal = (embedConfig: CustomEmbedConfig) => {
     showModal(`Embed ${embedConfig.contentName}`, (onClose) => (
-      <AutoEmbedDialog embedConfig={embedConfig} onClose={onClose} />
-    ))
-  }
+      <AutoEmbedDialog
+        embedConfig={embedConfig}
+        onClose={onClose}
+      />
+    ));
+  };
 
   const getMenuOptions = (
     activeEmbedConfig: CustomEmbedConfig,
@@ -258,8 +264,8 @@ export function AutoEmbedPlugin(): JSX.Element {
       new AutoEmbedOption(`Embed ${activeEmbedConfig.contentName}`, {
         onSelect: embedFn,
       }),
-    ]
-  }
+    ];
+  };
 
   return (
     <>
@@ -295,7 +301,7 @@ export function AutoEmbedPlugin(): JSX.Element {
                               key={option.key}
                               value={option.title}
                               onSelect={() => {
-                                selectOptionAndCleanUp(option)
+                                selectOptionAndCleanUp(option);
                               }}
                               className="flex items-center gap-2"
                             >
@@ -309,9 +315,9 @@ export function AutoEmbedPlugin(): JSX.Element {
                 </div>
               </PopoverPortal>
             </Popover>
-          ) : null
+          ) : null;
         }}
       />
     </>
-  )
+  );
 }
